@@ -1,7 +1,7 @@
 ---
 title: authentik Wiki Schema
 updated: 2026-10-20
-last_synced_commit: 0f5f4a6150be2c4c32712b21c58ea95fc03283d2
+last_synced_commit: d4fd76aa8b1d30d35ddab67bbef88bc75d7cadef
 commit_policy: committed
 authority_entry: ../agent.md
 ---
@@ -20,6 +20,6 @@ authority_entry: ../agent.md
 
 # 约定
 
-文章采用相对 Markdown 链接，从[索引](_index.md)两次点击内可达。源码路径相对项目根目录，符号名为稳定引用；文档仅记录已读取的源码事实，不推断生产状态。Wiki 默认纳入 Git，当前未提交。Git 负责时间线，不创建 `_log.md`。
+文章采用相对 Markdown 链接，从[索引](_index.md)两次点击内可达。源码路径相对项目根目录，符号名为稳定引用；文档仅记录已读取的源码事实，不推断生产状态。Wiki纳入Git，源码与部署脚本检查点为`d4fd76aa8`。Git负责时间线，不创建`_log.md`。
 
 See Also: [权威文档](../agent.md)、[同步状态](_sync-state.md)。

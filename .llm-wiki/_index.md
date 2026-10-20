@@ -21,3 +21,4 @@ updated: 2026-10-20
 
 - [前端开发入口](guides/development.md)
 - [邀请注册与应用访问](guides/registration.md)
+- [备份与恢复边界](guides/backup-and-restore.md)

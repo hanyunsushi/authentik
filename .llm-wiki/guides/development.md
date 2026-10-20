@@ -35,7 +35,7 @@ Storybook 的默认端口为 6006，是组件预览入口；`Design system / Fir
 
 ## 完整版本同步
 
-[`deploy/oci-full/`](../../deploy/oci-full/README.md) 提供主工作区的完整 arm64 镜像、本地独立 Compose，以及 OCI 的克隆库演练、切换、验证和数据库恢复脚本。本地与 OCI 共用一次构建导出的镜像，验证 config digest、RootFS 层和运行配置；前端与后端共用构建标识，本地身份数据独立。Docker 的存储后端可能分别显示 config ID 或 manifest ID，不能直接比较不同类型的 ID。源码清单和产物校验用于识别未提交的视觉修改，不能只以 Git HEAD 或镜像 tag 判断一致。
+[`deploy/oci-full/`](../../deploy/oci-full/README.md) 提供主工作区的完整 arm64 镜像、本地独立 Compose，以及 OCI 的克隆库演练、切换、验证和数据库恢复脚本。本地与 OCI 共用一次构建导出的镜像，验证 config digest、RootFS 层和运行配置；前端与后端共用构建标识，本地身份数据独立。Docker 的存储后端可能分别显示 config ID 或 manifest ID，不能直接比较不同类型的 ID。源码清单和产物校验用于识别构建时的完整源码快照，不能只以 Git HEAD 或镜像 tag 判断一致。官方数据库备份方法及本项目部署备份的职责见[备份与恢复](backup-and-restore.md)。
 
 同版本视觉发布另有后端逐文件相等与本地健康验证门槛，正式迁移数必须保持不变；入口见上述部署说明。完整升级需要停写后备份数据库及数据目录。跨迁移降级必须恢复数据库和旧镜像；2026.8.3 的前端兼容移植目录只用于该版本的历史产物重建。当前运行、发布证据及备份入口见[权威文档](../../agent.md)。
 
