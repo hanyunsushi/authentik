@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { AKRefreshEvent } from "#common/events";
 
 import { AKElement } from "#elements/Base";
@@ -11,7 +11,7 @@ import type { PfTooltip } from "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { customElement } from "lit/decorators.js";
 
 /**
- * Enter events sourced from pf-tooltip.
+ * Enter events sourced from ak-tooltip.
  */
 const EnterEvents = ["focusin", "tap", "mouseenter"];
 
@@ -41,6 +41,8 @@ export class DropdownButton extends AKElement {
         if (!this.menu || !this.toggleButton) return;
 
         this.menu.hidden = true;
+
+        if (this.menu.matches(":popover-open")) this.menu.hidePopover();
         this.toggleButton.ariaExpanded = "false";
     };
 
@@ -49,11 +51,51 @@ export class DropdownButton extends AKElement {
 
         const button = event.currentTarget as HTMLButtonElement;
 
-        this.menu.hidden = !this.menu.hidden;
-        button.ariaExpanded = (!this.menu.hidden).toString();
+        if (this.menu.hidden) {
+            this.menu.hidden = false;
+            this.menu.showPopover();
+            button.ariaExpanded = "true";
+            this.positionMenu();
+        } else this.hide();
 
         event.stopPropagation();
         this.tooltip?.hide();
+    };
+
+    // 悬浮下拉菜单：同一DOM的top layer避开表格裁切，滚动/缩放时匹配真实触发器。
+    @listen("resize", { target: window })
+    protected positionMenu = (): void => {
+        if (!this.menu || !this.toggleButton || this.menu.hidden) return;
+        const anchor = this.toggleButton.getBoundingClientRect();
+        const menu = this.menu;
+
+        Object.assign(menu.style, {
+            position: "fixed",
+            inset: "auto",
+            margin: "0",
+            minInlineSize: `${anchor.width}px`,
+            maxInlineSize: `${window.innerWidth - 16}px`,
+            maxBlockSize: "min(70dvh, 480px)",
+        });
+
+        const rect = menu.getBoundingClientRect();
+        const below = window.innerHeight - anchor.bottom - 8;
+        const above = anchor.top - 8;
+        const opensAbove = rect.height > below && above > below;
+        menu.style.maxBlockSize = `${Math.max(40, (opensAbove ? above : below) - 8)}px`;
+        const height = menu.getBoundingClientRect().height;
+        menu.style.left = `${Math.max(8, Math.min(anchor.left, window.innerWidth - rect.width - 8))}px`;
+        menu.style.top = `${opensAbove ? anchor.top - height - 8 : anchor.bottom + 8}px`;
+    };
+
+    // 选择下拉菜单：Escape关闭真实菜单并返回原触发器，不改变选项业务回调。
+    @listen("keydown", { target: window })
+    protected escapeHandler = (event: KeyboardEvent): void => {
+        if (event.key !== "Escape" || !this.menu || this.menu.hidden) return;
+
+        event.preventDefault();
+        this.hide();
+        this.toggleButton?.focus();
     };
 
     @listen("click", { target: window })
@@ -101,7 +143,14 @@ export class DropdownButton extends AKElement {
         }
 
         this.menu.hidden = true;
+        this.menu.popover = "manual";
         this.toggleButton.ariaExpanded = "false";
+
+        window.addEventListener("scroll", this.positionMenu, {
+            capture: true,
+            passive: true,
+            signal: this.abortController.signal,
+        });
 
         this.toggleButton.addEventListener("click", this.toggleMenu, {
             capture: true,
@@ -117,7 +166,7 @@ export class DropdownButton extends AKElement {
             });
         }
 
-        this.tooltip = this.querySelector("pf-tooltip");
+        this.tooltip = this.querySelector("ak-tooltip");
 
         if (this.tooltip && !this.tooltip.hasAttribute("trigger")) {
             const trigger = this.querySelector("[data-tooltip-target]") || this;
@@ -151,6 +200,7 @@ export class DropdownButton extends AKElement {
     };
 
     public override disconnectedCallback(): void {
+        this.hide();
         super.disconnectedCallback();
         this.abortController?.abort();
     }

@@ -11,7 +11,7 @@ import "#elements/buttons/Dropdown";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/table/ak-table-filter-select";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -139,9 +139,9 @@ export class AddRelatedUserForm extends Form<{ users: number[] }> {
                         aria-label=${msg("Open user selection dialog")}
                         @click=${this.openUserSelectionModal}
                     >
-                        <pf-tooltip position="right" content=${msg("Add users")}>
+                        <ak-tooltip position="right" content=${msg("Add users")}>
                             <i class="fas fa-plus" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </div>
                 <div class="pf-c-form-control">
@@ -295,12 +295,12 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                               class="pf-c-button pf-m-tertiary"
                               ${UserImpersonateForm.asInstanceInvoker(item.pk)}
                           >
-                              <pf-tooltip
+                              <ak-tooltip
                                   position="top"
                                   content=${msg("Temporarily assume the identity of this user")}
                               >
                                   <span>${msg("Impersonate")}</span>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </button>`
                         : null
                 }

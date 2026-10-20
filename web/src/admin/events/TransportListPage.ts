@@ -8,7 +8,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -99,9 +99,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                         });
                     }}
                 >
-                    <pf-tooltip position="top" content=${msg("Test")}>
+                    <ak-tooltip position="top" content=${msg("Test")}>
                         <i class="fas fa-vial" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </ak-action-button>
             </div>`,
         ];

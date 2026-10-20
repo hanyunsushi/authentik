@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import type { NamedEntityElementConstructor } from "#common/api/entities";
 
 import { modalInvoker, ModelFormLikeConstructor } from "#elements/dialogs/directives";
@@ -50,14 +50,16 @@ export function IconEditButton<T extends NamedEntityElementConstructor>(
 
     const props: LitPropertyRecord<ModelFormLikeConstructor> = { ...modalProps, instancePk };
 
+    // 普通按钮：行内编辑使用32px中性描边图标按钮，业务弹窗保持原调用。
     return html`<button
         type="button"
         aria-label=${ariaText}
-        class="pf-c-button pf-m-plain"
+        class="pf-c-button ak-first-icon"
+        data-testid="model-edit"
         ${modalInvoker(factory, props as unknown as undefined, dialogOptions)}
     >
-        <pf-tooltip position="top" content=${label}>
+        <ak-tooltip position="top" content=${label}>
             <i aria-hidden="true" class="fas ${iconName}"></i>
-        </pf-tooltip>
+        </ak-tooltip>
     </button>`;
 }

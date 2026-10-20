@@ -1,0 +1,41 @@
+name: authentik-local
+services:
+  postgresql:
+    image: postgres:16-alpine
+    env_file: local.env
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  server:
+    image: ${AUTHENTIK_IMAGE:?set the exact local/OCI image}
+    command: server
+    env_file: local.env
+    shm_size: 512mb
+    ports:
+      - 127.0.0.1:9000:9000
+      - 127.0.0.1:9443:9443
+    volumes:
+      - data:/data
+      - geoip:/geoip:ro
+    depends_on:
+      postgresql:
+        condition: service_healthy
+  worker:
+    image: ${AUTHENTIK_IMAGE:?set the exact local/OCI image}
+    command: worker
+    env_file: local.env
+    shm_size: 512mb
+    volumes:
+      - data:/data
+      - geoip:/geoip:ro
+    depends_on:
+      postgresql:
+        condition: service_healthy
+volumes:
+  database:
+  data:
+  geoip:

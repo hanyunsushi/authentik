@@ -209,21 +209,20 @@
 
 [part="card-header-actions"] {
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
+    inset-block-start: 8px;
+    inset-inline-end: 8px;
 }
 
 /* #region Card Header Actions Menu */
 
-[part="card-header-actions-menu"] {
+.pf-c-dropdown__menu[part="card-header-actions-menu"] {
     inset: auto;
-    border: none;
-
+    /* 悬浮下拉菜单：取消 PF 的100%最小宽度，按内容收缩并保留视口留白。 */
     width: max-content;
-    min-width: 10ch;
-    max-width: 20ch;
-    /* This drop shadow both adds contrast and forces Firefox to order the layers correctly. */
-    filter: drop-shadow(0px 3px 1px var(--pf-global--BackgroundColor--dark-transparent-200));
+    min-width: 0;
+    max-width: min(320px, calc(100vw - 16px));
+    max-inline-size: min(320px, calc(100vw - 16px));
+    margin: 0;
 
     li {
         list-style-type: none;
@@ -233,17 +232,14 @@
 [data-anchor-strategy="anchor-position"] [part="card-header-actions-menu"] {
     position: fixed;
     inset-inline-start: auto;
-    inset-block-start: anchor(end);
+    inset-block-start: calc(anchor(end) + 8px);
     inset-inline-end: anchor(end);
+    position-try-fallbacks: flip-inline, flip-block;
 
     transform: translate3d(0, 0, 0); /* Fixes rendering artifacts on mobile. */
 
     &:popover-open {
         display: block;
-    }
-
-    @media (min-width: 390px) {
-        inset-inline-start: anchor(center);
     }
 }
 
@@ -268,25 +264,17 @@
 /* #region Card Header Actions Button */
 
 [part="card-header-actions-button"] {
-    border: 0.5px solid transparent;
-    border-end-start-radius: var(--pf-global--BorderRadius--sm);
-
-    --pf-c-dropdown__toggle--before--BorderWidth: 0;
-
-    &:hover {
-        --pf-c-dropdown__toggle--BackgroundColor: var(--pf-c-card--m-flat--BorderColor);
-        border-color: var(--pf-c-card--m-flat--BorderColor);
-    }
+    /* 普通按钮：32px方形、8px角；触摸尺寸跟随共享44px变量。 */
+    inline-size: var(--ak-first-button-height);
+    padding: 0;
+    flex-shrink: 0;
 }
 
 /* #region Card Header Actions icon */
 
 [part="card-header-actions-icon"] {
-    font-weight: bold;
-    font-family:
-        system-ui,
-        -apple-system,
-        monospace;
+    inline-size: 16px;
+    block-size: 16px;
 }
 
 /* #region List view */
@@ -407,34 +395,13 @@
         align-self: center;
     }
 
-    [part="card-header-actions-button"] {
-        --pf-c-dropdown__toggle--PaddingTop: var(--pf-global--spacer--xs);
-        --pf-c-dropdown__toggle--PaddingBottom: var(--pf-global--spacer--xs);
-        --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--sm);
-        --pf-c-dropdown__toggle--PaddingRight: var(--pf-global--spacer--sm);
-
-        color: var(--pf-global--Color--200);
-        border-radius: var(--pf-global--BorderRadius--sm);
-
-        &:hover,
-        &:focus-visible {
-            color: var(--ak-accent);
-            background-color: var(--pf-c-card--m-flat--BorderColor);
-        }
-    }
-
-    [part="card-header-actions-icon"] {
-        font-size: 1.1rem;
-        line-height: 1;
-    }
-
     /* Anchor the popover to the kebab's right edge so it opens down-left
      * and stays inside the viewport (grid view's center anchor pushes it
      * off the screen when the kebab sits at a row's right edge). */
     &[data-anchor-strategy="anchor-position"] [part="card-header-actions-menu"] {
         inset-inline-start: auto;
         inset-inline-end: anchor(end);
-        inset-block-start: anchor(end);
+        inset-block-start: calc(anchor(end) + 8px);
 
         @media (min-width: 390px) {
             inset-inline-start: auto;
@@ -446,4 +413,26 @@
         inset-inline-start: auto;
         inset-inline-end: 0;
     }
+}
+
+/* 可跳转展示卡片 / 悬浮效果：一级浅灰，静止交互与标题正文角色。 */
+[part="card"] {
+    border: 0;
+    border-radius: 18px;
+    background: var(--ak-first-card);
+    box-shadow: none;
+}
+[part="card"]:is(:hover, :focus-within) {
+    box-shadow: 0 8px 28px rgb(0 0 0 / 8%);
+}
+[part="card-title"] {
+    font-family: var(--ak-first-heading);
+    font-weight: 500;
+}
+.app-row {
+    border-radius: 18px;
+    background: var(--ak-first-card);
+}
+.row-title {
+    font-family: var(--ak-first-heading);
 }

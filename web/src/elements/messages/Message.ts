@@ -1,3 +1,4 @@
+import "#elements/Spinner";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -105,7 +106,11 @@ export class Message extends AKElement {
                 })}"
             >
                 <div class="pf-c-alert__icon">
-                    <i class="${icon}" aria-hidden="true"></i>
+                    ${
+                        icon?.includes("fa-spinner")
+                            ? html`<ak-spinner size="pf-m-sm"></ak-spinner>`
+                            : html`<i class="${icon}" aria-hidden="true"></i>`
+                    }
                 </div>
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>

@@ -5,7 +5,7 @@ import "#elements/events/LogViewer";
 import "#components/tasks/ScheduleList";
 import "#components/tasks/TaskList";
 import "#admin/rbac/ObjectPermissionModal";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";

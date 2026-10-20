@@ -24,3 +24,6 @@
 @import "#styles/authentik/components/Screenreader/screenreader.css";
 @import "#styles/authentik/components/Placeholder/placeholder.css";
 @import "#styles/authentik/components/Modifiers/modifiers.css";
+
+/* 第一设计系统：在组件自身的 PF4 样式之后统一视觉，品牌覆盖继续由原机制提供。 */
+@import "../first/components.css";

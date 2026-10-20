@@ -1,13 +1,17 @@
 {% load i18n %}
 
+{# 加载反馈：JS加载前也使用20px点阵；标题和加载文字不闪现。 #}
+<style>
+.ak-first-placeholder-dots { display:grid;grid-template-columns:repeat(3,1fr);gap:14%;width:20px;height:20px;color:#007aff; }
+.ak-first-placeholder-dots i { border-radius:50%;background:currentColor;animation:ak-first-dot 1s ease-in-out infinite;animation-delay:calc(var(--phase) * -250ms); }
+@keyframes ak-first-dot { 0%,100% { opacity:.2;scale:.7 } 50% { opacity:1;scale:1 } }
+@media (prefers-reduced-motion:reduce) { .ak-first-placeholder-dots i { animation:ak-first-dot-soft 1.4s ease-in-out infinite;scale:1 } }
+@keyframes ak-first-dot-soft { 0%,100% { opacity:.3 } 50% { opacity:1 } }
+</style>
 <div class="ak-c-placeholder" id="ak-placeholder" slot="placeholder">
-    <span
-        class="pf-c-spinner"
-        role="progressbar"
-        aria-valuetext="Loading..."
-        >
-        <span class="pf-c-spinner__clipper"></span>
-        <span class="pf-c-spinner__lead-ball"></span>
-        <span class="pf-c-spinner__tail-ball"></span>
+    <span class="ak-first-placeholder-dots" role="status" aria-label="{% trans 'Loading...' %}">
+        <i style="--phase:0"></i><i style="--phase:1"></i><i style="--phase:2"></i>
+        <i style="--phase:1"></i><i style="--phase:2"></i><i style="--phase:3"></i>
+        <i style="--phase:2"></i><i style="--phase:3"></i><i style="--phase:4"></i>
     </span>
 </div>

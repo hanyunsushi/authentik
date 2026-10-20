@@ -541,7 +541,8 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             const cancelButton = slottedElement?.cancelable
                 ? html`<button
                       @click=${this.closeListener}
-                      class="pf-c-button pf-m-link"
+                      class="pf-c-button ak-first-default-arc"
+                      data-testid="dialog-cancel"
                       type="button"
                   >
                       ${

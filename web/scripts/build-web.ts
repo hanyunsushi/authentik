@@ -103,6 +103,7 @@ const BASE_ESBUILD_OPTIONS: BuildOptions = {
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
+        ".ttf": "file",
         ".woff": "file",
         ".woff2": "file",
         ".jpg": "file",

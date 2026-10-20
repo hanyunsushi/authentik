@@ -1,4 +1,5 @@
 import "#elements/commands/ak-command-palette";
+import "#elements/PageScrollbar";
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
@@ -40,6 +41,9 @@ export abstract class Interface extends AKElement {
      */
     public readonly commandPalette: AKCommandPalette;
 
+    // 页面滚动条：三套应用共用文档原生滚动，控件随 Interface 生命周期清理。
+    readonly #pageScrollbar = document.createElement("ak-page-scrollbar");
+
     constructor() {
         super();
 
@@ -61,6 +65,7 @@ export abstract class Interface extends AKElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
+        this.ownerDocument.body.append(this.#pageScrollbar);
 
         requestAnimationFrame(() => {
             this.commandPalette.modal.setCommands(
@@ -70,6 +75,11 @@ export abstract class Interface extends AKElement {
                 })),
             );
         });
+    }
+
+    public override disconnectedCallback(): void {
+        this.#pageScrollbar.remove();
+        super.disconnectedCallback();
     }
 
     public override addController(

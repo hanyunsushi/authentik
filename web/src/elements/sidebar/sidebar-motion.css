@@ -1,0 +1,262 @@
+/* 侧边栏 / 组件绘制动画：只保留原Motion树需要的几何；没有CSS关键帧或手写弹簧兜底。 */
+.motion-sidebar-menu .sidebar-motion-list,
+.motion-sidebar-menu .sidebar-motion-item {
+    position: relative;
+    overflow: visible !important;
+}
+.motion-sidebar-menu .sidebar-leaf {
+    height: 32px !important;
+}
+.motion-sidebar-menu .sidebar-row-track {
+    position: relative;
+    overflow: visible !important;
+}
+.motion-sidebar-menu .n-menu-item-content {
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    outline: none;
+}
+.motion-sidebar-menu .n-menu-item-content:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+.motion-sidebar-menu .sidebar-hover-container {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 32px;
+    pointer-events: none;
+}
+.motion-sidebar-menu .sidebar-hover-projection,
+.motion-sidebar-menu .sidebar-active-projection {
+    position: absolute;
+    inset: 0;
+    border-radius: 8px !important;
+    background: var(--sidebar-hover);
+    pointer-events: none;
+}
+.motion-sidebar-menu .sidebar-active-projection {
+    background: var(--sidebar-selected);
+}
+.motion-sidebar-menu .n-menu-item-content::before,
+.motion-sidebar-menu .n-menu-item-content:hover::before,
+.motion-sidebar-menu .n-menu-item-content--selected::before,
+.motion-sidebar-menu .n-menu-item-content--child-active::before {
+    background: transparent !important;
+}
+/* 侧边栏：各级共享悬浮面独立滑动，子菜单不再叠加静态hover底色。 */
+.motion-sidebar-menu .n-submenu-children .n-menu-item-content:hover {
+    background: transparent !important;
+}
+/* 子项整体blur/位移，只有源码指定的子树clip负责裁切；按钮的内容层不裁掉整项动画。 */
+.motion-sidebar-menu .n-submenu-children {
+    overflow: visible !important;
+}
+.motion-sidebar-menu .sidebar-motion-content > .sidebar-row-track {
+    margin-bottom: 0;
+}
+
+/* 侧边栏：原Motion箭头只旋转自身，不继承旧Naive箭头的!important/CSS过渡。 */
+.motion-sidebar-menu .sidebar-motion-arrow {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    justify-self: center;
+    transform-origin: center;
+}
+.motion-sidebar-menu .sidebar-chevron {
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-top: 1.5px solid currentColor;
+    transform: rotate(45deg);
+}
+.motion-sidebar-menu .sidebar-empty-icon {
+    width: 16px;
+    height: 16px;
+}
+.app-sider.is-collapsed .motion-sidebar-menu .sidebar-hover-container {
+    height: 32px;
+}
+/* 附件2由Motion根节点直接驱动aside的width，flex宽度跟随实际值；禁止CSS再叠加另一条插值。 */
+.app-sider.sidebar-motion-rail {
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+    transition: none !important;
+}
+.app-sider.sidebar-motion-rail:not(.is-collapsed) .brand-copy {
+    flex-shrink: 0;
+}
+.motion-sidebar-menu .n-menu-item-group-title {
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+/* 退出子树不可接收新操作；动画的原始布局与popLayout仍由Motion管理。 */
+.motion-sidebar-menu [data-motion-pop-id] {
+    pointer-events: none;
+}
+/* PopLayout测得的offset已包含静态margin；退出期撤margin，避免再次叠加12px/2px。
+   项目旧position:relative!important/width:auto不得覆盖Motion的弹出布局。 */
+.motion-sidebar-menu .n-submenu-children[data-motion-pop-id] {
+    margin: 0 !important;
+}
+
+.sidebar-motion-surface {
+    height: 100%;
+    width: 100%;
+}
+.sidebar-motion-rail-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.motion-sidebar-menu .sidebar-menu-divider {
+    border: 0;
+    border-top: 1px solid var(--sidebar-border);
+    margin: 6px 0;
+}
+
+/* 侧边栏：源码ul/li的列表语义不带浏览器默认内外距。 */
+.motion-sidebar-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.motion-sidebar-menu li {
+    list-style: none;
+}
+
+/* 侧边栏：SharedLayoutBg的源码包装层/列表布局，按本项目32px行与2px间隔适配。 */
+.motion-sidebar-menu .sidebar-motion-content {
+    position: relative;
+    z-index: 10;
+}
+.motion-sidebar-menu .sidebar-motion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.motion-sidebar-menu .sidebar-motion-list > .sidebar-motion-item {
+    margin: 0 !important;
+}
+.motion-sidebar-menu .sidebar-hover-projection {
+    height: 100%;
+    width: 100%;
+}
+
+/* 多项目路由导航：项目行位于所属分组上一级，48px原尺寸、SVG图标与同款共享悬浮面。 */
+.motion-sidebar-menu .sidebar-project-section {
+    list-style: none;
+    margin: 0 0 4px !important;
+}
+.sidebar-menu .motion-sidebar-menu .sidebar-project-row {
+    height: 48px !important;
+    margin: 0 !important;
+}
+.sidebar-menu .motion-sidebar-menu .sidebar-project-route {
+    display: grid !important;
+    grid-template-columns: 28px minmax(0, 1fr) 16px !important;
+    gap: 10px;
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 6px 10px !important;
+    align-items: center;
+    border-radius: 8px !important;
+    color: var(--sidebar-muted);
+    font: 400 14px/20px var(--ff);
+}
+.motion-sidebar-menu .sidebar-project-icon {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+}
+.motion-sidebar-menu .sidebar-project-icon svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+.motion-sidebar-menu .sidebar-project-route[aria-current="location"] .sidebar-project-icon {
+    color: var(--accent);
+}
+/* 多项目路由导航：裁切边界留出字形笔画余量；字形越出排版框不等于SVG遮挡。 */
+.sidebar-menu .motion-sidebar-menu .sidebar-project-copy {
+    display: grid;
+    align-content: center;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 36px;
+    overflow: clip;
+    overflow-clip-margin: 4px;
+}
+.motion-sidebar-menu .sidebar-project-copy strong {
+    font: 600 14px/20px var(--ff);
+}
+.motion-sidebar-menu .sidebar-project-copy small {
+    color: var(--sidebar-muted);
+    font: 400 11px/16px var(--ff);
+}
+.motion-sidebar-menu .sidebar-project-copy strong,
+.motion-sidebar-menu .sidebar-project-copy small {
+    display: block;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    white-space: nowrap;
+    overflow: clip;
+    overflow-clip-margin: 4px;
+    text-overflow: ellipsis;
+}
+.motion-sidebar-menu .sidebar-project-hover-container {
+    height: 48px;
+}
+/* 多项目路由导航：项目悬浮块与第一条页面入口保持同列表2px留白。 */
+.motion-sidebar-menu .sidebar-project-content {
+    position: relative;
+    display: flow-root;
+    padding: 2px 0 12px;
+}
+.motion-sidebar-menu .sidebar-project-content[data-motion-pop-id] {
+    margin: 0 !important;
+}
+/* 多项目路由导航：图标轨道仍40px居中；整栏收起不隐藏已展开项目的原导航图标。 */
+.app-sider.is-collapsed .motion-sidebar-menu .sidebar-project-row {
+    height: 40px !important;
+}
+.app-sider.is-collapsed .sidebar-menu .motion-sidebar-menu .sidebar-project-route {
+    width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    grid-template-columns: 28px !important;
+    gap: 0;
+    padding: 6px !important;
+}
+.app-sider.is-collapsed .motion-sidebar-menu .sidebar-project-copy,
+.app-sider.is-collapsed .motion-sidebar-menu .sidebar-project-route .sidebar-motion-arrow {
+    display: none !important;
+}
+.app-sider.is-collapsed .motion-sidebar-menu .sidebar-project-hover-container {
+    height: 40px;
+}
+
+/* 加载反馈：项目原菜单未就绪时20px点阵占据普通行，不预告匿名入口或改变图标轨道。 */
+.motion-sidebar-menu .sidebar-project-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    color: var(--accent);
+}

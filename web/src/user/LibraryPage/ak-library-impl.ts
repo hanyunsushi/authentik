@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "./ak-library-application-empty-list.js";
 import Styles from "./ak-library-impl.css";
 import AKLibraryApplicationListStyles from "./ApplicationList.css";
@@ -342,6 +342,14 @@ export class LibraryPage extends WithSession(AKElement) {
         if (this.renderRoot instanceof ShadowRoot) {
             const focusedElement = this.renderRoot.activeElement;
 
+            // 普通按钮 / 项目超链接：交给原生Enter，避免手动click与默认动作重复切换菜单。
+            if (
+                focusedElement instanceof HTMLButtonElement ||
+                focusedElement instanceof HTMLAnchorElement
+            ) {
+                return;
+            }
+
             if (isInteractiveElement(focusedElement)) {
                 focusedElement.click();
             }
@@ -432,13 +440,13 @@ export class LibraryPage extends WithSession(AKElement) {
                 aria-pressed=${viewMode === ViewMode.List}
                 @click=${this.#viewToggleListener}
             >
-                <pf-tooltip
+                <ak-tooltip
                     position="top"
                     content=${tooltipContent}
                     trigger="library-view-toggle-button"
                 >
                     ${icon}
-                </pf-tooltip>
+                </ak-tooltip>
             </button>`;
         });
     }

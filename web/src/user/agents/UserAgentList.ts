@@ -2,7 +2,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/agents/UserAgentForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 import { formatElapsedTime } from "#common/temporal";
 
@@ -89,9 +89,9 @@ export class UserAgentList extends Table<Agent> {
             html`<div>${item.name || item.username}</div>
                 <small class="pf-m-monospace">${item.username}</small>`,
             item.expiring && item.expires
-                ? html`<pf-tooltip position="top" .content=${item.expires.toLocaleString()}>
+                ? html`<ak-tooltip position="top" .content=${item.expires.toLocaleString()}>
                       ${formatElapsedTime(item.expires)}
-                  </pf-tooltip>`
+                  </ak-tooltip>`
                 : html`${msg("-", { id: "agent.expires.never" })}`,
             html`${IconTokenCopyButton(item.tokenIdentifier)}
                 <ak-forms-delete-bulk
@@ -103,12 +103,12 @@ export class UserAgentList extends Table<Agent> {
                         })}
                 >
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip
+                        <ak-tooltip
                             position="top"
                             content=${msg("Delete", { id: "agent.delete.tooltip" })}
                         >
                             <i aria-hidden="true" class="fas fa-trash"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </ak-forms-delete-bulk>`,
         ];

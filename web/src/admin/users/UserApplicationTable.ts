@@ -1,5 +1,5 @@
 import "#elements/AppIcon";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { toAdminInterface } from "#elements/router/core/interfaces";
@@ -63,9 +63,9 @@ export class UserApplicationTable extends Table<Application> {
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <ak-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${
@@ -75,9 +75,9 @@ export class UserApplicationTable extends Table<Application> {
                               target="_blank"
                               class="pf-c-button pf-m-plain"
                           >
-                              <pf-tooltip position="top" content=${msg("Open")}>
+                              <ak-tooltip position="top" content=${msg("Open")}>
                                   <i class="fas fa-share-square" aria-hidden="true"></i>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </a>`
                         : nothing
                 }

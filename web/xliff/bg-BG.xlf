@@ -8054,7 +8054,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Версия на продукт</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version.versionCurrent || &quot;&quot;}"/></source>
   <target>Версия <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -8869,22 +8869,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
   <target>Конфигурация на отдалечен пост</target>
-</trans-unit>
-<trans-unit id="s11a2ac9f2bd811d8">
-  <source>Delete Object Permission</source>
-  <target>Изтрий разрешение за обект</target>
-</trans-unit>
-<trans-unit id="s78aa910bcb26034d">
-  <source>Global and object permission</source>
-  <target>Глобално и обектно разрешение</target>
-</trans-unit>
-<trans-unit id="sc8f73affccb6ae4d">
-  <source>Global permission</source>
-  <target>Глобално разрешение</target>
-</trans-unit>
-<trans-unit id="scf9ebad133d2d561">
-  <source>Object permission</source>
-  <target>Обектно разрешение</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
@@ -13146,6 +13130,78 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbf0ff47d8bff9545">
   <source>Click here for the changelog.</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-44.label">
+  <source>ML-DSA-44</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-65.label">
+  <source>ML-DSA-65</source>
+</trans-unit>
+<trans-unit id="crypto.generate.alg.ml-dsa-87.label">
+  <source>ML-DSA-87</source>
+</trans-unit>
+<trans-unit id="permissions.aria.universal">
+  <source>Global and object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.universal">
+  <source>object + global</source>
+</trans-unit>
+<trans-unit id="permissions.aria.global">
+  <source>Global permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.global">
+  <source>global</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object.label">
+  <source>Object permission</source>
+</trans-unit>
+<trans-unit id="permissions.kind.object">
+  <source>object</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.role">
+  <source>Role</source>
+</trans-unit>
+<trans-unit id="permissions.table-column.permissions">
+  <source>Permissions</source>
+</trans-unit>
+<trans-unit id="permission.sort.by-name">
+  <source>By name</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-first">
+  <source>Assigned first</source>
+</trans-unit>
+<trans-unit id="permissions.sort.assigned-only">
+  <source>Assigned only</source>
+</trans-unit>
+<trans-unit id="permissions.filter.show-assigned">
+  <source>Sort and filter</source>
+</trans-unit>
+<trans-unit id="permissions.delete.label">
+  <source>Permission(s)</source>
+</trans-unit>
+<trans-unit id="permissions.delete.meta-data">
+  <source>Permission</source>
+</trans-unit>
+<trans-unit id="permissions.delete.button">
+  <source>Delete object permission</source>
+</trans-unit>
+<trans-unit id="flow.design.introduction.heading">
+  <source>One identity. Every application.</source>
+</trans-unit>
+<trans-unit id="flow.design.introduction.description">
+  <source>Sign in securely to your applications with authentik.</source>
+</trans-unit>
+<trans-unit id="navigation.admin.caption">
+  <source>Administration</source>
+</trans-unit>
+<trans-unit id="navigation.filter.aria-label">
+  <source>Filter navigation</source>
+</trans-unit>
+<trans-unit id="navigation.filter.placeholder">
+  <source>Filter navigation</source>
+</trans-unit>
+<trans-unit id="navigation.filter.empty">
+  <source>No results</source>
 </trans-unit>
 </body>
 </file>

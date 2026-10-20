@@ -129,7 +129,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-plain"
+                    class="ak-first-default-arc"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>

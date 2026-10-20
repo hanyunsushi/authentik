@@ -41,22 +41,28 @@ export const CardMenu: LitFC<CardMenuProps> = ({
 
     const applicationName = application.name || msg("application");
 
+    // 普通按钮 / 悬浮下拉菜单：方形图标入口，保留原生 Popover 与编辑链接。
     return html`<div class="pf-c-dropdown" part="card-header-actions" ${spread(props)}>
         <button
             part="card-header-actions-button"
-            class="pf-c-dropdown__toggle"
+            class="pf-c-button pf-m-plain"
+            data-testid="library-app-actions"
             type="button"
             style="anchor-name: ${menuAnchor};"
             popovertarget=${menuID}
             popovertargetaction="toggle"
-            tabindex="-1"
             aria-label=${msg(str`Actions for "${applicationName}"`)}
         >
-            <span part="card-header-actions-icon" class="pf-c-dropdown__toggle-text">&vellip;</span>
+            <svg part="card-header-actions-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="5" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+                <circle cx="12" cy="19" r="1.5" fill="currentColor"></circle>
+            </svg>
         </button>
         <menu
             class="pf-c-dropdown__menu"
             part="card-header-actions-menu"
+            data-testid="library-app-actions-menu"
             style="position-anchor: ${menuAnchor};"
             id=${menuID}
             ?popover=${AnchorPositionSupported}
@@ -97,6 +103,7 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                     ? html`<li role="presentation">
                           <a
                               part="card-header-action"
+                              data-testid="library-app-edit"
                               role="menuitem"
                               href=${editURL.toString()}
                               class="pf-c-dropdown__menu-item"

@@ -1,3 +1,4 @@
+import "#elements/Tooltip";
 import { globalAK } from "#common/global";
 import {
     createCSSResult,

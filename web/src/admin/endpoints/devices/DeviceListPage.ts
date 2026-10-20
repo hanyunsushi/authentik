@@ -154,9 +154,9 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
                 class="pf-c-button pf-m-plain"
                 ${modalInvoker(EndpointDeviceForm, { instancePk: item.deviceUuid })}
             >
-                <pf-tooltip position="top" content=${msg("Edit")}>
+                <ak-tooltip position="top" content=${msg("Edit")}>
                     <i class="fas fa-edit" aria-hidden="true"></i>
-                </pf-tooltip>
+                </ak-tooltip>
             </button>`,
         ];
     }

@@ -19,7 +19,9 @@
 }
 
 .pf-c-card__body {
-    overflow-x: auto;
+    /* 展示卡片：数字随内容自然排版，不建立多余内部滚动区。 */
+    overflow: visible;
+    min-width: 0;
     padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
     padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
 }

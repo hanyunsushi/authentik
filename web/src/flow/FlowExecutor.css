@@ -2,6 +2,8 @@
 @import "#styles/authentik/login.css";
 
 :host {
+    /* 高亮弧边按钮 / 默认弧边按钮：认证所有stage继承18px，跨Shadow DOM保持一致。 */
+    --ak-first-action-radius: 18px;
     display: flex;
     min-width: 100%;
     min-height: 100dvh;
@@ -12,6 +14,20 @@ ak-flow-inspector-button {
     inset-inline-end: var(--pf-global--spacer--md);
     inset-block-start: var(--pf-global--spacer--md);
     z-index: 100;
+}
+
+/* 加载反馈：隐藏整个认证内容且保留几何，点阵不与品牌、标题或表单重叠。 */
+.ak-flow-content {
+    min-width: 0;
+}
+.ak-flow-content[aria-hidden="true"] {
+    visibility: hidden;
+}
+.pf-c-login__main[aria-busy="true"] {
+    min-height: 280px;
+}
+ak-loading-overlay {
+    --ak-c-loading-overlay--BackgroundColor: transparent;
 }
 
 [part="locale-select"],
@@ -85,4 +101,117 @@ ak-flow-inspector-button {
             --ak-c-flow-executor__locale-select--Color: inherit !important;
         }
     }
+}
+
+/* 展示信息模块 / 品牌标识：完整认证分栏；已有 iframe 布局保留其独立内容。 */
+.pf-c-login[data-layout="stacked"] {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: "aside main" "aside footer";
+    min-height: 100dvh;
+    background: var(--ak-first-bg);
+    border-radius: 0;
+}
+.pf-c-login[data-layout="stacked"]::before,
+.pf-c-login[data-layout="stacked"]::after {
+    display: none;
+}
+.ak-first-auth-aside {
+    grid-area: aside;
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(32px, 5vw, 72px);
+    background: oklch(21% 0 0);
+    color: #fff;
+    border-radius: 0;
+}
+.ak-first-auth-brand {
+    font: 500 20px/24px var(--ak-first-heading);
+}
+.ak-first-auth-intro {
+    max-width: 440px;
+}
+.ak-first-auth-intro h2 {
+    margin: 0 0 24px;
+    font: 500 clamp(40px, 4.5vw, 64px)/1.04 var(--ak-first-heading);
+    color: #fff;
+}
+.ak-first-auth-intro p {
+    max-width: 34ch;
+    color: rgb(255 255 255 / 72%);
+    font-size: 14px;
+    line-height: 22px;
+}
+.ak-first-auth-signature {
+    color: rgb(255 255 255 / 50%);
+    font: 500 16px/20px var(--ak-first-heading);
+}
+.pf-c-login[data-layout="stacked"] .pf-c-login__main {
+    align-self: center;
+    justify-self: center;
+    width: min(100%, 548px);
+    max-width: 548px;
+    min-width: 0;
+    padding: 64px 44px 24px;
+    border-radius: 0;
+    background: var(--ak-first-bg);
+    box-shadow: none !important;
+    --pf-c-login__main-body--PaddingLeft: 0px;
+    --pf-c-login__main-body--PaddingRight: 0px;
+    --ak-c-login__main-header-PaddingInline: 0px;
+    --pf-c-login__main-footer--PaddingBottom: 0px;
+}
+.pf-c-login[data-layout="stacked"] .pf-c-login__main-header {
+    padding: 0 0 32px;
+}
+.pf-c-login[data-layout="stacked"] .branding-logo {
+    height: 44px;
+    max-width: 200px;
+    object-fit: contain;
+    object-position: left;
+}
+.pf-c-login[data-layout="stacked"] .pf-c-login__footer {
+    color: var(--ak-first-text-3);
+    padding: 24px;
+}
+.pf-c-login[data-layout="stacked"] [part="locale-select"] {
+    inset: 16px 20px auto auto;
+    color: var(--ak-first-text-2);
+    filter: none;
+    --pf-global--Color--100: var(--ak-first-text-2) !important;
+    --ak-c-locale-select--label--Color: var(--ak-first-text-2);
+}
+@media (width <= 860px) {
+    .pf-c-login[data-layout="stacked"] {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "main" "footer";
+    }
+    .ak-first-auth-aside {
+        display: none;
+    }
+    .pf-c-login[data-layout="stacked"] .pf-c-login__main {
+        align-self: start;
+        padding: 80px 24px 24px;
+    }
+}
+
+/* 展示信息模块：原 header 命名网格不能为认证分栏生成隐式第三列。 */
+.pf-c-login[data-layout="stacked"] > .pf-c-login__header {
+    grid-area: auto;
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    pointer-events: none;
+}
+.pf-c-login[data-layout="stacked"] > .pf-c-login__header > * {
+    pointer-events: auto;
+}
+.pf-c-login[data-layout="stacked"] [part="locale-select"] {
+    grid-area: auto;
 }

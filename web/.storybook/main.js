@@ -3,9 +3,11 @@
  * @file Storybook configuration.
  */
 
-import { join } from "node:path";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { compileMarkdown } from "../bundler/mdx-plugin/compile.ts";
 import { copyAssets } from "../scripts/build-assets.ts";
 
 /**
@@ -35,6 +37,37 @@ const config = {
     viteFinal: async (config) => {
         const newConfig = {
             ...config,
+            plugins: [
+                ...(config.plugins ?? []),
+                {
+                    name: "authentik-storybook-docs",
+                    enforce: "pre",
+                    resolveId(source) {
+                        if (source.startsWith("~docs/")) return `\0ak-docs:${source.slice(6)}`;
+                    },
+                    async load(id) {
+                        if (!id.startsWith("\0ak-docs:")) return;
+                        const publicPath = `/${id.slice(9)}`;
+                        const publicDirectory = dirname(publicPath);
+
+                        const source = await readFile(
+                            join(__dirname, "../../website/docs", publicPath),
+                            "utf8",
+                        );
+
+                        const { html: content, frontmatter } = await compileMarkdown(
+                            source,
+                            publicDirectory,
+                        );
+
+                        const data = Buffer.from(
+                            JSON.stringify({ content, frontmatter, publicPath, publicDirectory }),
+                        ).toString("base64");
+
+                        return `export default ${JSON.stringify(`data:application/json;base64,${data}`)}`;
+                    },
+                },
+            ],
             define: {
                 ...config.define,
                 "import.meta.env.AK_BUNDLER": JSON.stringify("storybook"),

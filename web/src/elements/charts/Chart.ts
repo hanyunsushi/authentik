@@ -35,6 +35,9 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 
+// 数字展示：图例使用正文，坐标刻度使用 AWS 场景中的自托管等宽字体。
+Chart.defaults.font.family = '"Inter", "Resource Han Rounded CN", sans-serif';
+Chart.defaults.font.size = 12;
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
@@ -167,6 +170,9 @@ export abstract class AKChart<T> extends AKElement {
         return {
             maintainAspectRatio: false,
             responsive: true,
+            animation: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+                ? false
+                : undefined,
             scales: {
                 x: {
                     type: "timeseries",
@@ -175,6 +181,7 @@ export abstract class AKChart<T> extends AKElement {
                         callback: (tickValue: string | number, index: number, ticks: Tick[]) => {
                             return this.timeTickCallback(tickValue, index, ticks);
                         },
+                        font: { family: '"Courier Prime", monospace' },
                         autoSkip: true,
                         maxTicksLimit: 8,
                     },
@@ -188,6 +195,7 @@ export abstract class AKChart<T> extends AKElement {
                     type: "linear",
                     display: true,
                     stacked: true,
+                    ticks: { font: { family: '"Courier Prime", monospace' } },
                     grid: {
                         color: "rgba(0, 0, 0, 0)",
                     },

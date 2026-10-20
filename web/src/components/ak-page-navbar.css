@@ -187,3 +187,182 @@ h1 {
     flex-direction: row;
     align-items: center !important;
 }
+
+/* 顶栏 / 品牌标识：64px 玻璃表面，与侧栏共享垂直几何。 */
+:host {
+    --ak-c-page-navbar--Height: 64px;
+    display: block;
+    min-width: 0;
+}
+.main-content {
+    height: 64px;
+    min-height: 64px;
+    grid-template-columns: var(--ak-first-shell-sidebar, 264px) auto minmax(0, 1fr) auto;
+    grid-template-areas: "brand toggle primary secondary" "brand toggle description secondary";
+    grid-template-rows: 1fr auto;
+    gap: 0 12px;
+    padding-inline-end: 20px;
+    border-bottom: 1px solid var(--ak-first-border);
+    background: var(--ak-first-glass);
+    backdrop-filter: blur(22px) saturate(1.5);
+    box-shadow: none;
+}
+.brand {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: 64px;
+    padding: 10px 16px;
+    background: transparent;
+    border-inline-end: 1px solid var(--ak-first-border);
+}
+.brand .logo {
+    max-width: 100%;
+}
+.brand img {
+    max-width: 100%;
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
+}
+.items.primary,
+.items.primary.block-sibling {
+    min-width: 0;
+    padding-block: 6px 0;
+    align-self: center;
+}
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font: 650 16px/20px var(--ak-first-body);
+}
+.page-title > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.items.page-description {
+    margin: 0;
+    padding-block: 0 7px;
+    font-size: 12px;
+    line-height: 16px;
+    -webkit-line-clamp: 1;
+}
+.items.secondary {
+    min-width: 0;
+    align-self: center;
+    grid-row: 1 / -1;
+}
+.items .accent-icon {
+    color: var(--ak-first-text-2);
+}
+@media (width <= 768px) {
+    .main-content {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas: "toggle primary secondary" "toggle description secondary";
+        padding-inline: 8px;
+        gap: 0 8px;
+    }
+    .brand {
+        display: none;
+    }
+    .page-title {
+        font-size: 16px;
+        line-height: 20px;
+    }
+    .items.primary {
+        padding-block: 6px 0;
+    }
+    .items.page-description {
+        display: none;
+    }
+}
+
+/* 折叠按钮：桌面使用侧栏底部入口，只有手机保留顶栏抽屉入口。 */
+slot[name="toggle"] {
+    display: none;
+}
+.main-content {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "primary secondary" "description secondary";
+}
+@media (width <= 768px) {
+    slot[name="toggle"] {
+        display: contents;
+    }
+    ::slotted([slot="toggle"]) {
+        height: var(--ak-first-button-height);
+        align-self: center;
+    }
+}
+.items.secondary {
+    padding: 0;
+}
+
+/* 品牌标识：折叠轨道保留原品牌图左侧标识，展开仍显示完整品牌图。 */
+.brand {
+    container-type: inline-size;
+}
+@container (width < 80px) {
+    .logo img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        object-position: left;
+    }
+}
+
+/* 顶栏：品牌在全高侧栏，内容顶栏从正文边界开始，不重复占264px列。 */
+.main-content {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "primary secondary" "description secondary";
+    padding-inline: 20px;
+}
+.brand {
+    display: none;
+}
+@media (width <= 768px) {
+    .main-content {
+        padding-inline: 8px;
+    }
+}
+
+/* 顶栏：明确覆盖PF Content的h1规则，应用标题按16/20、650正文合同显示。 */
+.pf-c-content .page-title {
+    font: 650 16px/20px var(--ak-first-body);
+}
+
+/* 顶栏：描述独占单行并在自身框内省略，不能被旧两行裁切规则叠加。 */
+.items.page-description {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    align-self: start;
+    padding: 0 0 6px;
+}
+.items.page-description p {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font: 400 12px/16px var(--ak-first-body);
+}
+.items.primary.block-sibling {
+    align-self: end;
+    padding: 0;
+}
+@media (width <= 768px) {
+    .main-content {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas: "toggle primary secondary";
+        grid-template-rows: 1fr;
+    }
+    .items.page-description {
+        display: none;
+    }
+    .items.primary.block-sibling {
+        align-self: center;
+    }
+}

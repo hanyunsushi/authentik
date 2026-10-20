@@ -9,8 +9,7 @@ import { type SlottedTemplateResult, type Spread } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
-import { msg } from "@lit/localize";
-import { css, html, nothing, render } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -75,12 +74,6 @@ export class EmptyState extends AKElement implements IEmptyState {
         `,
     ];
 
-    willUpdate() {
-        if (this.defaultLabel && this.querySelector("span:not([slot])") === null) {
-            render(html`<span>${msg("Loading")}</span>`, this);
-        }
-    }
-
     get localAriaLabel() {
         const result = this.querySelector("span:not([slot])");
 
@@ -112,7 +105,7 @@ export class EmptyState extends AKElement implements IEmptyState {
                           ></i>`
                 }
                 ${
-                    hasHeading
+                    hasHeading && !loading
                         ? html` <h1
                               part="heading"
                               class="pf-c-title pf-m-lg"
@@ -123,14 +116,14 @@ export class EmptyState extends AKElement implements IEmptyState {
                         : nothing
                 }
                 ${
-                    this.findSlotted("body")
+                    !loading && this.findSlotted("body")
                         ? html` <div part="body" class="pf-c-empty-state__body">
                               <slot name="body"></slot>
                           </div>`
                         : nothing
                 }
                 ${
-                    this.findSlotted("primary")
+                    !loading && this.findSlotted("primary")
                         ? html` <div part="primary" class="pf-c-empty-state__primary">
                               <slot name="primary"></slot>
                           </div>`

@@ -1,6 +1,8 @@
-# `web/src/styles` — The Authentik Design System
+# `web/src/styles` — authentik styles
 
-The Authentik front-ends design system started with and currently rests on the [Patternfly 4 CSS
+This fork applies the **kreeper first design system** through the [first/ adaptation](first/README.md). PatternFly remains the structural component library. The document layer order adds `design` between `mode` and `brand`; all shared `AKElement` shadow roots receive the adaptation after component styles. The upstream architecture notes below describe the remaining infrastructure.
+
+The authentik front-ends design system started with and currently rests on the [Patternfly 4 CSS
 Library](https://v4-archive.patternfly.org/v4/).
 
 This folder contains:
@@ -118,7 +120,7 @@ a TODO item.
 Declared in `layers.css`, lowest specificity first:
 
 ```css
-@layer reset, vendor, components, theme, mode, brand;
+@layer reset, vendor, components, theme, mode, design, brand;
 ```
 
 - `reset`: The CSS reset. Currently not much used; most of the CSS reset is mashed into Patternfly

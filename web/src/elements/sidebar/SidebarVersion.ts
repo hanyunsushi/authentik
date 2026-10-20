@@ -15,15 +15,35 @@ import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
+    @property({ type: Boolean })
+    compact = false;
     static styles: CSSResult[] = [
         PFNav,
         PFAvatar,
         PFButton,
         css`
+            .version-link {
+                display: block;
+                max-width: 100%;
+                padding: 0;
+                border: 0;
+                background: transparent;
+                color: var(--ak-first-text-3);
+                font: 400 10px/12px var(--ak-first-body);
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+            .version-link:hover {
+                color: var(--ak-first-text);
+                text-decoration: underline;
+            }
+
             :host {
                 display: block;
             }
@@ -45,6 +65,21 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
     render() {
         if (!this.version || !this.licenseSummary) {
             return nothing;
+        }
+
+        // 品牌标识：实际server版本位于品牌区右下，独立入口保留About功能。
+        if (this.compact) {
+            return html`<button
+                class="version-link"
+                type="button"
+                part="trigger"
+                data-testid="sidebar-about"
+                title=${this.version.versionCurrent || ""}
+                @click=${AboutModal.open}
+                aria-label=${msg("Open about dialog")}
+            >
+                ${this.version.versionCurrent || "—"}
+            </button>`;
         }
 
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;

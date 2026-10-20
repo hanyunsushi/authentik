@@ -1,0 +1,817 @@
+/* 展示信息模块：共享规则同时进入文档与每个 AKElement 的 Shadow DOM。 */
+:host {
+    font-family: var(--ak-first-body);
+    color: var(--ak-first-text);
+    font-size: 14px;
+    line-height: 20px;
+    min-inline-size: 0;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* 品牌标识：四种中英字体按角色组合，文字刻度参考 AWS Typography。 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.pf-c-title,
+.pf-c-card__title,
+.pf-c-content :is(h1, h2, h3, h4) {
+    font-family: var(--ak-first-heading);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--ak-first-text);
+    overflow-wrap: anywhere;
+}
+
+h1,
+.pf-c-title.pf-m-2xl {
+    font-size: 24px;
+    line-height: 30px;
+}
+h2,
+.pf-c-title.pf-m-xl {
+    font-size: 20px;
+    line-height: 24px;
+}
+h3,
+.pf-c-card__title {
+    font-size: 18px;
+    line-height: 22px;
+}
+h4 {
+    font-size: 16px;
+    line-height: 20px;
+}
+
+/* 数字展示：只用于真实数值、日期、ID 与代码，不对含数字的整句换字族。 */
+code,
+pre,
+kbd,
+samp,
+.ak-first-numeric,
+.pf-c-description-list__text code {
+    font-family: var(--ak-first-mono);
+    font-variant-numeric: tabular-nums;
+}
+code {
+    font-size: 12px;
+    border-radius: 4px;
+}
+pre {
+    max-inline-size: 100%;
+    overflow: auto;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* 项目超链接 / 文本选择：同色下划线反馈，键盘焦点不被鼠标样式清除。 */
+a {
+    color: var(--ak-first-accent);
+    text-underline-offset: 3px;
+}
+a:hover,
+a:focus-visible {
+    color: var(--ak-first-accent);
+    text-decoration: underline;
+}
+::selection {
+    background: rgb(0 122 255 / 20%);
+    color: inherit;
+}
+:focus-visible {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: 3px;
+}
+
+/* 普通按钮 / 强调按钮：同组 32px/44px；交互仅变色、描边，不产生位移。 */
+.pf-c-button {
+    --pf-c-button--BorderRadius: 8px;
+    --pf-c-button--after--BorderRadius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-block-size: var(--ak-first-button-height);
+    padding: 5px 10px;
+    font: 500 13px/20px var(--ak-first-body);
+    border: 0;
+    border-radius: var(--ak-first-action-radius, 8px);
+    color: var(--ak-first-text-3);
+    background: transparent;
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
+    transform: none;
+    transition:
+        color 200ms ease-in-out,
+        background-color 200ms ease-in-out,
+        box-shadow 200ms ease-in-out;
+    text-decoration: none;
+    white-space: normal;
+}
+.pf-c-button::after {
+    display: none;
+}
+/* 普通按钮：显式覆盖旧 PF 变体，链接式按钮不继承超链接下划线。 */
+.pf-c-button:is(.pf-m-secondary, .pf-m-tertiary, .pf-m-control) {
+    color: var(--ak-first-text-3);
+    background: transparent;
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
+}
+.pf-c-button:is(:hover, :focus-visible, :active):not(
+        :disabled,
+        .pf-m-disabled,
+        [aria-disabled="true"]
+    ) {
+    color: var(--ak-first-text-2);
+    box-shadow: 0 0 0 2px var(--ak-first-border-strong);
+    text-decoration: none;
+}
+.pf-c-button.pf-m-primary,
+.pf-c-button.pf-m-warning {
+    color: #fff;
+    background: var(--ak-first-accent);
+    box-shadow: 0 0 0 1px var(--ak-first-accent);
+}
+.pf-c-button:is(.pf-m-primary, .pf-m-warning):is(:hover, :focus, :active):not(
+        :disabled,
+        .pf-m-disabled,
+        [aria-disabled="true"]
+    ) {
+    color: #fff;
+    background: var(--ak-first-accent-hover);
+    box-shadow: 0 0 0 2px var(--ak-first-accent-hover);
+}
+.pf-c-button:focus-visible {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: 3px;
+}
+a.pf-c-button:not(.pf-m-link):is(:hover, :focus, :active) {
+    text-decoration: none;
+}
+.pf-c-button:is(:disabled, .pf-m-disabled, [aria-disabled="true"]) {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.pf-c-button.pf-m-plain,
+.pf-c-button.pf-m-link {
+    box-shadow: none;
+    color: var(--ak-first-text-2);
+}
+.pf-c-button.pf-m-link {
+    color: var(--ak-first-accent);
+}
+.pf-c-button.pf-m-plain:is(:hover, :focus-visible, :active):not(:disabled, .pf-m-disabled) {
+    background: var(--ak-first-hover);
+    box-shadow: none;
+}
+.pf-c-button.pf-m-link:is(:hover, :focus-visible, :active) {
+    box-shadow: none;
+    text-decoration: underline;
+}
+.pf-c-button.pf-m-plain {
+    min-inline-size: var(--ak-first-button-height);
+}
+
+/* 标准默认弧边按钮 / 高亮弧边按钮：弹窗与认证主动作沿用各自业务流程。 */
+.pf-c-modal-box__footer .pf-c-button,
+.pf-c-login .pf-c-button,
+:host(ak-stage-identification) .pf-c-button,
+:host(ak-stage-password) .pf-c-button,
+.pf-c-button.ak-first-arc {
+    border-radius: 18px;
+}
+
+/* 删除按钮：红字透明底；保留原 disabled、请求与确认语义。 */
+.pf-c-button.pf-m-danger {
+    color: var(--ak-first-danger);
+    background: transparent;
+    border-radius: 18px;
+    box-shadow: none;
+}
+.pf-c-button.pf-m-danger:is(:hover, :focus-visible):not(:disabled, .pf-m-disabled) {
+    color: var(--ak-first-danger);
+    background: color-mix(in srgb, var(--ak-first-text) 9%, transparent);
+    box-shadow: none;
+}
+.pf-c-button.pf-m-danger:active:not(:disabled, .pf-m-disabled) {
+    background: color-mix(in srgb, var(--ak-first-text) 13%, transparent);
+}
+
+/* 填写框：白面、18px 角、2px 蓝色内边界，无扩散阴影。 */
+.pf-c-form-control,
+.pf-c-text-input-group,
+.pf-c-select__toggle,
+.pf-c-dropdown__toggle {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    min-block-size: var(--ak-first-button-height);
+    border: 1px solid var(--ak-first-border-strong);
+    border-radius: 18px;
+    /* 填写框：只替换底色，保留 PF 校验图标的单次绘制、尺寸与位置。 */
+    background-color: var(--ak-first-bg);
+    color: var(--ak-first-text);
+    font: 400 14px/20px var(--ak-first-body);
+    transition:
+        border-color 180ms var(--ak-first-ease),
+        box-shadow 180ms var(--ak-first-ease);
+}
+.pf-c-form-control {
+    /* 填写框：覆盖旧 PF 焦点/校验底线，四边始终1px且内距不跳动。 */
+    --pf-c-form-control--focus--BorderBottomWidth: 1px;
+    --pf-c-form-control--m-expanded--BorderBottomWidth: 1px;
+    --pf-c-form-control--invalid--BorderBottomWidth: 1px;
+    --pf-c-form-control--success--BorderBottomWidth: 1px;
+    --pf-c-form-control--m-warning--BorderBottomWidth: 1px;
+    --pf-c-form-control--focus--PaddingBottom: 5px;
+    --pf-c-form-control--m-expanded--PaddingBottom: 5px;
+    --pf-c-form-control--invalid--PaddingBottom: 5px;
+    --pf-c-form-control--success--PaddingBottom: 5px;
+    --pf-c-form-control--m-warning--PaddingBottom: 5px;
+    padding: 5px 12px;
+    caret-color: var(--ak-first-accent);
+}
+.pf-c-form-control:hover {
+    border-color: var(--ak-first-border-strong);
+}
+.pf-c-form-control:focus {
+    border-color: var(--ak-first-accent);
+    box-shadow: inset 0 0 0 1px var(--ak-first-accent);
+    outline: 0;
+}
+.pf-c-form-control::placeholder {
+    color: var(--ak-first-text-3);
+    font-style: normal;
+}
+.pf-c-form-control:is([aria-invalid="true"], .pf-m-error) {
+    border-color: var(--ak-first-danger);
+}
+/* 填写框 / 区分-状态：为单个校验图标保留文字间距，正常态仍使用12px内距。 */
+.pf-c-form-control:is([aria-invalid="true"], .pf-m-success, .pf-m-warning) {
+    padding-inline-end: 36px;
+}
+.pf-c-form-control:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.pf-c-form__label {
+    color: var(--ak-first-text-2);
+    font-size: 13px;
+    font-weight: 560;
+}
+.pf-c-form__helper-text {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--ak-first-text-3);
+}
+.pf-c-form__helper-text.pf-m-error {
+    color: var(--ak-first-danger-text);
+}
+.pf-c-form {
+    min-inline-size: 0;
+    gap: 20px;
+}
+.pf-c-form__actions,
+.pf-c-action-list,
+.pf-c-toolbar__group {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 选择下拉菜单 / 复制栏：中性焦点与无过渡只读输入，错误反馈独立保留。 */
+select.pf-c-form-control:focus,
+.pf-c-select__toggle:focus,
+.pf-c-dropdown__toggle:focus,
+.pf-c-form-control[readonly]:focus {
+    border-color: var(--ak-first-border-strong);
+    box-shadow: none;
+}
+.pf-c-form-control[readonly] {
+    transition: none;
+    caret-color: transparent;
+}
+.pf-c-input-group {
+    min-inline-size: 0;
+}
+.pf-c-input-group > .pf-c-form-control {
+    flex: 1;
+    inline-size: 0;
+}
+.pf-c-input-group > :first-child:not(:only-child) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+.pf-c-input-group > :last-child:not(:only-child) {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+.pf-c-input-group > .pf-c-button {
+    min-block-size: var(--ak-first-button-height);
+    box-shadow: inset 0 0 0 1px var(--ak-first-border-strong);
+    flex-shrink: 0;
+}
+
+/* 复选框 / 单选框 / 切换开关：保留原生 input 模型与可访问名称。 */
+input:is([type="checkbox"], [type="radio"]) {
+    accent-color: var(--ak-first-accent);
+    inline-size: 16px;
+    block-size: 16px;
+}
+input[type="checkbox"] {
+    border-radius: 4px;
+}
+/* 切换开关：40×23轨道、17px白色滑块、3px内距；保留原生布尔值与禁用语义。 */
+.pf-c-switch {
+    --pf-c-switch__toggle--Width: 40px;
+    --pf-c-switch__toggle--Height: 23px;
+    --pf-c-switch__toggle--before--Width: 17px;
+    --pf-c-switch__toggle--before--Height: 17px;
+    --pf-c-switch__toggle--before--Top: 3px;
+    --pf-c-switch__toggle--before--Left: 3px;
+    --pf-c-switch__input--checked__toggle--before--TranslateX: 17px;
+    --pf-c-switch__toggle--before--BackgroundColor: #fff;
+    --pf-c-switch__toggle--BackgroundColor: rgb(0 0 0 / 14%);
+    --pf-c-switch__input--checked__toggle--BackgroundColor: var(--ak-first-accent);
+    --pf-c-switch__input--focus__toggle--OutlineWidth: 0;
+    --pf-c-switch__toggle--before--BoxShadow: 0 1px 3px rgb(0 0 0 / 16%);
+    --pf-c-switch__toggle--before--Transition: transform 500ms
+        cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--ak-first-button-height);
+}
+.pf-c-switch__toggle {
+    inline-size: 40px;
+    block-size: 23px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    box-shadow: none;
+    transition: background-color 200ms ease-in-out;
+}
+.pf-c-switch .pf-c-switch__toggle::before {
+    inline-size: 17px;
+    block-size: 17px;
+    border-radius: 50%;
+    background: #fff;
+}
+.pf-c-switch__toggle-icon {
+    display: none;
+}
+.pf-c-switch__input:focus-visible ~ .pf-c-switch__toggle {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: 3px;
+}
+.pf-c-switch:active:not(:has(input:disabled)) .pf-c-switch__toggle::before {
+    scale: 0.96;
+}
+.pf-c-switch__input:disabled ~ .pf-c-switch__toggle {
+    opacity: 0.5;
+}
+@media (prefers-reduced-motion: reduce) {
+    .pf-c-switch .pf-c-switch__toggle,
+    .pf-c-switch .pf-c-switch__toggle::before {
+        transition: none;
+        scale: none;
+    }
+}
+
+/* 展示卡片 / 悬浮效果：一级浅灰、二级白；平面常态，交互卡仅增加中性阴影。 */
+.pf-c-card {
+    --pf-c-card--BackgroundColor: var(--ak-first-card);
+    --pf-c-card--BoxShadow: none;
+    --pf-c-card--m-non-selectable-raised--BackgroundColor: var(--ak-first-card);
+    border: 0;
+    border-radius: 18px;
+    background: var(--ak-first-card);
+    color: var(--ak-first-text);
+    box-shadow: none;
+    min-inline-size: 0;
+}
+.pf-c-card .pf-c-card,
+.pf-c-card .ak-first-inset {
+    background: var(--ak-first-bg);
+}
+.pf-c-card:is(.pf-m-hoverable, .pf-m-hoverable-raised, .pf-m-selectable-raised):is(
+        :hover,
+        :focus-within
+    ) {
+    box-shadow: 0 8px 28px rgb(0 0 0 / 8%);
+    transform: none;
+}
+.pf-c-page,
+.pf-c-page__main,
+.pf-c-page__main-section,
+.pf-c-drawer__content,
+.pf-c-drawer__body {
+    min-inline-size: 0;
+    color: var(--ak-first-text);
+    background-color: var(--ak-first-bg);
+}
+.pf-c-page__main-section {
+    padding: 24px;
+}
+
+/* 区分-状态牌 / 区分-信息牌 / 区分-身份牌：统一 6px 几何，颜色继续表达业务语义。 */
+.pf-c-label,
+.pf-c-badge {
+    --ak-first-label-color: var(--ak-first-text-2);
+    --ak-first-label-bg: var(--ak-first-hover);
+    padding: 3px 10px;
+    border: 0;
+    border-radius: 6px;
+    font: 600 13px/18.2px var(--ak-first-body);
+    background: var(--ak-first-label-bg);
+    color: var(--ak-first-label-color);
+    white-space: normal;
+}
+.pf-c-label__content {
+    color: inherit;
+}
+.pf-c-label::before,
+.pf-c-label__content::before {
+    border: 0;
+    border-radius: 6px;
+}
+.pf-c-label.pf-m-green {
+    --ak-first-label-color: var(--ak-first-success-text);
+    --ak-first-label-bg: rgb(52 199 89 / 18%);
+}
+.pf-c-label:is(.pf-m-orange, .pf-m-gold) {
+    --ak-first-label-color: var(--ak-first-warning-text);
+    --ak-first-label-bg: rgb(255 149 0 / 20%);
+}
+.pf-c-label.pf-m-red {
+    --ak-first-label-color: var(--ak-first-danger-text);
+    --ak-first-label-bg: rgb(255 59 48 / 18%);
+}
+.pf-c-label.pf-m-blue {
+    --ak-first-label-color: var(--ak-first-accent);
+    --ak-first-label-bg: rgb(0 122 255 / 18%);
+}
+.pf-c-label.pf-m-purple {
+    --ak-first-label-color: #7d2a9f;
+    --ak-first-label-bg: rgb(175 82 222 / 12%);
+}
+.pf-c-label__icon {
+    color: inherit;
+}
+
+/* 展示信息模块：表格独立横向滚动，正文不以溢出裁切掩盖内容。 */
+.pf-c-table {
+    --pf-c-table--BackgroundColor: var(--ak-first-bg);
+    --pf-c-table--BorderColor: var(--ak-first-border);
+    --pf-c-table--m-striped__tr--BackgroundColor: var(--ak-first-card);
+    color: var(--ak-first-text);
+    font: 400 14px/20px var(--ak-first-body);
+}
+.pf-c-table thead {
+    background: var(--ak-first-card);
+}
+.pf-c-table :is(th, td) {
+    border-color: var(--ak-first-border);
+}
+.pf-c-table th {
+    font-weight: 600;
+}
+.pf-c-table tbody > tr > * {
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
+.pf-c-toolbar {
+    background: var(--ak-first-bg);
+    color: var(--ak-first-text);
+}
+.pf-c-toolbar__content,
+.pf-c-toolbar__content-section {
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.pf-c-table-container,
+.pf-c-table__scroll-outer-wrapper {
+    max-inline-size: 100%;
+    overflow-x: auto;
+}
+
+/* 二级切换路由 / 分页：中性轨道与蓝色活动线，不引入第二套选中面。 */
+.pf-c-tabs {
+    --pf-c-tabs__link--Color: var(--ak-first-text-2);
+    --pf-c-tabs__link--after--BorderColor: var(--ak-first-accent);
+}
+.pf-c-tabs__link {
+    font: 500 13px/20px var(--ak-first-body);
+}
+.pf-c-tabs__list {
+    border-color: var(--ak-first-border);
+}
+.pf-c-pagination {
+    background: transparent;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 悬浮下拉菜单 / 提示信息：16px 菜单，18px 弹窗，选项保持中性反馈。 */
+.pf-c-dropdown__menu,
+.pf-c-select__menu,
+.pf-c-menu {
+    padding: 12px;
+    border: 1px solid var(--ak-first-border);
+    border-radius: 16px;
+    background: var(--ak-first-bg);
+    color: var(--ak-first-text);
+    box-shadow: 0 4px 24px rgb(0 0 0 / 5%);
+    max-inline-size: calc(100vw - 16px);
+    max-block-size: min(70dvh, 480px);
+    overflow: auto;
+}
+.pf-c-dropdown__menu-item,
+.pf-c-select__menu-item {
+    min-block-size: 40px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--ak-first-text);
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.pf-c-dropdown__menu-item:is(:hover, :focus),
+.pf-c-select__menu-item:is(:hover, :focus) {
+    background: var(--ak-first-hover);
+}
+.pf-c-modal-box,
+.ak-c-dialog,
+dialog {
+    max-inline-size: calc(100vw - 32px);
+    border: 1px solid var(--ak-first-border);
+    border-radius: 18px;
+    background: var(--ak-first-bg);
+    color: var(--ak-first-text);
+    box-shadow: var(--ak-first-flyout);
+}
+.pf-c-modal-box .pf-c-card {
+    border: 1px solid var(--ak-first-border);
+}
+.pf-c-alert {
+    --ak-first-alert-color: var(--ak-first-accent);
+    border: 0;
+    border-radius: 18px;
+    box-shadow: none;
+    color: var(--ak-first-text);
+    background: color-mix(in srgb, var(--ak-first-alert-color) 10%, var(--ak-first-bg));
+}
+.pf-c-alert.pf-m-success {
+    --ak-first-alert-color: var(--ak-first-success);
+}
+.pf-c-alert.pf-m-warning {
+    --ak-first-alert-color: var(--ak-first-warning);
+}
+.pf-c-alert.pf-m-danger {
+    --ak-first-alert-color: var(--ak-first-danger);
+}
+.pf-c-alert__icon {
+    color: var(--ak-first-alert-color);
+}
+.pf-c-alert__title {
+    color: var(--ak-first-text);
+}
+.pf-c-empty-state {
+    color: var(--ak-first-text-3);
+    min-inline-size: 0;
+}
+
+/* 响应式 / 组件绘制动画：窄屏自然换行、触摸可达、低动态直接呈现终态。 */
+@media (width <= 768px) {
+    .pf-c-page__main-section {
+        padding: 20px 16px;
+    }
+    .pf-c-toolbar__content {
+        padding-inline: 16px;
+    }
+    .pf-c-form.pf-m-horizontal {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+@media (pointer: coarse) {
+    .pf-c-button,
+    .pf-c-dropdown__menu-item,
+    .pf-c-select__menu-item {
+        min-block-size: 44px;
+    }
+    .pf-c-button.pf-m-plain {
+        min-inline-size: 44px;
+    }
+    .pf-c-check,
+    .pf-c-radio,
+    .pf-c-switch {
+        min-block-size: 44px;
+        align-items: center;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+@media (forced-colors: active) {
+    .pf-c-button,
+    .pf-c-form-control,
+    .pf-c-label {
+        border: 1px solid ButtonText;
+    }
+}
+
+/* 路由切换组件：已有导航模型不变，统一中性文字与蓝色底线。 */
+:host(ak-nav-tabs) .pf-c-nav {
+    background: transparent;
+}
+:host(ak-nav-tabs) .pf-c-nav__link {
+    color: var(--ak-first-text-2);
+    padding: 12px;
+    font: 500 13px/20px var(--ak-first-body);
+}
+:host(ak-nav-tabs) .pf-c-nav__link.pf-m-current {
+    color: var(--ak-first-accent);
+}
+:host(ak-nav-tabs) .pf-c-nav__link::before {
+    border-color: var(--ak-first-accent);
+    border-width: 2px;
+}
+/* 顶栏 / 悬浮菜单按钮：独立触发器为 12px 角，状态仍由原组件管理。 */
+:host(ak-nav-buttons) .pf-c-button,
+:host(ak-user-switcher) .pf-c-button {
+    border-radius: 12px;
+}
+.pf-c-button ak-spinner {
+    --ak-spinner-color: currentColor;
+}
+
+/* 选择下拉菜单：原生 select 使用平台箭头，避免 PF4 背景图平铺。 */
+select.pf-c-form-control {
+    appearance: auto;
+    background-image: none;
+    padding-inline-end: 12px;
+}
+
+/* 选择下拉菜单：中性边线之外保留清晰的键盘焦点，鼠标点击不增加外晕。 */
+select.pf-c-form-control:focus-visible {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: 2px;
+}
+
+/* 普通按钮 / 强调按钮 / 默认弧边按钮 / 高亮弧边按钮：显式语义桥覆盖真实表单、任务和拆分触发器。 */
+.pf-c-button {
+    block-size: var(--ak-first-button-height);
+    padding-block: 0;
+}
+.pf-c-button.ak-first-default-arc,
+.pf-c-button.ak-first-highlight,
+.pf-c-button.pf-m-warning {
+    border-radius: 18px;
+}
+.pf-c-button.ak-first-default-arc {
+    background: transparent;
+    color: var(--ak-first-text-3);
+    box-shadow: inset 0 0 0 1px var(--ak-first-border-strong);
+}
+.pf-c-button.ak-first-default-arc:is(:hover, :focus-visible) {
+    color: var(--ak-first-text-2);
+    box-shadow: inset 0 0 0 2px var(--ak-first-border-strong);
+}
+/* 强调按钮：应用创建的两区共同组成8px蓝色按钮，边界和展开状态保留原下拉事件。 */
+.pf-c-dropdown__toggle.pf-m-split-button {
+    display: inline-flex;
+    align-items: stretch;
+    padding: 0;
+    min-height: var(--ak-first-button-height);
+    height: var(--ak-first-button-height);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px var(--ak-first-border-strong);
+    background: transparent;
+}
+.pf-c-dropdown__toggle.pf-m-split-button::before {
+    border: 0;
+}
+.pf-c-dropdown__toggle.pf-m-split-button.pf-m-primary {
+    background: var(--ak-first-accent);
+    color: #fff;
+    box-shadow: none;
+}
+.pf-c-dropdown__toggle.pf-m-split-button .pf-c-dropdown__toggle-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 10px;
+    margin: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 8px 0 0 8px;
+    color: inherit;
+    font: 500 13px/20px var(--ak-first-body);
+}
+.pf-c-dropdown__toggle.pf-m-split-button .pf-c-dropdown__toggle-button:last-child {
+    width: var(--ak-first-button-height);
+    min-width: var(--ak-first-button-height);
+    padding: 0;
+    border-radius: 0 8px 8px 0;
+    border-inline-start: 0.5px solid rgb(255 255 255 / 35%);
+}
+.pf-c-dropdown__toggle.pf-m-split-button .pf-c-dropdown__toggle-button::after {
+    border: 0;
+}
+.pf-c-dropdown__toggle.pf-m-split-button.pf-m-primary
+    .pf-c-dropdown__toggle-button:is(:hover, :focus-visible, :active) {
+    background: var(--ak-first-accent-hover);
+}
+/* 高亮弧边按钮 / 默认弧边按钮：新旧弹窗动作区及跨Shadow DOM表单提交保持同类几何。 */
+.ak-c-dialog__footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.ak-c-dialog__footer .pf-c-button {
+    border-radius: 18px;
+}
+/* 复制栏：相连按钮固定1px边线，悬浮与焦点不扩圈、不改变位置。 */
+.pf-c-input-group > .pf-c-button:is(:hover, :focus-visible, :active) {
+    box-shadow: inset 0 0 0 1px var(--ak-first-border-strong);
+    background: var(--ak-first-hover);
+}
+
+/* 普通按钮：图标单按钮32px方形，触摸44px，图标不扩大文字轨道。 */
+.pf-c-button.ak-first-icon {
+    width: var(--ak-first-button-height);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* 悬浮下拉菜单：按真实选项内容展开宽度，选项居中；仅视口边界限制长文案。 */
+.pf-c-dropdown__menu {
+    inline-size: max-content;
+    min-inline-size: 100%;
+}
+.pf-c-dropdown__menu-item {
+    inline-size: 100%;
+    text-align: center;
+}
+
+/* 选择下拉菜单：撤掉PF下划线伪元素，边界由中性外框唯一负责。 */
+.pf-c-select__toggle::before,
+.pf-c-dropdown__toggle::before {
+    border: 0;
+    box-shadow: none;
+}
+/* 强调按钮：长文案和块级链接保持真正居中，不继承正文对齐。 */
+.pf-c-button {
+    text-align: center;
+}
+.pf-c-button.pf-m-block {
+    display: flex;
+    width: 100%;
+}
+/* 选择下拉菜单：两区箭头使用10px描边几何，随本区展开状态旋转。 */
+.ak-first-chevron {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 200ms var(--ak-first-ease);
+}
+[aria-expanded="true"] > .ak-first-chevron {
+    transform: translateY(2px) rotate(225deg);
+}
+/* 加载反馈 / 组件绘制动画：页面准备期只展示内容区点阵，子树保持挂载以完成请求。 */
+ak-router-view {
+    position: relative;
+    min-height: calc(100dvh - 64px);
+}
+.ak-route-content[aria-hidden="true"] {
+    visibility: hidden;
+    pointer-events: none;
+}
+.ak-route-content {
+    min-width: 0;
+}
+.ak-route-loader {
+    position: fixed;
+    z-index: 110;
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+}
+[data-route-phase="preparing"] > .ak-route-content {
+    visibility: hidden;
+}

@@ -79,7 +79,7 @@
                 "build-locales"
             ],
             "files": [
-                "src/**/*.{css,jpg,png,ts,js,json}",
+                "src/**/*.{css,jpg,png,ts,tsx,js,json,ttf}",
                 "!src/**/*.stories.ts",
                 "!src/**/*.tests.ts",
                 "!src/locales/*.ts",
@@ -215,6 +215,7 @@
         "esbuild": "catalog:",
         "eslint-plugin-lit": "^2.3.1",
         "eslint-plugin-wc": "^3.1.0",
+        "framer-motion": "14.3.0",
         "fuse.js": "^7.4.2",
         "github-slugger": "^2.0.0",
         "globals": "^17.8.0",
@@ -241,6 +242,8 @@
         "pmtiles": "^4.4.1",
         "pseudolocale": "^2.2.0",
         "rapidoc": "^9.3.8",
+        "react": "19.2.0",
+        "react-dom": "19.2.0",
         "rehype-highlight": "^7.0.2",
         "rehype-parse": "^9.0.1",
         "rehype-stringify": "^10.0.1",

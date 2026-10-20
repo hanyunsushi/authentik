@@ -11,7 +11,7 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
@@ -89,9 +89,9 @@ export class PolicyListPage extends TablePage<Policy> {
                         },
                     )}
                 >
-                    <pf-tooltip position="top" content=${msg("Test")}>
+                    <ak-tooltip position="top" content=${msg("Test")}>
                         <i class="fas fa-vial" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
             </div>`,
         ];

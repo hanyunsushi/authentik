@@ -1,5 +1,5 @@
 import "#components/ak-nav-buttons";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -202,7 +202,8 @@ export class AKPageNavbar
                     <div class="pf-c-page__header-tools-group">
                         <ak-nav-buttons>
                             <a
-                                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                                class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                                data-testid="navbar-user-interface"
                                 href="${globalAK().api.base}if/user/"
                             >
                                 ${msg("User interface")}

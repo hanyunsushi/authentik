@@ -18,7 +18,7 @@ import "#admin/property-mappings/ak-property-mapping-wizard";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
@@ -114,9 +114,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         },
                     )}
                 >
-                    <pf-tooltip position="top" content=${msg("Test")}>
+                    <ak-tooltip position="top" content=${msg("Test")}>
                         <i class="fas fa-vial" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
             </div>`,
         ];

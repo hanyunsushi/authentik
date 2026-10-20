@@ -8,3 +8,12 @@
     display: inline-flex;
     align-items: center;
 }
+
+/* 顶栏 / 普通按钮：不同Shadow与slot入口之间也保留8px净距。 */
+.pf-c-page__header-tools,
+.pf-c-page__header-tools-group {
+    gap: 8px;
+}
+.pf-c-page__header-tools-item {
+    margin: 0;
+}

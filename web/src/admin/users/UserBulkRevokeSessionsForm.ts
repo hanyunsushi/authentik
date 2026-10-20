@@ -170,14 +170,14 @@ export class UserBulkRevokeSessionsForm extends ModalButton {
                     .callAction=${async () => {
                         this.open = false;
                     }}
-                    class="pf-m-plain"
+                    class="ak-first-default-arc"
                     >${msg("Cancel")}</ak-spinner-button
                 >
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();
                     }}
-                    class="pf-m-warning"
+                    class="pf-m-danger"
                     >${msg("Revoke Sessions")}</ak-spinner-button
                 >
             </fieldset>`;

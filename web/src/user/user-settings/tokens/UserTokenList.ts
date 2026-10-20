@@ -5,7 +5,7 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/tokens/UserTokenForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
@@ -116,12 +116,12 @@ export class UserTokenList extends Table<Token> {
                     <div class="pf-c-description-list__text">
                         ${
                             item.expiring
-                                ? html`<pf-tooltip
+                                ? html`<ak-tooltip
                                       position="top"
                                       .content=${item.expires?.toLocaleString()}
                                   >
                                       ${formatElapsedTime(item.expires!)}
-                                  </pf-tooltip>`
+                                  </ak-tooltip>`
                                 : msg("-")
                         }
                     </div>
@@ -172,9 +172,9 @@ export class UserTokenList extends Table<Token> {
                     >
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <ak-tooltip position="top" content=${msg("Edit")}>
                             <i aria-hidden="true" class="fas fa-edit"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${IconTokenCopyButton(item)}

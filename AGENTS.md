@@ -141,6 +141,16 @@ Consequences:
 
 ## Documentation pointers
 
+### Local fork maintenance
+
+- 本项目全面采用 **kreeper第一设计系统**（`kreeper-first-design-system`），覆盖 Admin、User、Flow 及共享控件。新增/修改 UI 先读取其 `SKILL.md`、`references/foundations.md`、`semantics.md`、`maintenance.md` 与受影响专页。保留 Lit、PatternFly 结构与生成 API 契约，不引入 Vue/Naive UI 运行时。源码须维护中文分类注释；未知类型或拟偏离规范先提醒用户，已明确授权的决定不重复询问。桌面/手机、触摸/键盘、减少动态效果均在验证范围内。
+
+- Before working on this fork, read `agent.md` (the local Obsidian project authority) and `.llm-wiki/_index.md`.
+- After meaningful code, configuration, verification, or deployment changes, use `llm-wiki` to update the project authority and the affected Wiki pages.
+- The frontend source locator inventory is rebuilt with `python3 scripts/frontend-index.py`; `.frontend-index/` is generated and ignored. This is a text inventory, not an AST index or proof of runtime behavior.
+- Preserve the existing Lit/PatternFly application behavior and generated API client contracts while applying the first design system. Add stable `data-testid` attributes to interactive elements when changing them; use `data-design-id` for large visual regions.
+- Structural exploration should use CodeGraph. This fork has a local index; use the Node 22 CLI commands in `.llm-wiki/guides/development.md` when MCP tools are unavailable, and run `sync` after source changes. The default Node 26 runtime is rejected by this CodeGraph installation.
+
 Authoritative contributor docs live under `website/docs/developer-docs/` and are published at <https://docs.goauthentik.io/docs/developer-docs/>:
 
 - `setup/full-dev-environment.mdx` — full backend + frontend dev environment.

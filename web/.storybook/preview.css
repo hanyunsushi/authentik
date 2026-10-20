@@ -74,3 +74,10 @@ html[data-theme="dark"] {
     color: #fff !important;
     white-space: pre-line;
 }
+
+/* 页面滚动条：Storybook 的 unlayered padding reset 不应覆盖产品的桌面槽位。 */
+@media (width > 768px) {
+    body.sb-main-fullscreen.ak-first-scrollable {
+        padding-inline-end: 16px;
+    }
+}

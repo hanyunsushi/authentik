@@ -10,7 +10,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/ak-mdx/ak-mdx";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
@@ -173,9 +173,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                             });
                     }}
                 >
-                    <pf-tooltip position="top" content=${msg("Apply")}>
+                    <ak-tooltip position="top" content=${msg("Apply")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </ak-action-button>
             </div>`,
         ];

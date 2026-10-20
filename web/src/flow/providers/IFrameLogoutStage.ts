@@ -1,3 +1,4 @@
+import "#elements/Spinner";
 import "#flow/components/ak-flow-card";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -33,7 +34,7 @@ interface LogoutStatus {
 function renderStatusIcon(status: LogoutStatusStatus): TemplateResult | typeof nothing {
     switch (status) {
         case LogoutStatusStatus.Pending:
-            return html`<i class="fas fa-spinner pf-c-spinner status-icon status-pending"></i>`;
+            return html`<ak-spinner size="pf-m-sm"></ak-spinner>`;
         case LogoutStatusStatus.Success:
             return html`<i class="fas fa-check-circle status-icon status-success"></i>`;
         case LogoutStatusStatus.Error:
@@ -91,17 +92,6 @@ export class IFrameLogoutStage extends BaseStage<
             }
             .status-error {
                 color: var(--pf-global--danger-color--100);
-            }
-            .pf-c-spinner {
-                animation: spin 1s linear infinite;
-            }
-            @keyframes spin {
-                from {
-                    transform: rotate(0deg);
-                }
-                to {
-                    transform: rotate(360deg);
-                }
             }
         `,
     ];

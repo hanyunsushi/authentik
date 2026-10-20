@@ -1,5 +1,7 @@
 import { formatSpanName, RouterView } from "./RouterView.js";
 
+import { PagePreparationMiddleware, nextPaint } from "#common/page-preparation";
+
 import { getRouterConfig, initRouter, resetRouterConfig } from "#elements/router/core/config";
 import { Route } from "#elements/router/core/Route";
 
@@ -136,6 +138,134 @@ describe("ak-router-view", () => {
         } finally {
             window.removeEventListener("unhandledrejection", onRejection);
         }
+    });
+
+    test("waits for streamed bodies and chained requests before removing the page dot matrix", async () => {
+        const middleware = new PagePreparationMiddleware();
+        const init = {};
+        const context = { url: "/api/test", init, fetch: async () => new Response() };
+        let body!: ReadableStreamDefaultController<Uint8Array>;
+        let first!: Promise<unknown>;
+
+        const response = new Response(
+            new ReadableStream<Uint8Array>({
+                start(controller) {
+                    body = controller;
+                },
+            }),
+        );
+
+        const view = mountView({
+            url: "/if/user/slow",
+            routes: [
+                new Route("/slow", () => {
+                    first = middleware
+                        .pre(context)
+                        .then(() => middleware.post({ ...context, response }));
+
+                    return html`<h1>Prepared content</h1>`;
+                }),
+            ],
+        });
+
+        await expect.poll(() => view.querySelector("h1")?.textContent).toBe("Prepared content");
+        expect(view.dataset.routePhase).toBe("preparing");
+        expect(view.querySelector('[data-testid="route-loader"]')).not.toBeNull();
+        expect(view.querySelector(".ak-route-content")?.getAttribute("aria-hidden")).toBe("true");
+        const second = { ...context, init: {}, url: "/api/chained" };
+        await middleware.pre(second);
+        body.enqueue(new TextEncoder().encode("{}"));
+        body.close();
+        await first;
+        await nextPaint();
+        await nextPaint();
+        expect(view.dataset.routePhase).toBe("preparing");
+        await middleware.onError({ ...second, error: new Error("request failed") });
+        await expect.poll(() => view.dataset.routePhase).toBe("entering");
+        expect(view.querySelector('[data-testid="route-loader"]')).toBeNull();
+
+        await new Promise<void>((resolve) =>
+            view.addEventListener("ak-route-entered", () => resolve(), { once: true }),
+        );
+
+        expect(view.dataset.routePhase).toBe("ready");
+    });
+
+    test("reveals actual block boxes inside an inline shadow page", async () => {
+        if (!customElements.get("test-inline-route-page")) {
+            customElements.define(
+                "test-inline-route-page",
+                class extends HTMLElement {
+                    connectedCallback() {
+                        this.attachShadow({ mode: "open" }).innerHTML =
+                            '<main><section style="height:80px">First module</section><section style="height:80px">Second module</section></main>';
+                    }
+                },
+            );
+        }
+
+        const view = mountView({
+            url: "/if/user/inline",
+            routes: [
+                new Route("/inline", () => html`<test-inline-route-page></test-inline-route-page>`),
+            ],
+        });
+
+        await expect
+            .poll(
+                () =>
+                    view
+                        .querySelector("test-inline-route-page")
+                        ?.shadowRoot?.querySelector("section")
+                        ?.getAnimations().length,
+            )
+            .toBe(1);
+
+        const pageRoot = view.querySelector("test-inline-route-page")!;
+        const sections = pageRoot.shadowRoot!.querySelectorAll("section");
+        expect(getComputedStyle(pageRoot).display).toBe("inline");
+        expect(pageRoot.getAnimations()).toHaveLength(0);
+        expect(sections[0].getAnimations()[0].effect?.getTiming().delay).toBe(50);
+        expect(sections[1].getAnimations()[0].effect?.getTiming().delay).toBe(88);
+        expect(view.querySelector('[data-testid="route-loader"]')).toBeNull();
+
+        await new Promise<void>((resolve) =>
+            view.addEventListener("ak-route-entered", () => resolve(), { once: true }),
+        );
+
+        expect(sections[0].getAnimations()).toHaveLength(0);
+    });
+
+    test("does not reveal an obsolete lazy page after a faster navigation", async () => {
+        let finish!: (value: ReturnType<typeof html>) => void;
+
+        const view = mountView({
+            url: "/if/user/slow",
+            routes: [
+                new Route(
+                    "/slow",
+                    () =>
+                        new Promise((resolve) => {
+                            finish = resolve;
+                        }),
+                ),
+                new Route("/fast", () => html`<h1>Current fast page</h1>`),
+            ],
+        });
+
+        await view.updateComplete;
+        history.replaceState(null, "", "/if/user/fast");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+
+        await new Promise<void>((resolve) =>
+            view.addEventListener("ak-route-entered", () => resolve(), { once: true }),
+        );
+
+        expect(view.dataset.routePhase).toBe("ready");
+        finish(html`<h1>Obsolete slow page</h1>`);
+        await nextPaint();
+        expect(view.textContent).toContain("Current fast page");
+        expect(view.textContent).not.toContain("Obsolete slow page");
     });
 
     test("reads live config through the click-interceptor scope", () => {

@@ -2,6 +2,7 @@ import "#user/LibraryPage/ak-library-impl";
 import { type Application } from "@goauthentik/api";
 
 import { describe, expect, it } from "vitest";
+import { userEvent } from "vitest/browser";
 
 function app(name: string, pk: string): Application {
     return {
@@ -32,6 +33,27 @@ async function mount(apps: Application[]) {
 }
 
 describe("ak-library-impl single-match auto-launch", () => {
+    it("activates a native menu button only once on Enter", async () => {
+        const { element } = await mount([app("alpha", "pk-alpha")]);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        const button = document.createElement("button");
+        button.textContent = "Actions";
+        const menu = document.createElement("div");
+        menu.id = "keyboard-action-menu";
+        menu.popover = "auto";
+        button.setAttribute("popovertarget", menu.id);
+        element.renderRoot.append(button, menu);
+        button.focus();
+        let clicks = 0;
+        button.addEventListener("click", () => clicks++);
+        await userEvent.keyboard("{Enter}");
+        expect(clicks).toBe(1);
+        expect(menu.matches(":popover-open")).toBe(true);
+        await userEvent.keyboard("{Escape}");
+        expect(menu.matches(":popover-open")).toBe(false);
+        expect(element.shadowRoot!.activeElement).toBe(button);
+    });
+
     it("launches the single match when a search is committed from empty", async () => {
         // Two apps so the query has to narrow to one. The search starts empty,
         // which is what makes this the regression case: no row carries

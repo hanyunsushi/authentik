@@ -5,8 +5,54 @@ import { ChallengeTypes, FlowsApi } from "@goauthentik/api";
 import { afterEach, expect, it, vi } from "vitest";
 
 afterEach(() => {
+    document.querySelectorAll("ak-flow-executor").forEach((element) => element.remove());
     document.querySelectorAll("form[data-test-autosubmit]").forEach((form) => form.remove());
     vi.restoreAllMocks();
+});
+
+it("blanks the complete form during a request without losing entered values", async () => {
+    const challenge = {
+        component: "xak-flow-shell",
+        body: '<form><label>Username<input name="username"></label><button>Continue</button></form>',
+    } as ChallengeTypes;
+
+    let finish!: (value: ChallengeTypes) => void;
+
+    vi.spyOn(FlowsApi.prototype, "flowsExecutorSolve").mockImplementation(
+        () =>
+            new Promise((resolve) => {
+                finish = resolve;
+            }),
+    );
+
+    const executor = new FlowExecutor();
+    executor.flowSlug = "";
+    executor.challenge = challenge;
+    document.body.append(executor);
+
+    await vi.waitFor(() => {
+        expect(executor.shadowRoot!.querySelector("main")!.ariaBusy).toBe("false");
+    });
+
+    executor.flowSlug = "test-flow";
+    const content = executor.shadowRoot!.querySelector<HTMLElement>(".ak-flow-content")!;
+    const input = content.querySelector("input")!;
+    input.value = "entered-user";
+    const request = executor.submit({ component: "ak-stage-identification" });
+    await executor.updateComplete;
+    expect(content.inert).toBe(true);
+    expect(getComputedStyle(content).visibility).toBe("hidden");
+    expect(executor.shadowRoot!.querySelectorAll("ak-loading-overlay")).toHaveLength(1);
+    expect(content.querySelector("input")).toBe(input);
+    expect(input.value).toBe("entered-user");
+
+    finish(challenge);
+    await request;
+    await executor.updateComplete;
+    expect(content.inert).toBe(false);
+    expect(getComputedStyle(content).visibility).toBe("visible");
+    expect(executor.shadowRoot!.querySelector("ak-loading-overlay")).toBeNull();
+    expect(input.value).toBe("entered-user");
 });
 
 it("preserves and disables the current stage during autosubmit navigation", async () => {

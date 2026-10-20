@@ -195,12 +195,12 @@ export class UserInfoCard extends AKElement {
                           ${UserImpersonateForm.asInstanceInvoker(user.pk)}
                           aria-label=${msg(str`Impersonate ${displayName}`)}
                       >
-                          <pf-tooltip
+                          <ak-tooltip
                               position="top"
                               content=${msg("Temporarily assume the identity of this user")}
                           >
                               <span>${msg("Impersonate")}</span>
-                          </pf-tooltip>
+                          </ak-tooltip>
                       </button>`
                     : nothing
             }
@@ -269,7 +269,7 @@ export class UserInfoCard extends AKElement {
                     </ul>
                 </div>
                 <button slot="trigger" class="pf-c-button pf-m-warning pf-m-block" type="button">
-                    <pf-tooltip
+                    <ak-tooltip
                         position="top"
                         content=${msg(
                             str`Offboarding scheduled for ${offboarding.scheduledAt.toLocaleString()}`,
@@ -281,7 +281,7 @@ export class UserInfoCard extends AKElement {
                                 id: "offboarding.cancel.trigger.label",
                             })}</span
                         >
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
                 <div slot="modal"></div>
             </ak-forms-confirm>`;

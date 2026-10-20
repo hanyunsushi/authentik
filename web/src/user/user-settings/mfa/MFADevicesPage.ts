@@ -4,7 +4,7 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
@@ -151,9 +151,9 @@ export class MFADevicesPage extends Table<Device> {
                 ${
                     item.extraDescription
                         ? html`
-                              <pf-tooltip position="top" content=${item.externalId || ""}>
+                              <ak-tooltip position="top" content=${item.externalId || ""}>
                                   <small>${item.extraDescription}</small>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           `
                         : nothing
                 } `,
@@ -170,9 +170,9 @@ export class MFADevicesPage extends Table<Device> {
                         slot="trigger"
                         class="pf-c-button pf-m-plain"
                     >
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <ak-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </ak-forms-modal>
             `,

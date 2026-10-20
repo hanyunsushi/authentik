@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import Styles from "./styles.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
@@ -39,9 +39,9 @@ export class Chip extends AKElement {
                                   );
                               }}
                           >
-                              <pf-tooltip position="right" content=${msg("Remove item")}>
+                              <ak-tooltip position="right" content=${msg("Remove item")}>
                                   <i class="fas fa-times" aria-hidden="true"></i>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </button>`
                         : nothing
                 }

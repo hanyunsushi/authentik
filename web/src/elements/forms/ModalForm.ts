@@ -217,7 +217,8 @@ export class ModalForm extends ModalButton {
             return html`<button
                 type="button"
                 @click=${this.submit}
-                class="pf-c-button pf-m-primary"
+                class="pf-c-button pf-m-primary ak-first-highlight"
+                data-testid="form-submit"
                 aria-description=${msg("Submit action")}
             >
                 ${this.submitButtonContent || this.submitSlot}
@@ -225,6 +226,7 @@ export class ModalForm extends ModalButton {
         });
     }
 
+    // 默认弧边按钮 / 高亮弧边按钮：取消与提交尺寸一致，分别保留业务事件。
     protected renderActions(): SlottedTemplateResult {
         return html`<fieldset class="ak-c-fieldset pf-c-modal-box__footer">
             <legend class="sr-only">${msg("Form actions")}</legend>
@@ -232,7 +234,8 @@ export class ModalForm extends ModalButton {
                 type="button"
                 aria-description=${msg("Cancel action")}
                 @click=${this.requestClose}
-                class="pf-c-button pf-m-plain"
+                class="pf-c-button ak-first-default-arc"
+                data-testid="form-cancel"
             >
                 ${this.cancelText}
             </button>

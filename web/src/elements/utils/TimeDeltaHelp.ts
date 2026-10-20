@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
@@ -24,7 +24,7 @@ export class TimeDeltaHelp extends AKElement {
                         : msg(html`(Format: <code>hours=1;minutes=2;seconds=3).</code>`)
                 }
             </span>
-            <pf-tooltip position="top">
+            <ak-tooltip position="top">
                 <i class="pf-icon fa fa-question-circle" aria-hidden="true"></i>
                 <div slot="content">
                     ${msg("The following keywords are supported:")}
@@ -38,7 +38,7 @@ export class TimeDeltaHelp extends AKElement {
                         <li><pre>weeks</pre></li>
                     </ul>
                 </div>
-            </pf-tooltip>
+            </ak-tooltip>
         </div>`;
     }
 }

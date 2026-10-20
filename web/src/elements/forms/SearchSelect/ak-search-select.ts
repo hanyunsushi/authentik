@@ -1,3 +1,4 @@
+import "#elements/Spinner";
 import Styles from "./search-select.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 
@@ -768,7 +769,9 @@ export class SearchSelect<T = unknown>
         }
 
         if (this.loading && !this.objects) {
-            return html`<div class="ak-c-search-select__status">${msg("Loading...")}</div>`;
+            return html`<div class="ak-c-search-select__status">
+                <ak-spinner size="pf-m-sm"></ak-spinner>
+            </div>`;
         }
 
         if (this.objects && !this.listedObjects.length) {

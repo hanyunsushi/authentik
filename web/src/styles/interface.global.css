@@ -38,3 +38,9 @@
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
+
+/* 第一设计系统：文档层与 Shadow DOM 使用同一套视觉合同。 */
+@import "./first/fonts.css" layer(design);
+@import "./first/tokens.css" layer(design);
+@import "./first/components.css" layer(design);
+@import "./first/document.css" layer(design);

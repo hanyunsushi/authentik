@@ -1,5 +1,5 @@
 import "#elements/Spinner";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { ClipboardItemSource, writeToClipboard } from "#common/clipboard";
 import { PFSize } from "#common/enums";
 
@@ -51,8 +51,8 @@ export function IconCopyButton({
         @click=${doCopy}
         aria-label=${buttonLabel}
     >
-        <pf-tooltip position="top" content=${tooltipLabel}>
+        <ak-tooltip position="top" content=${tooltipLabel}>
             <i class="fas fa-copy" aria-hidden="true"></i>
-        </pf-tooltip>
+        </ak-tooltip>
     </button>`;
 }

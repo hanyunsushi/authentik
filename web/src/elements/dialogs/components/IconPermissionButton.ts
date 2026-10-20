@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { modalInvoker } from "#elements/dialogs/directives";
 import type { DialogInit } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
@@ -35,8 +35,8 @@ export function IconPermissionButton(
         class="pf-c-button pf-m-plain"
         ${modalInvoker(ObjectPermissionsPageForm, modalProps, options)}
     >
-        <pf-tooltip position="top" content=${msg("Permissions")}>
+        <ak-tooltip position="top" content=${msg("Permissions")}>
             <i aria-hidden="true" class="fas fa-lock"></i>
-        </pf-tooltip>
+        </ak-tooltip>
     </button>`;
 }

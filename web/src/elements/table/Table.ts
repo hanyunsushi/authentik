@@ -1,3 +1,4 @@
+import "#elements/buttons/RefreshButton";
 import "#elements/ak-progress-bar";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/index";
@@ -980,9 +981,11 @@ export abstract class Table<T extends object, D = T>
 
     protected renderToolbar(): SlottedTemplateResult {
         return html`${this.renderObjectCreate()}
-            <ak-spinner-button .callAction=${this.refreshListener} class="pf-m-secondary">
-                ${msg("Refresh")}</ak-spinner-button
-            >`;
+            <!-- 普通按钮 / 悬浮效果：表格刷新接实际fetch周期，使用标准SVG入口。 -->
+            <ak-refresh-button
+                .callAction=${this.refreshListener}
+                label=${msg("Refresh")}
+            ></ak-refresh-button>`;
     }
 
     protected renderToolbarSelected(): SlottedTemplateResult {
@@ -1190,14 +1193,8 @@ export abstract class Table<T extends object, D = T>
         return guard([this.loading, this.label], () => {
             if (!this.loading) return nothing;
 
-            return html`<ak-progress-bar
-                indeterminate
-                ?inert=${!this.loading}
-                label=${msg(str`Loading ${this.label ?? "table"} data`, {
-                    id: "table-loading-bar-label",
-                    desc: "Label for progress bar shown when table data is loading",
-                })}
-            ></ak-progress-bar>`;
+            // 加载反馈：后续局部刷新使用小点阵，首轮等待由页面准备门控统一承接。
+            return html`<ak-spinner size="pf-m-sm"></ak-spinner>`;
         });
     }
 

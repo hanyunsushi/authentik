@@ -1,3 +1,4 @@
+import { CHART_CATEGORICAL } from "#common/first-design";
 import { actionToLabel } from "#common/labels";
 
 import { AKChart } from "#elements/charts/Chart";
@@ -9,62 +10,10 @@ import { ChartData, ChartDataset } from "chart.js";
 import { msg } from "@lit/localize";
 
 export function actionToColor(action: EventActions): string {
-    switch (action) {
-        case EventActions.AuthorizeApplication:
-            return "#0060c0";
-        case EventActions.ConfigurationError:
-            return "#23511e";
-        case EventActions.EmailSent:
-            return "#009596";
-        case EventActions.FlowExecution:
-            return "#f4c145";
-        case EventActions.ImpersonationEnded:
-            return "#a2d9d9";
-        case EventActions.ImpersonationStarted:
-            return "#a2d9d9";
-        case EventActions.InvitationUsed:
-            return "#8bc1f7";
-        case EventActions.Login:
-            return "#4cb140";
-        case EventActions.LoginFailed:
-            return "#ec7a08";
-        case EventActions.Logout:
-            return "#f9e0a2";
-        case EventActions.ModelCreated:
-            return "#8f4700";
-        case EventActions.ModelDeleted:
-            return "#002f5d";
-        case EventActions.ModelUpdated:
-            return "#bde2b9";
-        case EventActions.PasswordSet:
-            return "#003737";
-        case EventActions.PolicyException:
-            return "#c58c00";
-        case EventActions.PolicyExecution:
-            return "#f4b678";
-        case EventActions.PropertyMappingException:
-            return "#519de9";
-        case EventActions.SecretRotate:
-            return "#38812f";
-        case EventActions.SecretView:
-            return "#73c5c5";
-        case EventActions.SourceLinked:
-            return "#f6d173";
-        case EventActions.SuspiciousRequest:
-            return "#c46100";
-        case EventActions.SystemException:
-            return "#004b95";
-        case EventActions.SystemTaskException:
-            return "#7cc674";
-        case EventActions.SystemTaskExecution:
-            return "#005f60";
-        case EventActions.UpdateAvailable:
-            return "#f0ab00";
-        case EventActions.UserWrite:
-            return "#ef9234";
-    }
+    // 展示信息模块：按事件类型稳定映射，不随过滤/排序重分配，不循环复用颜色。
+    const index = Object.values(EventActions).indexOf(action);
 
-    return "";
+    return CHART_CATEGORICAL[index] ?? "#8e8e93";
 }
 
 export abstract class EventChart extends AKChart<EventVolume[]> {

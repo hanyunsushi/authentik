@@ -3,7 +3,7 @@ import "#admin/events/EventVolumeChart";
 import "#admin/reports/ExportButton";
 import "#components/ak-event-info";
 import "#elements/Tabs";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { aki } from "#common/api/client";
@@ -111,9 +111,9 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href=${toAdminInterface(`events/log/${item.pk}`)}>
-                <pf-tooltip position="top" content=${msg("Show details")}>
+                <ak-tooltip position="top" content=${msg("Show details")}>
                     <i class="fas fa-share-square" aria-hidden="true"></i>
-                </pf-tooltip>
+                </ak-tooltip>
             </a>`,
         ];
     }

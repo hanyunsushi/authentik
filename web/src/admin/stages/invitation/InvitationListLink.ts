@@ -1,6 +1,7 @@
 import "#admin/stages/invitation/InvitationSendEmailForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
+import "#elements/Spinner";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -57,31 +58,33 @@ export class InvitationListLink extends AKElement {
             </dt>
             <dd class="pf-c-description-list__description">
                 <div class="pf-c-description-list__text">
-                    <select
-                        class="pf-c-form-control"
-                        @change=${(ev: Event) => {
-                            const current = (ev.target as HTMLInputElement).value;
-                            this.selectedFlow = current;
-                        }}
-                    >
-                        ${until(
-                            aki(StagesApi)
-                                .stagesInvitationStagesList({
-                                    ordering: "name",
-                                    noFlows: false,
-                                })
-                                .then((stages) => {
-                                    if (
-                                        !this.selectedFlow &&
-                                        stages.results.length > 0 &&
-                                        stages.results[0].flowSet
-                                    ) {
-                                        this.selectedFlow = stages.results[0].flowSet[0].slug;
-                                    }
+                    <!-- 加载反馈：选项准备完成后才显示原生选择器。 -->
+                    ${until(
+                        aki(StagesApi)
+                            .stagesInvitationStagesList({
+                                ordering: "name",
+                                noFlows: false,
+                            })
+                            .then((stages) => {
+                                if (
+                                    !this.selectedFlow &&
+                                    stages.results.length > 0 &&
+                                    stages.results[0].flowSet
+                                ) {
+                                    this.selectedFlow = stages.results[0].flowSet[0].slug;
+                                }
 
-                                    const seenFlowSlugs: string[] = [];
+                                const seenFlowSlugs: string[] = [];
 
-                                    return stages.results.map((stage) => {
+                                return html`<select
+                                    data-testid="invitation-enrollment-flow"
+                                    class="pf-c-form-control"
+                                    @change=${(ev: Event) => {
+                                        const current = (ev.target as HTMLInputElement).value;
+                                        this.selectedFlow = current;
+                                    }}
+                                >
+                                    ${stages.results.map((stage) => {
                                         return stage.flowSet?.map((flow) => {
                                             if (seenFlowSlugs.includes(flow.slug)) {
                                                 return nothing;
@@ -96,11 +99,11 @@ export class InvitationListLink extends AKElement {
                                                 ${flow.slug}
                                             </option>`;
                                         });
-                                    });
-                                }),
-                            html`<option>${msg("Loading...")}</option>`,
-                        )}
-                    </select>
+                                    })}
+                                </select>`;
+                            }),
+                        html`<ak-spinner size="small"></ak-spinner>`,
+                    )}
                 </div>
             </dd>
         </div>`;

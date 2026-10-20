@@ -18,24 +18,23 @@ const buttonStyles = [
     PFButton,
     PFSpinner,
     css`
-        #spinner-button {
-            transition: all var(--pf-c-button--m-progress--TransitionDuration) ease 0s;
-        }
+        /* 普通按钮 / 高亮弧边按钮：加载是原按钮状态；点阵绝对居中，标签保留宽度。 */
         #spinner-button.working {
             pointer-events: none;
         }
-        #spinner-button.pf-m-in-progress.pf-m-plain slot::slotted(*) {
+        #spinner-button.pf-m-in-progress {
+            padding: 0 10px;
+        }
+        #spinner-button.pf-m-in-progress slot {
             visibility: hidden;
         }
-
-        .pf-c-button {
-            &.pf-m-primary.pf-m-success {
-                color: var(--pf-c-button--m-primary--Color) !important;
-            }
-
-            &.pf-m-secondary.pf-m-success {
-                color: var(--pf-c-button--m-secondary--Color) !important;
-            }
+        .pf-c-button__progress {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: inline-flex;
+            margin: 0;
         }
     `,
 ];
@@ -137,7 +136,7 @@ export abstract class BaseTaskButton<R = unknown> extends AKElement {
     }
 
     #spinner = html`<span class="pf-c-button__progress">
-        <ak-spinner size=${PFSize.Medium}></ak-spinner>
+        <ak-spinner size=${PFSize.Small}></ak-spinner>
     </span>`;
 
     public get buttonClasses() {
@@ -154,12 +153,13 @@ export abstract class BaseTaskButton<R = unknown> extends AKElement {
         return html`<button
             id="spinner-button"
             part="spinner-button"
+            data-testid="task-button"
             class="pf-c-button pf-m-progress ${this.buttonClasses}"
             @click=${this.onClick}
             type="button"
             aria-label=${ifPresent(this.label)}
             aria-busy=${this.actionTask.status === TaskStatus.PENDING ? "true" : "false"}
-            ?disabled=${this.disabled}
+            ?disabled=${this.disabled || this.actionTask.status === TaskStatus.PENDING}
         >
             ${this.actionTask.render({
                 pending: () => this.#spinner,

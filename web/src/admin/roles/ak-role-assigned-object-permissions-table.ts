@@ -1,5 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
@@ -80,14 +80,14 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
             html`${
                 item.objectDescription
                     ? html`${item.objectDescription}`
-                    : html`<pf-tooltip
+                    : html`<ak-tooltip
                           position="top"
                           content=${msg(
                               "Role doesn't have view permission so description cannot be retrieved.",
                           )}
                       >
                           <pre>${item.objectPk}</pre>
-                      </pf-tooltip>`
+                      </ak-tooltip>`
             }`,
             html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];

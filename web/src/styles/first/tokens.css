@@ -1,0 +1,111 @@
+/* 展示信息模块：白色页面 → 浅灰一级模块 → 白色二级模块。 */
+:root {
+    --ak-first-bg: #fff;
+    --ak-first-card: #fafafa;
+    --ak-first-hover: #f0f0f0;
+    --ak-first-border: oklch(92% 0 0);
+    --ak-first-border-strong: oklch(87% 0 0);
+    --ak-first-text: oklch(21% 0 0);
+    --ak-first-text-2: oklch(37% 0 0);
+    --ak-first-text-3: oklch(55.6% 0 0);
+    --ak-first-accent: #007aff;
+    --ak-first-accent-hover: #298fff;
+    --ak-first-info-bg: #e9f3ff;
+    --ak-first-success: #34c759;
+    --ak-first-success-text: #12a652;
+    --ak-first-warning: #ff9500;
+    --ak-first-warning-text: #e37100;
+    --ak-first-danger: #ff3b30;
+    --ak-first-danger-text: #dd3730;
+    --ak-first-inactive: #8e8e93;
+    --ak-first-radius: 18px;
+    --ak-first-button-height: 32px;
+    --ak-first-header-height: 64px;
+    --ak-first-sidebar-width: 264px;
+    --ak-first-body: "Inter", "Resource Han Rounded CN", system-ui, sans-serif;
+    --ak-first-heading: "Fraunces", "Source Han Serif SC", serif;
+    --ak-first-mono: "Courier Prime", "Courier New", monospace;
+    --ak-first-ease: cubic-bezier(0.2, 0.75, 0.2, 1);
+    --ak-first-flyout: 0 4px 16px rgb(0 7 7 / 16%);
+    --ak-first-glass: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 16%) 0%,
+        rgb(255 255 255 / 50%) 42%,
+        rgb(252 252 252 / 93%) 100%
+    );
+
+    /* 品牌标识：映射已有 authentik / PatternFly 字体与颜色消费契约。 */
+    --ak-generic-sans-serif: var(--ak-first-body);
+    --ak-generic-body: var(--ak-first-body);
+    --ak-generic-heading: var(--ak-first-heading);
+    --ak-generic-display: var(--ak-first-heading);
+    --ak-generic-monospace: var(--ak-first-mono);
+    --ak-font-family-sans-serif: var(--ak-first-body);
+    --ak-font-family-heading: var(--ak-first-heading);
+    --ak-font-family-monospace: var(--ak-first-mono);
+    --ak-accent: var(--ak-first-accent);
+    --pf-global--FontFamily--sans-serif: var(--ak-first-body);
+    --pf-global--FontFamily--heading--sans-serif: var(--ak-first-heading);
+    --pf-global--FontFamily--monospace: var(--ak-first-mono);
+    --pf-global--FontSize--md: 14px;
+    --pf-global--FontSize--sm: 13px;
+    --pf-global--FontSize--xs: 12px;
+    --pf-global--FontWeight--semi-bold: 600;
+    --pf-global--BorderRadius--sm: 8px;
+    --pf-global--BorderRadius--lg: 18px;
+    --pf-global--BackgroundColor--100: var(--ak-first-bg);
+    --pf-global--BackgroundColor--150: var(--ak-first-card);
+    --pf-global--BackgroundColor--200: var(--ak-first-card);
+    --pf-global--BackgroundColor--light-100: var(--ak-first-bg);
+    --pf-global--BackgroundColor--light-200: var(--ak-first-card);
+    --pf-global--BackgroundColor--light-300: var(--ak-first-hover);
+    --pf-global--Color--100: var(--ak-first-text);
+    --pf-global--Color--200: var(--ak-first-text-2);
+    --pf-global--Color--300: var(--ak-first-text-3);
+    --pf-global--Color--dark-100: var(--ak-first-text);
+    --pf-global--Color--dark-200: var(--ak-first-text-2);
+    --pf-global--BorderColor--100: var(--ak-first-border);
+    --pf-global--BorderColor--200: var(--ak-first-border-strong);
+    --pf-global--BorderColor--300: var(--ak-first-border);
+    --pf-global--primary-color--100: var(--ak-first-accent);
+    --pf-global--primary-color--200: var(--ak-first-accent-hover);
+    --pf-global--primary-color--300: var(--ak-first-accent);
+    --pf-global--primary-color--dark-100: var(--ak-first-accent);
+    --pf-global--primary-color--light-100: var(--ak-first-accent);
+    --pf-global--active-color--100: var(--ak-first-accent);
+    --pf-global--link--Color: var(--ak-first-accent);
+    --pf-global--link--Color--hover: var(--ak-first-accent);
+    --pf-global--link--Color--dark: var(--ak-first-accent);
+    --pf-global--link--Color--light: var(--ak-first-accent);
+    --pf-global--success-color--100: var(--ak-first-success);
+    --pf-global--warning-color--100: var(--ak-first-warning);
+    --pf-global--danger-color--100: var(--ak-first-danger);
+    --pf-global--info-color--100: var(--ak-first-accent);
+    --ak-v2-global--BackgroundColor--100: var(--ak-first-bg);
+    --ak-v2-global--ContentSurface: var(--ak-first-bg);
+    --ak-v2-global--SecondaryContentSurface: var(--ak-first-card);
+    --ak-sidebar--minimum-auto-width: 768px;
+}
+
+/* 展示信息模块：沿用现有主题选择，深色模式使用同一中性层级与交互语义。 */
+html[data-theme="dark"] {
+    --ak-first-bg: #171719;
+    --ak-first-card: #222225;
+    --ak-first-hover: #303034;
+    --ak-first-border: #353538;
+    --ak-first-border-strong: #515155;
+    --ak-first-text: #f5f5f7;
+    --ak-first-text-2: #d1d1d6;
+    --ak-first-text-3: #a1a1a6;
+    --ak-first-info-bg: #182c43;
+    --ak-first-success-text: #62d883;
+    --ak-first-warning-text: #ffb340;
+    --ak-first-danger-text: #ff827a;
+    --ak-first-glass: rgb(23 23 25 / 82%);
+}
+
+@media (pointer: coarse) {
+    :root {
+        --ak-first-button-height: 44px;
+    }
+}

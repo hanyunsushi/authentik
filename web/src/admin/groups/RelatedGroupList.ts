@@ -3,7 +3,7 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { modalInvoker, renderModal } from "#elements/dialogs";
@@ -74,9 +74,9 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     type="button"
                     @click=${this.openUserGroupSelectModal}
                 >
-                    <pf-tooltip position="top" content=${msg("Add group")}>
+                    <ak-tooltip position="top" content=${msg("Add group")}>
                         <i class="fas fa-plus" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
                 <div class="pf-c-form-control">
                     <ak-chip-group
@@ -165,9 +165,9 @@ export class RelatedGroupList extends Table<Group> {
                 class="pf-c-button pf-m-plain"
                 ${modalInvoker(GroupForm, { instancePk: item.pk })}
             >
-                <pf-tooltip position="top" content=${msg("Edit")}>
+                <ak-tooltip position="top" content=${msg("Edit")}>
                     <i class="fas fa-edit" aria-hidden="true"></i>
-                </pf-tooltip>
+                </ak-tooltip>
             </button>`,
         ];
     }

@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import type { NamedEntityElementConstructor } from "#common/api/entities";
 
 import { modalInvoker } from "#elements/dialogs/directives";
@@ -43,6 +43,8 @@ export function ModalInvokerButton<T extends ModalTemplate | NamedEntityElementC
 
     return html`<button
         class="pf-c-button pf-m-${kind}"
+        type="button"
+        data-testid="model-create"
         ${modalInvoker(factory, modalProps, options)}
     >
         ${label}

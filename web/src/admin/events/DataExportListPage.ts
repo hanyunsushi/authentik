@@ -5,7 +5,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/tasks/TaskList";
 import "#components/ak-status-label";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
@@ -92,9 +92,9 @@ export class DataExportListPage extends TablePage<DataExport> {
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">
-                          <pf-tooltip position="top" content=${msg("Download")}>
+                          <ak-tooltip position="top" content=${msg("Download")}>
                               <i class="fas fa-download" aria-hidden="true"></i>
-                          </pf-tooltip>
+                          </ak-tooltip>
                       </a>
                   </div>`
                 : html``,

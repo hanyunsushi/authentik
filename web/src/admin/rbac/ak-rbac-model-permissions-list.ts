@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/Label";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -50,7 +50,7 @@ const Style = css`
         width: 1.75ch;
     }
 
-    li pf-tooltip,
+    li ak-tooltip,
     li span {
         flex: 1 1 auto;
     }
@@ -80,7 +80,7 @@ export class RbacModelPermissionsList extends AKElement {
                 msg("global", { id: "permissions.kind.global" }),
             ]],
             ["object", [
-                msg("Object permission", { id: "permissions.kind.object" }),
+                msg("Object permission", { id: "permissions.kind.object.label" }),
                 msg("object", { id: "permissions.kind.object" }),
             ]]]);
 
@@ -97,7 +97,7 @@ export class RbacModelPermissionsList extends AKElement {
                         kind
                             ? html`
                                   <i class="fas fa-check pf-m-success" aria-hidden="true"></i
-                                  ><pf-tooltip position="top" content=${kind}>${name}</pf-tooltip
+                                  ><ak-tooltip position="top" content=${kind}>${name}</ak-tooltip
                                   ><ak-label compact color="info">${tag}</ak-label>
                               `
                             : html`

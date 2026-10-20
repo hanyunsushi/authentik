@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#components/ak-file-search-input";
 import "#components/ak-radio-input";
 import "#components/ak-slug-input";
@@ -170,10 +170,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 .providers=${this.backchannelProviders}
                 .confirm=${this.#handleConfirmBackchannelProviders}
                 .remover=${this.#makeRemoveBackchannelProviderHandler}
-                .tooltip=${html`<pf-tooltip
+                .tooltip=${html`<ak-tooltip
                     position="top"
                     content=${msg("Add provider")}
-                ></pf-tooltip>`}
+                ></ak-tooltip>`}
             >
             </ak-backchannel-providers-input>
             <ak-radio-input

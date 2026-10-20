@@ -100,3 +100,28 @@ input[name="application-search"] {
         outline: none;
     }
 }
+
+/* 展示信息模块 / 填写框：门户正文按可用空间排列，搜索保留中性完整边线。 */
+:host {
+    padding: clamp(24px, 4vw, 48px);
+    container-type: inline-size;
+}
+.pf-c-page__main {
+    overflow: visible;
+}
+input[name="application-search"] {
+    border: 1px solid var(--ak-first-border-strong);
+    border-radius: 18px;
+    background: var(--ak-first-bg);
+    font-size: 14px;
+}
+.pf-c-page__header search {
+    min-width: 0;
+    max-width: 100%;
+    flex-basis: min(45ch, 100%);
+}
+@container (width < 640px) {
+    .pf-c-page__header search {
+        flex-basis: 100%;
+    }
+}

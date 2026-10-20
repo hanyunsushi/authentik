@@ -10,6 +10,7 @@ import {
     LoggingMiddleware,
 } from "#common/api/middleware";
 import { globalAK } from "#common/global";
+import { PagePreparationMiddleware } from "#common/page-preparation";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
 import { CapabilitiesEnum, Configuration } from "@goauthentik/api";
@@ -37,6 +38,7 @@ function apiConfiguration(): Configuration {
                 new LoggingMiddleware(brand),
                 new SentryMiddleware(),
                 new LocaleMiddleware(locale),
+                new PagePreparationMiddleware(),
                 ...(config.capabilities.includes(CapabilitiesEnum.CanDebug)
                     ? [new DevRepeatedRequestsMiddleware()]
                     : []),

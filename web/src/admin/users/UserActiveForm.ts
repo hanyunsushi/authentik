@@ -114,6 +114,6 @@ export function ToggleUserActivationButton(
             instance: user,
         })}
     >
-        <pf-tooltip position="top" content=${tooltip}>${label}</pf-tooltip>
+        <ak-tooltip position="top" content=${tooltip}>${label}</ak-tooltip>
     </button>`;
 }

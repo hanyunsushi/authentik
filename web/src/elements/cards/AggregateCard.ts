@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
@@ -6,7 +6,7 @@ import { AKElement } from "#elements/Base";
 import Styles from "#elements/cards/AggregateCard.css";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { css, CSSResult, html, nothing } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export type StatusTone = "success" | "warning" | "danger" | "neutral" | "";
@@ -71,32 +71,15 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     public subtext: string | null = null;
 
     /**
-     * If set, a colored banner is shown at the top of the card reflecting this tone.
+     * Semantic status exposed to consumers; the card surface keeps its neutral boundary.
      *
      * @attr
      */
     @property({ type: String, reflect: true })
     public tone: StatusTone = "";
 
-    public static styles: CSSResult[] = [
-        PFCard,
-        PFFlex,
-        Styles,
-        css`
-            :host([tone="success"]) .pf-c-card {
-                border-top: 3px solid var(--pf-global--success-color--100);
-            }
-            :host([tone="warning"]) .pf-c-card {
-                border-top: 3px solid var(--pf-global--warning-color--100);
-            }
-            :host([tone="danger"]) .pf-c-card {
-                border-top: 3px solid var(--pf-global--danger-color--100);
-            }
-            :host([tone="neutral"]) .pf-c-card {
-                border-top: 3px solid var(--pf-global--BorderColor--200);
-            }
-        `,
-    ];
+    // 展示卡片：状态由内容表达，不以彩色边条覆盖中性表面。
+    public static styles: CSSResult[] = [PFCard, PFFlex, Styles];
 
     renderInner(): SlottedTemplateResult {
         if (this.role === "status") {
@@ -132,8 +115,8 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                     ${this.icon ? html`<i aria-hidden="true" class="${this.icon}"></i>` : nothing}
                     ${
                         this.tooltip
-                            ? html`<pf-tooltip position="top" content=${this.tooltip}
-                                  ><span>${this.label || nothing}</span></pf-tooltip
+                            ? html`<ak-tooltip position="top" content=${this.tooltip}
+                                  ><span>${this.label || nothing}</span></ak-tooltip
                               >`
                             : html`<span>${this.label || nothing}</span>`
                     }

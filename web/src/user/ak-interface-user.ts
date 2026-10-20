@@ -190,7 +190,7 @@ class UserInterface extends WithLicenseSummary(
         const backgroundStyles = this.uiConfig.theme.background;
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
-            <div part="page" class="pf-c-page">
+            <div part="page" class="pf-c-page" data-design-id="user-shell">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
                     ${
                         !backgroundStyles
@@ -205,7 +205,11 @@ class UserInterface extends WithLicenseSummary(
                     class="pf-c-page__header"
                 >
                     <div part="brand" class="pf-c-page__header-brand">
-                        <a href=${toUserInterface()} class="pf-c-page__header-brand-link">
+                        <a
+                            href=${toUserInterface()}
+                            class="pf-c-page__header-brand-link"
+                            data-testid="user-home"
+                        >
                             ${ThemedImage({
                                 src: this.brandingLogo,
                                 alt: this.brandingTitle,

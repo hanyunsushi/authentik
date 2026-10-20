@@ -1,5 +1,5 @@
 import "#elements/buttons/Dropdown";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -158,7 +158,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                     id: "user-switcher.toggle.tooltip",
                 })}
             >
-                <pf-tooltip
+                <ak-tooltip
                     part="toggle-tooltip"
                     position="top-end"
                     content=${msg("Open user navigation menu", {
@@ -167,7 +167,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                     aria-hidden="true"
                 >
                     ${this.renderAvatar(this.currentUser)}
-                </pf-tooltip>
+                </ak-tooltip>
             </button>
 
             <menu

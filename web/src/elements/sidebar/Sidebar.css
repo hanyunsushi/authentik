@@ -1,161 +1,358 @@
+/* 侧边栏：264/72px外框由原Motion根驱动，品牌/底栏64px，原生滚动只发生在nav。 */
 :host {
-    z-index: 100;
-    --pf-c-page__sidebar--Transition: 0 !important;
-    --pf-global--BackgroundColor--light-400: #d2d2d2;
-    --pf-global--BackgroundColor--dark-300: #b8bbbe;
+    display: block;
+    z-index: 140;
+    width: 264px;
+    --sidebar-hover: var(--ak-first-hover);
+    --sidebar-selected: var(--ak-first-hover);
+    --sidebar-border: var(--ak-first-border);
+    --sidebar-muted: var(--ak-first-text-3);
+    --accent: var(--ak-first-accent);
+    --ff: var(--ak-first-body);
+    background: var(--ak-first-bg);
 }
-
-.pf-c-nav {
-    --ak-m-scroll-shadows--BorderStyle: none;
-    --ak-c-nav__item--BorderColor: var(--pf-global--BorderColor--100);
-    --pf-c-nav__subnav__link--hover--after--BorderColor: var(--ak-accent);
-
-    --pf-c-nav__link--xl--PaddingLeft: var(--pf-global--spacer--md);
-    --pf-c-nav__link--hover--before--BorderBottomWidth: 1px;
-    --pf-c-nav__link--before--BorderColor: transparent;
-
-    --pf-c-nav__link--PaddingTop: var(--pf-global--spacer--sm);
-    --pf-c-nav__link--PaddingRight: var(--pf-global--spacer--sm);
-    --pf-c-nav__link--PaddingBottom: var(--pf-global--spacer--sm);
-
-    --pf-c-nav__subnav__link--PaddingLeft: var(--pf-global--spacer--md);
-    --pf-c-nav__subnav--PaddingBottom: var(--pf-global--spacer--sm);
-    --pf-c-nav__item--before--BorderColor: transparent;
-    --pf-c-nav__link--after--BorderColor: var(--pf-global--BorderColor--300);
-    --pf-c-nav__link--m-current--Color: var(--ak-accent);
-
+:host([collapsed]) {
+    width: 72px;
+}
+.sidebar-surface {
     display: flex;
     flex-direction: column;
     height: 100%;
-    overflow-y: hidden;
+    overflow: hidden;
 }
-
-.pf-c-nav__section + .pf-c-nav__section {
-    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+/* 品牌标识 / 顶栏：标题16/20、说明12/16，玻璃与正文顶栏同材质。 */
+.brand-header {
+    position: relative;
+    flex: 0 0 64px;
+    height: 64px;
 }
-
-.pf-c-nav__list {
-    flex-grow: 1;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    height: 64px;
+    border-bottom: 1px solid rgb(0 0 0 / 12%);
+    background: var(--ak-first-glass);
+    backdrop-filter: blur(22px) saturate(1.5);
+    color: var(--ak-first-text);
+    text-decoration: none;
+}
+.brand:is(:hover, :focus, :active) {
+    text-decoration: none;
+}
+.brand img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.brand-copy {
+    display: grid;
+    white-space: nowrap;
+    min-width: 0;
+}
+.brand-copy strong {
+    font: 500 16px/20px var(--ak-first-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.brand-copy small {
+    color: var(--ak-first-text-3);
+    font: 400 12px/16px var(--ak-first-body);
+}
+nav {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    padding-block-start: var(--pf-global--spacer--sm);
+    overflow-x: hidden;
+    /* 侧边栏：保留原生菜单滚动，按本项目要求隐藏平台指示器。 */
+    scrollbar-width: none;
+    scrollbar-gutter: auto;
+    padding: 0 0 20px 16px;
+}
+.sidebar-filter {
+    position: relative;
+    margin: 20px 12px 20px 0;
+}
+.sidebar-filter input {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 36px 6px 12px;
+    background: transparent;
+    border: 1px solid var(--ak-first-border-strong);
+    border-radius: 8px;
+    color: var(--ak-first-text);
+    font: 400 14px/20px var(--ak-first-body);
+    outline: 0;
+}
+.sidebar-filter input:focus {
+    border-color: var(--ak-first-accent);
+    box-shadow: inset 0 0 0 1px var(--ak-first-accent);
+}
+.sidebar-filter kbd {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--ak-first-border);
+    border-radius: 4px;
+    text-align: center;
+    color: var(--ak-first-text-3);
+    font: 400 11px/18px var(--ak-first-mono);
+    pointer-events: none;
+}
+#empty {
+    margin: 0;
+    padding: 12px;
+    font: 400 13px/20px var(--ak-first-body);
+    color: var(--ak-first-text-3);
+}
+/* 菜单归类级别：根静态分组无箭头/SVG/线；普通行24+文字+16三列，选中只用中性移动面。 */
+.motion-sidebar-menu {
+    padding-right: 12px;
+}
+.motion-sidebar-menu .n-menu-item-group {
+    margin-bottom: 16px;
+}
+.motion-sidebar-menu .n-menu-item-group-title {
+    padding: 8px 12px;
+    color: var(--ak-first-text-3);
+    font: 600 13px/20px var(--ak-first-body);
+}
+.motion-sidebar-menu .sidebar-row-track {
+    height: 32px;
+}
+.motion-sidebar-menu .n-menu-item-content {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 16px;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ak-first-text-2);
+    font: 500 13px/20px var(--ak-first-body);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.motion-sidebar-menu .n-menu-item-content:focus-visible {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: -2px;
+}
+.motion-sidebar-menu .n-menu-item-content--selected {
+    color: var(--ak-first-text);
+    font-weight: 600;
+}
+.motion-sidebar-menu .n-menu-item-content__icon {
+    position: relative;
+    z-index: 2;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    color: var(--ak-first-text-3);
+}
+.motion-sidebar-menu svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+.motion-sidebar-menu
+    :is(.n-menu-item-content--selected, .n-menu-item-content--child-active)
+    .n-menu-item-content__icon {
+    color: var(--ak-first-accent);
+}
+.motion-sidebar-menu .n-menu-item-content-header {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+    overflow: clip;
+    overflow-clip-margin: 4px;
+    text-overflow: ellipsis;
+}
+.motion-sidebar-menu .enterprise-notice {
+    margin-left: 6px;
+    font-size: 11px;
+    color: var(--ak-first-text-3);
+}
+/* 侧边栏 / 层级线：独立1px线、7px透明空轨，子项悬浮面不与线接触。 */
+.motion-sidebar-menu .n-submenu-children {
+    position: relative;
+    margin: 2px 0 2px 12px;
+    padding-left: 16px;
+}
+.motion-sidebar-menu .n-submenu-children::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--ak-first-border);
+}
+.motion-sidebar-menu .n-submenu-children .sidebar-motion-item {
+    margin-bottom: 1px;
+}
+/* 普通按钮 / 侧边栏：64px固定底区，全宽32px收起入口与18px双箭头轨道。 */
+footer {
+    flex: 0 0 64px;
+    height: 64px;
+    padding: 19px 16px 12px;
+}
+.collapse {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 32px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ak-first-text-3);
+    font: 500 13px/20px var(--ak-first-body);
+    text-align: start;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.collapse:hover {
+    background: var(--ak-first-hover);
+    color: var(--ak-first-text);
+}
+.double-chevron {
+    display: flex;
+    width: 18px;
+    height: 20px;
+    flex-shrink: 0;
+}
+.double-chevron svg {
+    width: 14px;
+    height: 20px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+}
+.double-chevron svg + svg {
+    margin-left: -8px;
+}
+/* 侧边栏：折叠40px命中轨居中于72px外框，静态分组为4px分隔点。 */
+:host([collapsed]) .brand {
+    padding-inline: 16px;
+}
+:host([collapsed]) .brand-copy,
+:host([collapsed]) .sidebar-filter,
+:host([collapsed]) .collapse > span:last-child {
+    display: none;
+}
+:host([collapsed]) nav {
+    padding: 20px 0 20px 16px;
+    scrollbar-gutter: auto;
+}
+:host([collapsed]) .motion-sidebar-menu {
+    width: 40px;
+    padding: 0;
+}
+:host([collapsed]) .n-menu-item-group-title {
+    font-size: 0;
+    justify-content: center;
+    height: 20px;
+    padding: 8px;
+}
+:host([collapsed]) .n-menu-item-group-title > span {
+    display: none;
+}
+:host([collapsed]) .n-menu-item-group-title::after {
+    content: "";
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ak-first-border-strong);
+}
+:host([collapsed]) .n-menu-item-content {
+    width: 40px;
+    height: 40px;
+    padding: 12px;
+    grid-template-columns: 16px;
+}
+:host([collapsed]) .sidebar-row-track,
+:host([collapsed]) .sidebar-leaf,
+:host([collapsed]) .sidebar-hover-container {
+    height: 40px !important;
+}
+:host([collapsed]) .n-menu-item-content__icon {
+    margin: 0;
+}
+:host([collapsed]) .n-menu-item-content-header,
+:host([collapsed]) .sidebar-motion-arrow {
+    display: none;
+}
+:host([collapsed]) footer {
+    padding-inline: 8px;
+}
+:host([collapsed]) .collapse {
+    justify-content: center;
+}
+:host([collapsed]) .double-chevron {
+    transform: rotate(180deg);
+}
+@media (width <= 768px) {
+    :host {
+        width: 300px;
+    }
+    nav {
+        padding-inline: 16px;
+        scrollbar-width: none;
+        scrollbar-gutter: auto;
+    }
+    nav::-webkit-scrollbar {
+        display: none;
+    }
+    .motion-sidebar-menu {
+        padding-right: 0;
+    }
+    .sidebar-filter {
+        margin-right: 0;
+    }
+}
+@media (pointer: coarse) {
+    .motion-sidebar-menu .sidebar-row-track,
+    .motion-sidebar-menu .sidebar-leaf,
+    .motion-sidebar-menu .sidebar-hover-container {
+        height: 44px !important;
+    }
+    .motion-sidebar-menu .n-menu-item-content {
+        min-height: 44px;
+    }
+    footer {
+        padding-block: 10px;
+    }
+    .collapse {
+        height: 44px;
+    }
+}
+ak-sidebar-version {
+    display: block;
+    position: absolute;
+    right: 10px;
+    bottom: 3px;
+    max-width: calc(100% - 82px);
+}
+:host([collapsed]) ak-sidebar-version {
+    display: none;
 }
 
-.pf-c-nav__link.pf-m-current::after,
-.pf-c-nav__link.pf-m-current:hover::after,
-.pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-    --pf-c-nav__link--m-current--after--BorderColor: var(--ak-accent);
+.sidebar-filter input::placeholder {
+    color: var(--ak-first-text-3);
+    font-style: normal;
 }
 
-/* #region Light Theme */
-
-:host(:not([theme="dark"])) {
-    border-right-color: transparent !important;
+nav::-webkit-scrollbar {
+    display: none;
 }
-
-/**
- * We must invert the nav colors for light theme, as PatternFly assumes
- * a dark sidebar on light themes. Only minor changes are needed for the dark mode.
- * @see PatternFly's nav.css for reference:
- */
-:host(:not([theme="dark"])) .pf-c-nav {
-    --pf-c-nav__item--m-current--not--m-expanded__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__link--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--m-tertiary__link--Color: var(--pf-global--Color--light-100);
-    --pf-c-nav--m-tertiary__scroll-button--Color: var(--pf-global--Color--light-100);
-    --pf-c-nav--m-horizontal-subnav__link--hover--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--focus--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--active--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--m-horizontal-subnav__link--m-current--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav__item--m-flyout--hover__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--focus__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--active__link--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav__item--m-flyout--c-menu--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu--BackgroundColor: var(--pf-global--BackgroundColor--light-300);
-    --pf-c-nav--c-menu__list-item--hover--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__list-item--focus-within--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__item--before--BorderBottomColor: var(
-        --pf-global--BackgroundColor--light-300
-    );
-    --pf-c-nav--c-menu__item--m-current--BackgroundColor: var(
-        --pf-global--BackgroundColor--light-400
-    );
-    --pf-c-nav__link--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--focus--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__link--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal__link--Color: var(--pf-global--Color--dark-300);
-    --pf-c-nav--m-horizontal-subnav__link--Color: var(--pf-global--Color--dark-200);
-    --pf-c-nav--m-horizontal-subnav__link--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--focus--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--m-horizontal-subnav__link--m-current--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__section-title--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__scroll-button--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav__item--m-flyout--c-menu__item-description--Color: var(--pf-global--Color--dark-200);
-    --pf-c-nav--c-menu__list-item--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--hover--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--active--Color: var(--pf-global--Color--dark-100);
-    --pf-c-nav--c-menu__list-item--focus-within--Color: var(--pf-global--Color--dark-100);
-}
-
-/* #endregion */
-
-/* #region Dark Theme */
-
-/**
- * @see PatternFly's nav.css for reference:
- */
-:host([theme="dark"]) .pf-c-nav {
-    --pf-c-nav__link--hover--BackgroundColor: var(--pf-global--BackgroundColor--150);
-
-    /**
-     * We override this to maintain a color that fits our original
-     * "partially themed" appearance where the current item is more prominently
-     * highlighted.
-     */
-    --pf-c-nav__link--m-current--BackgroundColor: var(--pf-global--BackgroundColor--400);
-
-    --pf-c-nav__item--item__link--after--Top: -1px;
-    --pf-c-nav__link--focus--BackgroundColor: var(--pf-global--BackgroundColor--300);
-    --pf-c-nav__link--active--BackgroundColor: var(--pf-global--BackgroundColor--300);
-
-    --pf-c-nav--m-tertiary__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav__section-title--Color: var(--pf-global--Color--200);
-    --pf-c-nav__section-title--BorderBottomColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav__scroll-button--before--BorderColor: var(--pf-global--BorderColor--100);
-
-    --pf-c-nav--c-divider--BackgroundColor: var(--pf-global--BorderColor--100);
-}
-
-/* #endregion */

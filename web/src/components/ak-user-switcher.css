@@ -139,3 +139,32 @@
 :host([theme="dark"]) [part="avatar"] {
     background-color: var(--pf-global--BackgroundColor--dark-300);
 }
+
+/* 区分-身份牌 / 悬浮菜单按钮：头像与圆形命中框重合，不产生悬浮光晕。 */
+.pf-c-dropdown__toggle.pf-m-plain[part="toggle"] {
+    width: var(--ak-first-button-height);
+    height: var(--ak-first-button-height);
+    min-height: var(--ak-first-button-height);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: none;
+    transition: none;
+    --ak-c-avatar--BoxShadowColor: transparent;
+}
+.pf-c-dropdown__toggle[part="toggle"]::before,
+.pf-c-dropdown__toggle[part="toggle"]::after {
+    display: none;
+}
+.pf-c-dropdown__toggle[part="toggle"]:hover {
+    background: transparent;
+}
+[part="avatar"] {
+    box-shadow: none;
+    transition: none;
+}
+[part="toggle"] [part="avatar"] {
+    width: 100%;
+    height: 100%;
+}

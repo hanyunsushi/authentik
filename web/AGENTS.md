@@ -55,6 +55,10 @@ npm run format:check   # Oxfmt in check-only mode
 npm run precommit      # Full pre-commit check (format, lint, types, etc.)
 ```
 
+## First design system
+
+The fork applies `kreeper-first-design-system` across Admin, User, Flow, and shared controls. Read the skill and affected references before visual changes. Keep Lit and the generated API client contracts. `src/styles/first/README.md` documents the token, document, Shadow DOM, and branding boundaries; verify actual components at wide and narrow viewports. Do not treat Storybook fixture data as authenticated runtime evidence.
+
 ## Architecture
 
 ### Directory Structure

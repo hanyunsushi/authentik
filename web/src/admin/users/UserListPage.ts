@@ -12,7 +12,7 @@ import "#elements/TreeView";
 import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/table/ak-table-filter-select";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -216,7 +216,12 @@ export class UserListPage extends WithLicenseSummary(
         });
 
         return html`<ak-user-bulk-revoke-sessions .users=${this.selectedElements}>
-                <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-warning">
+                <button
+                    ?disabled=${disabled}
+                    slot="trigger"
+                    class="pf-c-button pf-m-danger"
+                    data-testid="users-revoke-sessions"
+                >
                     ${msg("Revoke Sessions")}
                 </button>
             </ak-user-bulk-revoke-sessions>
@@ -332,12 +337,12 @@ export class UserListPage extends WithLicenseSummary(
                               ${UserImpersonateForm.asInstanceInvoker(item.pk)}
                               aria-label=${msg(str`Impersonate ${displayName}`)}
                           >
-                              <pf-tooltip
+                              <ak-tooltip
                                   position="top"
                                   content=${msg("Temporarily assume the identity of this user")}
                               >
                                   <span>${msg("Impersonate")}</span>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </button>`
                         : null
                 }

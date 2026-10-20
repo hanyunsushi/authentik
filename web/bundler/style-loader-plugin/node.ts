@@ -51,7 +51,7 @@ export function styleLoaderPlugin({
      * that ESBuild cannot resolve automatically.
      */
     const fontResolverArgs: Parameters<PluginBuild["onResolve"]> = [
-        { filter: /\.woff2?$/ },
+        { filter: /\.(woff2?|ttf)$/ },
         async (args) => {
             if (!args.resolveDir.startsWith(patternflyPath)) {
                 return;
@@ -176,7 +176,7 @@ export function styleLoaderPlugin({
                      */
                     supported: { nesting: false },
                     logLevel: "silent",
-                    loader: { ".woff": "empty", ".woff2": "empty" },
+                    loader: { ".ttf": "empty", ".woff": "empty", ".woff2": "empty" },
                     plugins: [
                         {
                             name: "font-resolver",

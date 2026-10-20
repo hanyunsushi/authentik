@@ -1,0 +1,8 @@
+/* 展示信息模块：SSR/Storybook 为宿主保留 pf-c-login；宿主不能再套一次登录网格。 */
+ak-flow-executor.pf-c-login {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 0;
+}

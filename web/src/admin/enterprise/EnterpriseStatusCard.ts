@@ -1,7 +1,7 @@
+import "#elements/Spinner";
 /**
  * @file Display the current usage and license status of Enterprise licenses.
  */
-
 import "#elements/Progress";
 import "#elements/Label";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -100,7 +100,7 @@ export class EnterpriseStatusCard extends AKElement {
 
     public override render() {
         if (!this.userCounts || !this.summary) {
-            return html`${msg("Loading")}`;
+            return html`<ak-spinner></ak-spinner>`;
         }
 
         if (this.summary.status === LicenseSummaryStatusEnum.Unlicensed) {

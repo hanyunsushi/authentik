@@ -789,10 +789,12 @@ export class Form<T = Record<string, unknown>, D = T>
         });
     }
 
+    // 高亮弧边按钮：表单主动作保持原校验/提交生命周期，32/44px同组几何。
     public renderSubmitButton(submitLabel = this.submitLabel): SlottedTemplateResult {
         return html`<button
             type="button"
-            class="pf-c-button pf-m-primary"
+            class="pf-c-button pf-m-primary ak-first-highlight"
+            data-testid="form-submit"
             @click=${this.dispatchSubmit}
             part="submit-button"
             aria-description=${msg("Submit action")}

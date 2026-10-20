@@ -4,6 +4,7 @@
     "compilerOptions": {
         "ignoreDeprecations": "6.0",
         "allowSyntheticDefaultImports": true,
+        "jsx": "react-jsx",
         "experimentalDecorators": true,
         // See https://lit.dev/docs/components/properties/
         "useDefineForClassFields": false,

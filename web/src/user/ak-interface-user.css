@@ -75,3 +75,73 @@
 .pf-c-drawer__panel {
     background-color: transparent !important;
 }
+
+/* 顶栏 / 展示信息模块：门户采用同一白色页面、64px 玻璃顶栏与原生滚动。 */
+.pf-c-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    height: auto;
+    background: var(--ak-first-bg);
+}
+.pf-c-page__header {
+    position: sticky;
+    top: 0;
+    z-index: 130;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 64px;
+    height: 64px;
+    padding: 0 24px;
+    background: var(--ak-first-glass);
+    backdrop-filter: blur(22px) saturate(1.5);
+    border-bottom: 1px solid var(--ak-first-border);
+    box-shadow: none;
+}
+.pf-c-page__header-brand {
+    padding: 0;
+    min-width: 0;
+    flex-shrink: 1;
+}
+.pf-c-brand {
+    height: 36px;
+    min-height: 0;
+    max-width: 180px;
+    object-fit: contain;
+}
+.pf-c-page__drawer {
+    flex: 1;
+    min-width: 0;
+}
+.pf-c-page__main,
+.pf-c-drawer__main,
+.pf-c-drawer__content,
+.pf-c-drawer__body {
+    min-height: 0;
+    max-height: none;
+    height: auto;
+    overflow: visible;
+}
+[part="background-wrapper"] {
+    background: var(--ak-first-bg);
+}
+[part="background-default-slant"] {
+    display: none;
+}
+@media (width <= 768px) {
+    .pf-c-page__header {
+        gap: 8px;
+        padding: 0 16px;
+    }
+    .pf-c-brand {
+        max-width: 120px;
+        height: 30px;
+    }
+    .pf-c-page__header-nav {
+        max-width: 40%;
+        min-width: 0;
+        overflow-x: auto;
+    }
+}

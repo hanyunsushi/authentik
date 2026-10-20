@@ -11,6 +11,8 @@
 
 import "#elements/router/Router404";
 import "#elements/EmptyState";
+import "#elements/Spinner";
+import { PagePreparation, nextPaint, waitForPage } from "#common/page-preparation";
 import { sentryReporting } from "#common/sentry/tracing";
 
 import { AKElement } from "#elements/Base";
@@ -39,7 +41,7 @@ import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { styleMap } from "lit/directives/style-map.js";
 
 /**
  * Build a Sentry span name by joining the interface `prefix` to the matched
@@ -52,6 +54,32 @@ export function formatSpanName(prefix: string, routeName: string | null, pathnam
     if (routeName === null) return pathname;
 
     return joinPath(prefix, routeName);
+}
+
+// 组件绘制动画：穿过Lit的inline/contents宿主与透明布局，裁切真实块盒。
+function revealBlocks(root: HTMLElement | ShadowRoot): HTMLElement[] {
+    return [...root.children].flatMap((node) => {
+        if (!(node instanceof HTMLElement) || node.matches("style, script")) return [];
+        const display = getComputedStyle(node).display;
+
+        if (display === "none") return [];
+
+        if (display === "inline" || display === "contents") {
+            const children = revealBlocks(node.shadowRoot ?? node);
+
+            return children.length ? children : [];
+        }
+
+        if (!node.getClientRects().length) return [];
+
+        if (node.matches("main, .pf-c-page__main-section, .page-rows, .pf-l-grid")) {
+            const children = revealBlocks(node);
+
+            if (children.length) return children;
+        }
+
+        return [node];
+    });
 }
 
 @customElement("ak-router-view")
@@ -79,6 +107,24 @@ export class RouterView extends AKElement {
 
     @state()
     private current: RouteMatch<RouteLike> | null = null;
+
+    @state() private content: SlottedTemplateResult = null;
+    @state() private phase: "preparing" | "entering" | "ready" = "preparing";
+    @state() private loaderPosition = { left: "50%", top: "50%" };
+    #preparation?: PagePreparation;
+    #animations: Animation[] = [];
+    #positionObserver = new ResizeObserver(() => this.#positionLoader());
+    #positionLoader = () => {
+        const rect = this.getBoundingClientRect();
+        const left = Math.max(0, rect.left);
+        const right = Math.min(innerWidth, rect.right);
+        const top = Math.max(64, rect.top);
+
+        this.loaderPosition = {
+            left: `${(left + right) / 2}px`,
+            top: `${(top + innerHeight) / 2}px`,
+        };
+    };
 
     //#endregion
 
@@ -138,6 +184,9 @@ export class RouterView extends AKElement {
         window.addEventListener(RouterNavigateEvent.eventName, this.#onNavigate);
         document.addEventListener("click", this.#clickHandler, { capture: true });
 
+        this.#positionObserver.observe(this);
+        window.addEventListener("resize", this.#positionLoader);
+        window.addEventListener("scroll", this.#positionLoader, { passive: true });
         applyHashRedirect();
         this.#syncRoute();
     }
@@ -147,6 +196,11 @@ export class RouterView extends AKElement {
         window.removeEventListener(RouterNavigateEvent.eventName, this.#onNavigate);
         document.removeEventListener("click", this.#clickHandler, { capture: true });
 
+        this.#preparation?.dispose();
+        this.#animations.forEach((animation) => animation.cancel());
+        this.#positionObserver.disconnect();
+        window.removeEventListener("resize", this.#positionLoader);
+        window.removeEventListener("scroll", this.#positionLoader);
         super.disconnectedCallback();
     }
 
@@ -206,21 +260,87 @@ export class RouterView extends AKElement {
         // (a search-param-only change — a tab, a table filter). Reassigning would
         // hand `until()` a new promise and flash the loading state over a view
         // that is already mounted.
-        if (sameRouteMatch(this.current, next)) return;
+        if (this.#preparation && sameRouteMatch(this.current, next)) return;
 
         this.current = next;
+        void this.#prepare(next);
     };
 
     //#endregion
 
     //#region Rendering
 
-    async #resolve(match: RouteMatch<RouteLike>): Promise<SlottedTemplateResult> {
+    // 加载反馈 / 组件绘制动画：目标DOM挂载但不可见；点阵先撤一帧，再揭示整页内容。
+    async #prepare(match: RouteMatch<RouteLike> | null) {
+        this.#preparation?.dispose();
+        this.#animations.forEach((animation) => animation.cancel());
+        const preparation = new PagePreparation();
+        this.#preparation = preparation;
+        const valid = () => !preparation.controller.signal.aborted && this.isConnected;
+        this.phase = "preparing";
+        this.dataset.routePhase = "preparing";
+        this.setAttribute("aria-busy", "true");
+        this.content = null;
+        this.#positionLoader();
+
         try {
-            return await match.route.resolve(match.parameters);
+            const content = match
+                ? await match.route.resolve(match.parameters)
+                : html`<ak-router-404 url=${window.location.pathname}></ak-router-404>`;
+
+            if (!valid()) return;
+            this.content = content;
         } catch (error) {
-            return this.#renderError(error);
+            if (!valid()) return;
+            this.content = this.#renderError(error);
         }
+
+        await this.updateComplete;
+        const root = this.querySelector<HTMLElement>(".ak-route-content");
+
+        if (!root || !valid()) return;
+        await waitForPage(root, preparation);
+
+        if (!valid()) return;
+        preparation.dispose();
+        this.phase = "entering";
+        this.dataset.routePhase = "entering";
+        // 点阵已移除，内容仍隐藏；下一绘制帧才启动Shift5揭示。
+        await this.updateComplete;
+        await nextPaint();
+
+        if (this.#preparation !== preparation || !this.isConnected) return;
+        root.removeAttribute("aria-hidden");
+        this.removeAttribute("aria-busy");
+
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            const blocks = revealBlocks(root);
+
+            this.#animations = (blocks.length ? blocks : [root]).map((block, index) =>
+                block.animate(
+                    [
+                        { clipPath: "inset(0 0 100% 0)", opacity: 0 },
+                        { clipPath: "inset(0)", opacity: 1 },
+                    ],
+                    {
+                        duration: 1008,
+                        delay: 50 + index * 38,
+                        easing: "cubic-bezier(.16,1,.3,1)",
+                        fill: "both",
+                    },
+                ),
+            );
+
+            await Promise.all(
+                this.#animations.map((animation) => animation.finished.catch(() => {})),
+            );
+        }
+
+        if (this.#preparation !== preparation || !this.isConnected) return;
+        this.#animations.forEach((animation) => animation.cancel());
+        this.phase = "ready";
+        this.dataset.routePhase = "ready";
+        this.dispatchEvent(new CustomEvent("ak-route-entered", { bubbles: true, composed: true }));
     }
 
     #renderError(error: unknown): SlottedTemplateResult {
@@ -263,14 +383,25 @@ export class RouterView extends AKElement {
     }
 
     render(): TemplateResult {
-        if (!this.current) {
-            return html`<ak-router-404 url=${window.location.pathname}></ak-router-404>`;
-        }
-
-        return html`${until(
-            this.#resolve(this.current),
-            html`<ak-empty-state loading></ak-empty-state>`,
-        )}`;
+        return html`<div
+                class="ak-route-content"
+                aria-hidden=${this.phase === "ready" ? "false" : "true"}
+                ?inert=${this.phase === "preparing"}
+                data-design-id="route-content"
+            >
+                ${this.content}
+            </div>
+            ${
+                this.phase === "preparing"
+                    ? html`<div
+                          class="ak-route-loader"
+                          style=${styleMap(this.loaderPosition)}
+                          data-testid="route-loader"
+                      >
+                          <ak-spinner></ak-spinner>
+                      </div>`
+                    : null
+            }`;
     }
 
     //#endregion

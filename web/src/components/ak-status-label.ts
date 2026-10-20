@@ -17,7 +17,7 @@ import { classMap } from "lit/directives/class-map.js";
 const statusToDetails = new Map<P4Disposition, [string, string]>([
     [P4Disposition.Error, ["pf-m-red", "fa-times"]],
     [P4Disposition.Warning, ["pf-m-orange", "fa-exclamation-triangle"]],
-    [P4Disposition.Info, ["pf-m-gray", "fa-info-circle"]],
+    [P4Disposition.Info, ["pf-m-blue", "fa-info-circle"]],
     [P4Disposition.Neutral, ["pf-m-gray", "fa-times"]],
 ]);
 
@@ -82,6 +82,7 @@ export class AkStatusLabel extends AKElement {
             "pf-m-compact": this.compact,
         };
 
+        // 区分-状态牌：文本/图标保持原业务含义，几何由第一设计系统统一。
         return html`<span class="${classMap(classes)}" aria-label=${label} role="status">
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">

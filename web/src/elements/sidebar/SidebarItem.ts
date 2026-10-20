@@ -11,6 +11,7 @@ import {
 } from "#elements/router/core/interfaces";
 import { RouterNavigateEvent } from "#elements/router/core/navigation";
 import { readSidebarExpansion, writeSidebarExpansion } from "#elements/sidebar/expansion";
+import { menuIconForPath, type MenuOption } from "#elements/sidebar/menu-model";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -80,7 +81,10 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     public enterprise = false;
 
     public get childItems(): SidebarItem[] {
-        const children = Array.from(this.querySelectorAll<SidebarItem>("ak-sidebar-item") || []);
+        const children = Array.from(
+            this.querySelectorAll<SidebarItem>(":scope > ak-sidebar-item") || [],
+        );
+
         children.forEach((child) => (child.parent = this));
 
         return children;
@@ -97,7 +101,15 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     }
 
     #toggleExpanded = (): void => {
-        this.expanded = !this.expanded;
+        if (this.closest("ak-sidebar")?.hasAttribute("collapsed")) {
+            this.dispatchEvent(
+                new CustomEvent("ak-sidebar-expand", { bubbles: true, composed: true }),
+            );
+
+            this.expanded = true;
+        } else {
+            this.expanded = !this.expanded;
+        }
 
         if (this.#persistenceKey) {
             writeSidebarExpansion(this.#persistenceKey, this.expanded);
@@ -133,6 +145,11 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
 
     protected override updated(changedProperties: PropertyValues): void {
         super.updated(changedProperties);
+
+        // 侧边栏：Lit 继续提供路由/权限状态，React 独占可见菜单 DOM。
+        this.dispatchEvent(
+            new CustomEvent("ak-sidebar-model-change", { bubbles: true, composed: true }),
+        );
 
         const previousExpanded = changedProperties.get("expanded");
 
@@ -208,7 +225,48 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
+    public toMenuOption(): MenuOption | null {
+        const children = this.childItems
+            .map((item) => item.toMenuOption())
+            .filter((item): item is MenuOption => item !== null);
+
+        if (
+            this.enterprise &&
+            !this.hasEnterpriseLicense &&
+            !this.can(CapabilitiesEnum.IsEnterprise)
+        )
+            return null;
+
+        const enterpriseRequired = this.enterprise && !this.hasEnterpriseLicense;
+
+        return {
+            key: this.key ?? this.path ?? this.label ?? "navigation",
+            label: this.label ?? "",
+            icon: menuIconForPath(this.path ?? this.key ?? ""),
+            href: this.path
+                ? enterpriseRequired
+                    ? toAdminInterface("enterprise/licenses")
+                    : this.isAbsoluteLink
+                      ? this.path
+                      : toCurrentInterface(this.path)
+                : undefined,
+            enterpriseRequired: enterpriseRequired ? msg("Enterprise only") : undefined,
+            children: children.length ? children : undefined,
+            type:
+                !this.path && children.length && !this.parentElement?.closest("ak-sidebar-item")
+                    ? "group"
+                    : undefined,
+        };
+    }
+
+    public toggleFromMenu(): void {
+        this.#toggleExpanded();
+    }
+
     render(): TemplateResult {
+        // 侧边栏：模型节点只保留子树和上下文；可见交互由同一Motion菜单负责。
+        if (this.closest("ak-sidebar")) return html`<slot></slot>`;
+
         return this.renderInner();
     }
 
@@ -231,9 +289,13 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
                 aria-expanded=${this.expanded ? "true" : "false"}
                 aria-controls=${this.#subnavID}
                 type="button"
+                data-testid="sidebar-group-toggle"
+                title=${ifPresent(this.label)}
                 @click=${this.#toggleExpanded}
             >
-                ${this.label}
+                <!-- 菜单归类级别：组名在折叠轨道保留图标与完整可访问名称。 -->
+                <i class="nav-icon fas fa-layer-group" aria-hidden="true"></i>
+                <span class="nav-label">${this.label}</span>
                 <span class="pf-c-nav__toggle">
                     <span class="pf-c-nav__toggle-icon">
                         <i class="fas fa-angle-right" aria-hidden="true"></i>
@@ -271,6 +333,8 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
                 class="pf-c-nav__link"
                 aria-expanded=${this.expanded ? "true" : "false"}
                 type="button"
+                data-testid="sidebar-group-toggle"
+                title=${ifPresent(this.label)}
                 @click=${this.#toggleExpanded}
             >
                 <span class="pf-c-nav__toggle">
@@ -305,13 +369,27 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
+                data-testid="sidebar-navigation-link"
+                title=${ifPresent(this.label)}
+                aria-label=${ifPresent(this.label)}
                 href="${
                     this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")
                 }"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >
-                ${this.label}
+                <svg
+                    class="nav-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    aria-hidden="true"
+                >
+                    <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                    <path d="M8 9h8M8 13h5"></path>
+                </svg>
+                <span class="nav-label">${this.label}</span>
             </a>
         `;
     }

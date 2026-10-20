@@ -1,7 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/EmptyState";
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
@@ -104,9 +104,9 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
                     href=${item.url}
                     rel="noopener noreferrer"
                 >
-                    <pf-tooltip position="top" content=${msg("Open")}>
+                    <ak-tooltip position="top" content=${msg("Open")}>
                         <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </a>
             </div>`,
         ];

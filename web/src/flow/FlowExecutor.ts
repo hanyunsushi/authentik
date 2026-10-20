@@ -53,7 +53,7 @@ import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -107,6 +107,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     @property({ type: Boolean })
     public loading = false;
+
+    // 加载反馈：阶段模块准备完成后再显示内容，旧表单在请求期间保留节点和值。
+    @state()
+    private preparedChallenge: ChallengeTypes | null = null;
 
     @property({ type: String, attribute: "data-layout", useDefault: true, reflect: true })
     public layout: FlowLayoutEnum = FlowExecutor.DefaultLayout;
@@ -390,12 +394,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     //#region Render
 
-    protected renderLoading(): SlottedTemplateResult {
-        return html`<ak-flow-card loading>
-            <span slot="title"> ${globalAK().flow?.title} </span>
-        </ak-flow-card>`;
-    }
-
     protected renderFrameBackground(): SlottedTemplateResult {
         return guard([this.layout, this.challenge], () => {
             if (!this.#layoutUsesSidebarFrames) return;
@@ -434,8 +432,31 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
     protected override render(): SlottedTemplateResult {
         const { challenge, loading } = this;
+        const pending = loading || !challenge?.component || this.preparedChallenge !== challenge;
 
-        return html`<div class="pf-c-login" data-layout=${this.layout} part="login">
+        // 展示信息模块 / 品牌标识：认证外壳常驻，只由既有 Flow engine 替换阶段。
+        return html`<div
+            class="pf-c-login"
+            data-layout=${this.layout}
+            part="login"
+            data-design-id="authentication-shell"
+        >
+            ${
+                this.layout === FlowLayoutEnum.Stacked
+                    ? html`<aside class="ak-first-auth-aside" data-design-id="authentication-aside">
+                          <div class="ak-first-auth-brand">${this.brandingTitle}</div>
+                          <div class="ak-first-auth-intro">
+                              <h2>
+                                  ${msg("One identity. Every application.", { id: "flow.design.introduction.heading" })}
+                              </h2>
+                              <p>
+                                  ${msg("Sign in securely to your applications with authentik.", { id: "flow.design.introduction.description" })}
+                              </p>
+                          </div>
+                          <span class="ak-first-auth-signature">authentik</span>
+                      </aside>`
+                    : nothing
+            }
             <ak-locale-select
                 part="locale-select"
                 exportparts="label:locale-select-label,select:locale-select-select"
@@ -450,22 +471,34 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 class="pf-c-login__main"
                 aria-label=${msg("Authentication form")}
                 part="main"
+                data-design-id="authentication-form"
+                aria-busy=${pending}
             >
-                <div class="pf-c-login__main-header pf-c-brand" part="branding">
-                    ${ThemedImage({
-                        src: this.brandingLogo,
-                        alt: msg("authentik Logo"),
-                        className: "branding-logo",
-                        theme: this.activeTheme,
-                        themedUrls: this.brandingLogoThemedUrls,
+                <!-- 加载反馈：点阵独立呈现；隐藏区保留布局和输入，禁止鼠标及键盘交互。 -->
+                <div class="ak-flow-content" ?inert=${pending} aria-hidden=${pending}>
+                    <div class="pf-c-login__main-header pf-c-brand" part="branding">
+                        ${ThemedImage({
+                            src: this.brandingLogo,
+                            alt: msg("authentik Logo"),
+                            className: "branding-logo",
+                            theme: this.activeTheme,
+                            themedUrls: this.brandingLogoThemedUrls,
+                        })}
+                    </div>
+                    ${guard([challenge], () => {
+                        return challenge?.component
+                            ? until(
+                                  this.renderChallenge(challenge).then((template) => {
+                                      if (this.challenge === challenge)
+                                          this.preparedChallenge = challenge;
+
+                                      return template;
+                                  }),
+                              )
+                            : nothing;
                     })}
                 </div>
-                ${loading && challenge ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing}
-                ${guard([challenge], () => {
-                    return challenge?.component
-                        ? until(this.renderChallenge(challenge))
-                        : this.renderLoading();
-                })}
+                ${pending ? html`<ak-loading-overlay part="loading-overlay" data-testid="flow-loading"></ak-loading-overlay>` : nothing}
             </main>
             ${this.renderFooter()}
         </div>`;

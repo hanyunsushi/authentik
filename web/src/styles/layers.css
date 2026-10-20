@@ -21,4 +21,4 @@
  *   our product.
  */
 
-@layer reset, vendor, components, theme, mode, brand;
+@layer reset, vendor, components, theme, mode, design, brand;

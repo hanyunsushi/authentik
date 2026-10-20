@@ -1,0 +1,9 @@
+# 应用访问：撤销营销看板的IdP访问绑定；应用内部的管理员/只读角色继续由服务端验证。
+version: 1
+metadata:
+  name: Kreeper marketing unrestricted application access
+entries:
+  - model: authentik_policies.policybinding
+    state: absent
+    identifiers:
+      target: !Find [authentik_core.application, [slug, marketing]]

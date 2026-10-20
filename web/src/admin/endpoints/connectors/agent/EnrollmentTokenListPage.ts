@@ -3,7 +3,7 @@ import "#admin/endpoints/connectors/agent/EnrollmentTokenForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#components/ak-status-label";
 import { aki } from "#common/api/client";
 

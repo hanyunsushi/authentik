@@ -80,9 +80,9 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                         type="button"
                         @click=${this.openSelectPermissionsModal}
                     >
-                        <pf-tooltip position="top" content=${msg("Select permissions")}>
+                        <ak-tooltip position="top" content=${msg("Select permissions")}>
                             <i class="fas fa-plus" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
 
                     <div class="pf-c-form-control">

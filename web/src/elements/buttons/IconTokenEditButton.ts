@@ -23,11 +23,11 @@ export function IconTokenEditButton(token?: Token | null): SlottedTemplateResult
         if (token.managed) {
             const label = msg("Managed tokens cannot be edited.");
 
-            return html`<pf-tooltip position="top" content=${label} @click=${stopEventPropagation}
+            return html`<ak-tooltip position="top" content=${label} @click=${stopEventPropagation}
                 ><button type="button" class="pf-c-button pf-m-plain" disabled aria-label=${label}>
                     <i aria-hidden="true" class="fas fa-edit"></i>
                 </button>
-            </pf-tooltip>`;
+            </ak-tooltip>`;
         }
 
         return IconEditButton(TokenForm, token.identifier, token.identifier);

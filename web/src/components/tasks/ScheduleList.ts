@@ -6,7 +6,7 @@ import "#components/tasks/ScheduleForm";
 import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
 import "#elements/table/ak-table-filter-select";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { aki } from "#common/api/client";
@@ -125,18 +125,18 @@ export class ScheduleList extends Table<Schedule> {
                             });
                     }}
                 >
-                    <pf-tooltip position="top" content=${msg("Run scheduled task now")}>
+                    <ak-tooltip position="top" content=${msg("Run scheduled task now")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </ak-action-button>
                 <ak-forms-modal>
                     <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Schedule")}</span>
                     <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
+                        <ak-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];

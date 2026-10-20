@@ -5,7 +5,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
@@ -80,9 +80,9 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
                     type="button"
                     @click=${this.openRolesSelectionModal}
                 >
-                    <pf-tooltip position="top" content=${msg("Add role")}>
+                    <ak-tooltip position="top" content=${msg("Add role")}>
                         <i class="fas fa-plus" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
                 <div class="pf-c-form-control">
                     <ak-chip-group
@@ -244,11 +244,11 @@ export class RelatedRoleTable extends Table<Role> {
             >
             ${
                 inherited
-                    ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
+                    ? html`<ak-tooltip position="top" content=${inheritedTooltip}>
                           <span class="pf-c-label pf-m-outline pf-m-cyan">
                               <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>
                           </span>
-                      </pf-tooltip>`
+                      </ak-tooltip>`
                     : nothing
             }`;
 
@@ -264,9 +264,9 @@ export class RelatedRoleTable extends Table<Role> {
                 type="button"
                 ${RoleForm.asInstanceInvoker(item.pk)}
             >
-                <pf-tooltip position="top" content=${msg("Edit")}>
+                <ak-tooltip position="top" content=${msg("Edit")}>
                     <i class="fas fa-edit" aria-hidden="true"></i>
-                </pf-tooltip>
+                </ak-tooltip>
             </button>`,
         ];
     }

@@ -2,7 +2,7 @@ import "#admin/stages/register";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
@@ -78,9 +78,9 @@ export class StageListPage extends TablePage<Stage> {
             class="pf-c-button pf-m-plain"
             ${modalInvoker(DuoDeviceImportForm, { instancePk: stage.pk })}
         >
-            <pf-tooltip position="top" content=${msg("Import devices")}>
+            <ak-tooltip position="top" content=${msg("Import devices")}>
                 <i class="fas fa-file-import" aria-hidden="true"></i>
-            </pf-tooltip>
+            </ak-tooltip>
         </button>`;
     }
 

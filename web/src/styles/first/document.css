@@ -1,0 +1,42 @@
+/* 展示信息模块：页面零层白底，保留部署方显式设置的背景。 */
+html,
+body {
+    min-height: 100dvh;
+    font-family: var(--ak-first-body);
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: var(--ak-first-text);
+    background-color: var(--ak-global--background-color, var(--ak-first-bg));
+}
+
+body {
+    margin: 0;
+}
+
+/* 页面滚动条：文档是唯一页面滚动区，侧栏/宽表保留各自局部边界。 */
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
+@media (width > 768px) {
+    body.ak-first-scrollable {
+        padding-inline-end: 16px;
+    }
+}
+
+/* 文本选择：浅蓝底，业务状态文字保持自身语义。 */
+::selection {
+    background: rgb(0 122 255 / 20%);
+    color: inherit;
+}
+
+@media (width <= 768px) {
+    body.ak-first-drawer-open {
+        overflow: hidden;
+    }
+}

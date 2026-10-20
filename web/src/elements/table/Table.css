@@ -70,7 +70,7 @@
         margin-inline-start: var(--pf-global--spacer--sm);
     }
 
-    pf-tooltip {
+    ak-tooltip {
         user-select: none;
         cursor: help;
 
@@ -103,7 +103,7 @@ td:has(ak-rbac-object-permission-modal) {
         margin-inline-start: 0.25em;
     }
 
-    pf-tooltip {
+    ak-tooltip {
         color: inherit;
     }
 
@@ -210,8 +210,52 @@ time {
     overflow-y: hidden;
 }
 
+/* 提示信息：空表格按可见宽度居中，创建动作不随宽列被推出手机视口。 */
+.pf-c-table td[role="presentation"] > .pf-l-bullseye {
+    position: sticky;
+    inset-inline-start: 16px;
+    inline-size: calc(100cqi - 32px);
+    max-inline-size: 100%;
+}
+
 .pf-c-table {
     @container (width > 1200px) {
         --pf-c-table--cell--MinWidth: 9em;
+    }
+}
+
+/* 普通按钮 / 填写框 / 展示信息模块：窄屏搜索独占一行，操作组自然换行且全部可达。 */
+@media (width <= 768px) {
+    .pf-c-toolbar {
+        padding-inline: 0;
+        gap: 12px;
+    }
+    .pf-c-toolbar > [part="toolbar-primary"],
+    .pf-c-toolbar > [part="toolbar-secondary"] {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+        padding-inline: 0;
+    }
+    .pf-c-toolbar [part="toolbar-search"] {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+    }
+    .pf-c-toolbar__group {
+        min-width: 0;
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+    [part="table-container"] {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (width <= 768px) {
+    .pf-c-table {
+        min-inline-size: 640px;
     }
 }

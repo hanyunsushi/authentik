@@ -1,15 +1,12 @@
-import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
-
+import "#elements/Spinner";
 import { AKElement } from "#elements/Base";
 
-import { msg } from "@lit/localize";
 import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-loading")
 export class Loading extends AKElement {
     static styles = [
-        PFSpinner,
         css`
             :host {
                 position: absolute;
@@ -36,17 +33,8 @@ export class Loading extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<span class="pf-c-spinner pf-m-xl" aria-hidden="true">
-                <span class="pf-c-spinner__clipper"></span>
-                <span class="pf-c-spinner__lead-ball"></span>
-                <span class="pf-c-spinner__tail-ball"></span>
-            </span>
-            <label for="progress" class="pf-c-title pf-m-lg">${msg("Loading")}</label>
-            <progress
-                class="sr-only"
-                id="progress"
-                aria-valuetext=${msg("Please wait while the content is loading")}
-            ></progress>`;
+        // 加载反馈：服务准备期只使用默认20px点阵，可读名称由组件提供。
+        return html`<ak-spinner></ak-spinner>`;
     }
 }
 

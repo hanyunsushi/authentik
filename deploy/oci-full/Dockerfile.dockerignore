@@ -1,0 +1,22 @@
+htmlcov
+*.env.yml
+**/*.env
+node_modules
+**/node_modules
+dist/**
+build/**
+build_docs/**
+*Dockerfile
+**/*Dockerfile
+blueprints/local
+.git
+.venv
+target
+.codegraph
+.frontend-index
+.llm-wiki
+agent.md
+# esbuild preserves the dependency path inside generated asset names.
+# These are production assets, including paths named node_modules.
+!web/dist/**
+!web/authentik/**

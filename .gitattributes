@@ -7,3 +7,7 @@ website/vendored/* linguist-vendored
 website/docs/** linguist-documentation
 website/integrations/** linguist-documentation
 website/api/** linguist-documentation
+
+# Preserve patch context lines and upstream font license text byte for byte.
+deploy/oci-2026.8.3/frontend.patch -whitespace
+web/src/assets/fonts/first/**/*.txt -whitespace

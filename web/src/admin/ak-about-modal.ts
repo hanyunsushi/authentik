@@ -1,4 +1,4 @@
-import "#elements/Progress";
+import "#elements/Spinner";
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
 
 import { aki } from "#common/api/client";
@@ -24,14 +24,14 @@ import { styleMap } from "lit-html/directives/style-map.js";
 import { until } from "lit-html/directives/until.js";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 type AboutEntry = [label: string, content?: SlottedTemplateResult];
 
 function renderEntry([label, content = null]: AboutEntry): SlottedTemplateResult {
     return html`<dt>${label}</dt>
-        <dd>${content === null ? msg("Loading...") : content}</dd>`;
+        <dd>${content === null ? nothing : content}</dd>`;
 }
 
 @customElement("ak-about-modal")
@@ -147,10 +147,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
             [msg("Python version"), runtime?.pythonVersion],
             [msg("Platform"), runtime?.platform],
             [msg("OpenSSL"), sslLabel],
-            [
-                msg("Kernel"),
-                runtime?.uname ?? html`<div style="min-height: 3em;">${msg("Loading...")}</div>`,
-            ],
+            [msg("Kernel"), runtime?.uname],
         ];
 
         return entries.map(renderEntry);
@@ -165,11 +162,8 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     protected renderLoadingBar(): SlottedTemplateResult {
         return until(
             this.refreshPromise?.then(() => null),
-            html`<ak-progress
-                part="loading"
-                variant="indeterminate"
-                label=${msg("Loading")}
-            ></ak-progress>`,
+            // 加载反馈：关于面板保留一个点阵，不展示文字或进度条。
+            html`<ak-spinner part="loading"></ak-spinner>`,
         );
     }
 

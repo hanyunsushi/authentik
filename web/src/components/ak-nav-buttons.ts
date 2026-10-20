@@ -2,7 +2,7 @@ import "#components/ak-user-switcher";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 import "#elements/buttons/ActionButton/ak-action-button";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -58,7 +58,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                     })}
                     @click=${AKDrawerChangeEvent.dispatchAPIToggle}
                 >
-                    <pf-tooltip
+                    <ak-tooltip
                         position="top"
                         content=${msg("API Drawer")}
                         trigger="api-drawer-toggle-button"
@@ -74,7 +74,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                                 d="M8 9H4a2 2 0 0 0-2 2v12h2v-5h4v5h2V11a2 2 0 0 0-2-2m-4 7v-5h4v5ZM22 11h3v10h-3v2h8v-2h-3V11h3V9h-8zM14 23h-2V9h6a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-4Zm0-7h4v-5h-4Z"
                             />
                         </svg>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
             </div>`;
         });
@@ -103,7 +103,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                     @click=${AKDrawerChangeEvent.dispatchNotificationsToggle}
                 >
                     <div class="pf-c-notification-badge ${notificationCount ? "pf-m-unread" : ""}">
-                        <pf-tooltip
+                        <ak-tooltip
                             position="top"
                             content=${msg("Notification Drawer", {
                                 id: "drawer-invoker-tooltip-notifications",
@@ -111,7 +111,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                             trigger="notification-drawer-toggle-button"
                         >
                             <i class="fas fa-bell" aria-hidden="true"></i>
-                        </pf-tooltip>
+                        </ak-tooltip>
                         <span
                             id="notification-count"
                             class="pf-c-notification-badge__count"
@@ -138,9 +138,9 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 href="${globalAK().api.base}if/user/settings"
                 aria-label=${msg("Settings")}
             >
-                <pf-tooltip position="top" content=${msg("Settings")}>
+                <ak-tooltip position="top" content=${msg("Settings")}>
                     <i class="fas fa-cog" aria-hidden="true"></i>
-                </pf-tooltip>
+                </ak-tooltip>
             </a>
         </div>`;
     }

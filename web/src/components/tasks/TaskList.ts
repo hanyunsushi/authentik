@@ -6,7 +6,7 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/TaskStatus";
 import "#components/tasks/TaskStatusSummary";
 import "#elements/table/ak-table-filter-select";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
@@ -206,9 +206,9 @@ export class TaskList extends Table<Task> {
                               });
                       }}
                   >
-                      <pf-tooltip position="top" content=${msg("Retry task")}>
+                      <ak-tooltip position="top" content=${msg("Retry task")}>
                           <i class="fas fa-redo" aria-hidden="true"></i>
-                      </pf-tooltip>
+                      </ak-tooltip>
                   </ak-action-button>`
                 : nothing,
         ];

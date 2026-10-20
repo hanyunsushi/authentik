@@ -21,3 +21,20 @@
     gap: var(--pf-global--spacer--sm);
     justify-content: center;
 }
+
+/* 展示信息模块 / 响应式：页面列只占可用宽度，表格横向滚动不把工具栏挤出屏幕。 */
+:host {
+    flex-direction: column;
+    min-width: 0;
+}
+.pf-c-page__main-section {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 auto;
+}
+.pf-c-sidebar,
+.pf-c-sidebar__main,
+.pf-c-sidebar__content {
+    min-width: 0;
+    max-width: 100%;
+}

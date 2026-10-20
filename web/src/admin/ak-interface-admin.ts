@@ -134,11 +134,9 @@ export class AdminInterface extends WithLicenseSummary(
         this.sidebarOpen = event.matches;
     };
 
-    // Recompute the sidebar default on every route change. The path-routing
-    // outlet drives navigation through `RouterNavigateEvent` (push/replace) and
-    // `popstate` (back/forward) rather than the legacy `ak-route-change` event.
+    // 侧边栏：桌面保留用户折叠选择；移动叶子导航后关闭抽屉。
     #routeChangeListener = () => {
-        this.sidebarOpen = this.#sidebarMatcher.matches;
+        if (!this.#sidebarMatcher.matches) this.sidebarOpen = false;
         this.pathname = window.location.pathname;
     };
 
@@ -176,7 +174,7 @@ export class AdminInterface extends WithLicenseSummary(
 
         WebsocketClient.connect();
 
-        this.#sidebarMatcher = window.matchMedia("(width > 1210px)");
+        this.#sidebarMatcher = window.matchMedia("(width > 768px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 
@@ -267,6 +265,7 @@ export class AdminInterface extends WithLicenseSummary(
         window.removeEventListener(RouterNavigateEvent.eventName, this.#routeChangeListener);
         window.removeEventListener("popstate", this.#routeChangeListener);
 
+        document.body.classList.remove("ak-first-drawer-open");
         WebsocketClient.close();
     }
 
@@ -278,6 +277,11 @@ export class AdminInterface extends WithLicenseSummary(
 
     public override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
+
+        document.body.classList.toggle(
+            "ak-first-drawer-open",
+            this.sidebarOpen && !this.#sidebarMatcher.matches,
+        );
 
         if (changedProperties.has("session") && isAPIResultReady(this.session)) {
             if (!isGuest(this.session.user) && !canAccessAdmin(this.session.user)) {
@@ -308,7 +312,25 @@ export class AdminInterface extends WithLicenseSummary(
             "pf-m-collapsed": openDrawerCount === 0,
         };
 
-        return html`<div class="pf-c-page">
+        return html`<div
+                class="pf-c-page"
+                data-design-id="admin-shell"
+                @keydown=${(event: KeyboardEvent) => {
+                    if (
+                        event.key === "Escape" &&
+                        this.sidebarOpen &&
+                        !this.#sidebarMatcher.matches
+                    ) {
+                        this.sidebarOpen = false;
+
+                        this.renderRoot
+                            .querySelector<HTMLButtonElement>(
+                                '[data-testid="admin-navigation-toggle"]',
+                            )
+                            ?.focus();
+                    }
+                }}
+            >
                 <ak-page-navbar
                     .section=${findSidebarSectionByRoute(
                         this.navigationEntries,
@@ -317,6 +339,7 @@ export class AdminInterface extends WithLicenseSummary(
                 >
                     <button
                         slot="toggle"
+                        data-testid="admin-navigation-toggle"
                         aria-controls="global-nav"
                         class="pf-c-button pf-m-plain"
                         @click=${this.toggleSidebar}
@@ -333,12 +356,22 @@ export class AdminInterface extends WithLicenseSummary(
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
+                <ak-sidebar
+                    .collapsed=${!this.sidebarOpen}
+                    class="${classMap(sidebarClasses)}"
+                    data-design-id="admin-sidebar"
+                    @ak-sidebar-toggle=${this.toggleSidebar}
+                    @ak-sidebar-expand=${() => {
+                        this.sidebarOpen = true;
+                    }}
                     >${renderSidebarItems(this.navigationEntries, routeNameForPath)}
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">
-                    <div class="pf-c-drawer ${classMap(drawerClasses)}">
+                    <div
+                        class="pf-c-drawer ${classMap(drawerClasses)}"
+                        ?inert=${this.sidebarOpen && !this.#sidebarMatcher.matches}
+                    >
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
@@ -361,13 +394,13 @@ export class AdminInterface extends WithLicenseSummary(
                         </div>
                     </div>
 
-                    <div
+                    <button
+                        type="button"
+                        data-testid="admin-navigation-backdrop"
                         class="pf-c-page__sidebar-backdrop"
                         aria-label=${this.sidebarOpen ? msg("Close sidebar") : msg("Open sidebar")}
                         @click=${this.toggleSidebar}
-                        role="button"
-                        tabindex="0"
-                    ></div>
+                    ></button>
                 </div>
             </div>
             ${this.commandPalette}`;
@@ -383,12 +416,13 @@ export class AdminInterface extends WithLicenseSummary(
                 slot="nav-buttons"
                 @click=${this.commandPalette.showListener}
                 class="pf-c-button pf-m-plain command-palette-trigger"
+                data-testid="admin-command-palette"
                 aria-label=${msg("Open Command Palette", {
                     id: "command-palette-trigger-label",
                     desc: "Label for the button that opens the command palette",
                 })}
             >
-                <pf-tooltip position="top-end">
+                <ak-tooltip position="top-end">
                     <div slot="content" class="ak-tooltip__content--inline">
                         ${msg("Open Command Palette", {
                             id: "command-palette-trigger-tooltip",
@@ -409,7 +443,7 @@ export class AdminInterface extends WithLicenseSummary(
                         />
                         <path d="m10.76 16.18 2.82 2.83-2.82 2.83 1.41 1.41 4.24-4.24-4.24-4.24z" />
                     </svg>
-                </pf-tooltip>
+                </ak-tooltip>
             </button>`;
         });
     }

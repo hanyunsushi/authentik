@@ -4,7 +4,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { aki } from "#common/api/client";
@@ -105,18 +105,18 @@ export class FlowListPage extends TablePage<Flow> {
                         window.open(finalURL, "_blank");
                     }}
                 >
-                    <pf-tooltip position="top" content=${msg("Execute")}>
+                    <ak-tooltip position="top" content=${msg("Execute")}>
                         <i class="fas fa-play" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </button>
                 <a
                     class="pf-c-button pf-m-plain"
                     href=${item.exportUrl}
                     aria-label=${msg(str`Export "${item.name}"`)}
                 >
-                    <pf-tooltip position="top" content=${msg("Export")}>
+                    <ak-tooltip position="top" content=${msg("Export")}>
                         <i class="fas fa-download" aria-hidden="true"></i>
-                    </pf-tooltip>
+                    </ak-tooltip>
                 </a>
             </div>`,
         ];

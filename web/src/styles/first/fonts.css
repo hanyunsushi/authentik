@@ -1,0 +1,72 @@
+/* 品牌标识 / 数字展示：自托管 OFL 字体；标题、正文、数值各自独立。 */
+@font-face {
+    font-family: "Fraunces";
+    src: url("../../assets/fonts/first/brand/Fraunces-Variable.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Source Han Serif SC";
+    src: url("../../assets/fonts/first/source-han/SourceHanSerifCN-VF.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 200 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url("../../assets/fonts/first/inter/Inter-Variable.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Resource Han Rounded CN";
+    src: url("../../assets/fonts/first/brand/ResourceHanRoundedCN-Regular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Resource Han Rounded CN";
+    src: url("../../assets/fonts/first/brand/ResourceHanRoundedCN-Medium.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 500 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Resource Han Rounded CN";
+    src: url("../../assets/fonts/first/brand/ResourceHanRoundedCN-Bold.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 700 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Courier Prime";
+    src: url("../../assets/fonts/first/courier-prime/CourierPrime-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    size-adjust: 125.53%;
+    ascent-override: 77.1728%;
+    descent-override: 19.2154%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: "Courier Prime";
+    src: url("../../assets/fonts/first/courier-prime/CourierPrime-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    size-adjust: 125.53%;
+    ascent-override: 77.1728%;
+    descent-override: 19.2154%;
+    line-gap-override: 0%;
+}

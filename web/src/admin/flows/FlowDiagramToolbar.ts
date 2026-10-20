@@ -1,6 +1,6 @@
 import "#admin/policies/ak-policy-wizard";
 import "#admin/stages/register";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import type { NamedEntityElementConstructor } from "#common/api/entities";
 
 import { IconEditButton, IconEditButtonByTagName } from "#elements/dialogs";

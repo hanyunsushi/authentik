@@ -1,5 +1,5 @@
 import "#elements/EmptyState";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -99,9 +99,9 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                             href=${toAdminInterface(`events/log/${item.event?.pk}`)}
                             aria-label=${msg(str`View details for ${label}`)}
                         >
-                            <pf-tooltip position="top" content=${msg("Show details")}>
+                            <ak-tooltip position="top" content=${msg("Show details")}>
                                 <i class="fas fa-share-square" aria-hidden="true"></i>
-                            </pf-tooltip>
+                            </ak-tooltip>
                         </a>
                     `
                 }
@@ -116,9 +116,9 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
             </div>
             ${this.renderNotificationBody(item)}
             <small class="pf-c-notification-drawer__list-item-timestamp"
-                ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
+                ><ak-tooltip position="top" .content=${item.created?.toLocaleString()}>
                     ${formatElapsedTime(item.created!)}
-                </pf-tooltip></small
+                </ak-tooltip></small
             >
             ${this.renderHyperlink(item)}
         </li>`;

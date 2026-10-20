@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/forms/ConfirmationForm";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
@@ -99,6 +99,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </aside>`;
     }
 
+    // 删除按钮：实体批量删除保留红字透明底及原确认/权限流程。
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
 
@@ -116,7 +117,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 });
             }}
         >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+            <button
+                ?disabled=${disabled}
+                slot="trigger"
+                class="pf-c-button pf-m-danger"
+                data-testid="applications-delete"
+            >
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
@@ -152,9 +158,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                               class="pf-c-button pf-m-plain"
                               aria-label=${msg(str`Open "${item.name}"`)}
                           >
-                              <pf-tooltip position="top" content=${msg("Open")}>
+                              <ak-tooltip position="top" content=${msg("Open")}>
                                   <i class="fas fa-share-square" aria-hidden="true"></i>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </a>`
                         : nothing
                 }
@@ -162,11 +168,13 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
+    // 强调按钮 / 选择下拉菜单：两区共同使用32/44px几何，保留向导与表单入口。
     protected override renderObjectCreate(): TemplateResult {
         return html`<ak-dropdown class="pf-c-dropdown">
             <div class="pf-c-dropdown__toggle pf-m-primary pf-m-split-button pf-m-action">
                 <button
                     class="pf-c-dropdown__toggle-button"
+                    data-testid="application-create"
                     type="button"
                     ${AKApplicationWizard.asModalInvoker()}
                 >
@@ -177,12 +185,13 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     class="pf-c-dropdown__toggle-button"
                     type="button"
                     id="new-application-toggle"
+                    data-testid="application-create-options"
                     aria-haspopup="menu"
                     aria-controls="new-application-menu"
                     tabindex="0"
                     aria-label=${msg("New Application options")}
                 >
-                    <i class="fas fa-caret-down" aria-hidden="true"></i>
+                    <span class="ak-first-chevron" aria-hidden="true"></span>
                 </button>
             </div>
 

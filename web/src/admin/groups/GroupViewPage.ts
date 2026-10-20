@@ -136,7 +136,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                                       )}
                                                                       >${role.name}
                                                                   </a>
-                                                                  <pf-tooltip
+                                                                  <ak-tooltip
                                                                       position="top"
                                                                       content=${msg(
                                                                           "Inherited from parent group",
@@ -151,7 +151,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                                               >${msg("Inherited")}</span
                                                                           >
                                                                       </span>
-                                                                  </pf-tooltip>
+                                                                  </ak-tooltip>
                                                               </li>`;
                                                           },
                                                       )}

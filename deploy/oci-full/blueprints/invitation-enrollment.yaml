@@ -1,0 +1,169 @@
+# 注册流程：登录页入口支持手填原生邀请码；邀请链接自动填入同一凭证。
+version: 1
+metadata:
+  name: Kreeper invitation enrollment
+entries:
+  - model: authentik_core.group
+    id: registered-users
+    identifiers:
+      name: kreeper-registered-users
+    attrs:
+      is_superuser: false
+  - model: authentik_flows.flow
+    id: enrollment
+    identifiers:
+      slug: kreeper-invitation-enrollment
+    attrs:
+      name: 邀请注册
+      title: 创建账户
+      designation: enrollment
+      authentication: require_unauthenticated
+  - model: authentik_stages_prompt.prompt
+    id: invite-token
+    identifiers:
+      name: kreeper-enrollment-token
+    attrs:
+      field_key: token
+      label: 邀请码
+      type: text
+      required: true
+      placeholder: 输入管理员提供的邀请码
+      sub_text: 仅限受邀用户注册；邀请链接会自动填入邀请码。
+      initial_value_expression: true
+      initial_value: |
+        args = http_request.session.get("authentik/flows/get", {})
+        return args.get("itoken", args.get("token", ""))
+      order: 0
+  - model: authentik_stages_prompt.promptstage
+    id: invite-prompt
+    identifiers:
+      name: kreeper-enrollment-invite-prompt
+    attrs:
+      fields: [!KeyOf invite-token]
+  - model: authentik_stages_invitation.invitationstage
+    id: invitation
+    identifiers:
+      name: kreeper-enrollment-invitation
+    attrs:
+      continue_flow_without_invitation: false
+  - model: authentik_stages_prompt.prompt
+    id: username
+    identifiers:
+      name: kreeper-enrollment-username
+    attrs:
+      field_key: username
+      label: 用户名
+      type: username
+      required: true
+      placeholder: 设置用户名
+      order: 0
+  - model: authentik_stages_prompt.prompt
+    id: email
+    identifiers:
+      name: kreeper-enrollment-email
+    attrs:
+      field_key: email
+      label: 邮箱
+      type: email
+      required: true
+      placeholder: 输入邮箱
+      order: 1
+  - model: authentik_stages_prompt.prompt
+    id: name
+    identifiers:
+      name: kreeper-enrollment-name
+    attrs:
+      field_key: name
+      label: 显示名称
+      type: text
+      required: true
+      placeholder: 输入显示名称
+      order: 2
+  - model: authentik_stages_prompt.prompt
+    id: password
+    identifiers:
+      name: kreeper-enrollment-password
+    attrs:
+      field_key: password
+      label: 密码
+      type: password
+      required: true
+      placeholder: 至少12个字符
+      order: 3
+  - model: authentik_stages_prompt.prompt
+    id: password-repeat
+    identifiers:
+      name: kreeper-enrollment-password-repeat
+    attrs:
+      field_key: password_repeat
+      label: 再次输入密码
+      type: password
+      required: true
+      order: 4
+  - model: authentik_policies_password.passwordpolicy
+    id: password-policy
+    identifiers:
+      name: kreeper-enrollment-password-policy
+    attrs:
+      length_min: 12
+      error_message: 密码至少需要12个字符。
+      check_static_rules: true
+      check_have_i_been_pwned: false
+      check_zxcvbn: false
+  - model: authentik_stages_prompt.promptstage
+    id: user-details
+    identifiers:
+      name: kreeper-enrollment-user-details
+    attrs:
+      fields:
+        - !KeyOf username
+        - !KeyOf email
+        - !KeyOf name
+        - !KeyOf password
+        - !KeyOf password-repeat
+      validation_policies: [!KeyOf password-policy]
+  - model: authentik_stages_user_write.userwritestage
+    id: user-write
+    identifiers:
+      name: kreeper-enrollment-user-write
+    attrs:
+      user_creation_mode: always_create
+      create_users_as_inactive: false
+      user_type: external
+      user_path_template: users/invited
+      create_users_group: !KeyOf registered-users
+  - model: authentik_stages_user_login.userloginstage
+    id: user-login
+    identifiers:
+      name: kreeper-enrollment-user-login
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment
+      stage: !KeyOf invite-prompt
+      order: 5
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment
+      stage: !KeyOf invitation
+      order: 10
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment
+      stage: !KeyOf user-details
+      order: 20
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment
+      stage: !KeyOf user-write
+      order: 30
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment
+      stage: !KeyOf user-login
+      order: 40
+  - model: authentik_stages_identification.identificationstage
+    identifiers:
+      name: default-authentication-identification
+    attrs:
+      user_fields: [email, username]
+      enrollment_flow: !KeyOf enrollment

@@ -5,7 +5,7 @@ import "#elements/buttons/Dropdown";
 import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import { aki } from "#common/api/client";
 import { formatIntentLabel } from "#common/labels";
 
@@ -149,12 +149,12 @@ export class AdminUserTokenList extends Table<Token> {
                     !item.managed
                         ? IconEditButton(TokenForm, item.identifier, item.identifier)
                         : html`<button class="pf-c-button pf-m-plain" disabled type="button">
-                              <pf-tooltip
+                              <ak-tooltip
                                   position="top"
                                   content=${msg("Editing is disabled for managed tokens")}
                               >
                                   <i class="fas fa-edit" aria-hidden="true"></i>
-                              </pf-tooltip>
+                              </ak-tooltip>
                           </button>`
                 }
                 ${IconPermissionButton(item.identifier, {

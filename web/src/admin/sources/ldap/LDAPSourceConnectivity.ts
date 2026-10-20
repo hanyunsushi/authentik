@@ -1,4 +1,4 @@
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { AKElement } from "#elements/Base";
@@ -43,13 +43,13 @@ export class LDAPSourceConnectivity extends AKElement {
                 return html`<li>
                     ${
                         server.status === "ok"
-                            ? html`<pf-tooltip position="top">
+                            ? html`<ak-tooltip position="top">
                               <ul slot="content" class="pf-c-list">
                         <li>${msg("Vendor")}: ${server.vendor}</Li>
                         <li>${msg("Version")}: ${server.version}</li>
                               </ul>
                               ${content}
-                          </pf-tooltip>`
+                          </ak-tooltip>`
                             : content
                     }
                 </li>`;

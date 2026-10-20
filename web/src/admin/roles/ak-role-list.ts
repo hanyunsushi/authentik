@@ -2,7 +2,7 @@ import "#admin/roles/ak-role-form";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
