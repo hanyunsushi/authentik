@@ -1,5 +1,6 @@
 import "#elements/commands/ak-command-palette";
 import "#elements/PageScrollbar";
+import { consoleRuntime } from "#common/console";
 import { globalAK } from "#common/global";
 import { applyDocumentTheme, createUIThemeEffect } from "#common/theme";
 
@@ -18,7 +19,7 @@ import { applyScrollbarClass } from "#elements/utils/scrollbars";
 
 import { ConsoleLogger, Logger } from "#logger/browser";
 
-import { Context, ContextType } from "@lit/context";
+import { Context } from "@lit/context";
 import { ReactiveController } from "lit";
 
 /**
@@ -33,7 +34,7 @@ export abstract class Interface extends AKElement {
      * This is used to track which controllers have been registered,
      * and to unregister them when removed.
      */
-    #registryKeys = new WeakMap<ReactiveController, ContextType<Context<unknown, unknown>>>();
+    #registryKeys = new Map<ReactiveController, Context<unknown, unknown>>();
 
     /**
      * The command palette instance. This must be inserted by the extending class, as the palette
@@ -42,6 +43,8 @@ export abstract class Interface extends AKElement {
     public readonly commandPalette: AKCommandPalette;
 
     // 页面滚动条：三套应用共用文档原生滚动，控件随 Interface 生命周期清理。
+    #commandsFrame = 0;
+
     readonly #pageScrollbar = document.createElement("ak-page-scrollbar");
 
     constructor() {
@@ -51,8 +54,10 @@ export abstract class Interface extends AKElement {
 
         const { config, brand, locale } = globalAK();
 
-        createUIThemeEffect(applyDocumentTheme);
-        applyScrollbarClass(this.ownerDocument);
+        if (!consoleRuntime()) {
+            createUIThemeEffect(applyDocumentTheme);
+            applyScrollbarClass(this.ownerDocument);
+        }
 
         this.addController(new LocaleContextController(this, locale));
         this.addController(new ConfigContextController(this, config), AuthentikConfigContext);
@@ -65,9 +70,12 @@ export abstract class Interface extends AKElement {
 
     public override connectedCallback(): void {
         super.connectedCallback();
-        this.ownerDocument.body.append(this.#pageScrollbar);
 
-        requestAnimationFrame(() => {
+        if (!consoleRuntime()) this.ownerDocument.body.append(this.#pageScrollbar);
+
+        this.#commandsFrame = requestAnimationFrame(() => {
+            if (!this.isConnected) return;
+
             this.commandPalette.modal.setCommands(
                 createCommonCommands().map((command) => ({
                     namespace: PaletteCommandNamespace.Action,
@@ -78,13 +86,22 @@ export abstract class Interface extends AKElement {
     }
 
     public override disconnectedCallback(): void {
+        cancelAnimationFrame(this.#commandsFrame);
         this.#pageScrollbar.remove();
         super.disconnectedCallback();
+
+        // 微前端生命周期：全局注册表不能持有已经卸载的应用上下文。
+        if (consoleRuntime()) {
+            for (const [controller, key] of this.#registryKeys) {
+                if (ContextControllerRegistry.get(key) === controller)
+                    ContextControllerRegistry.delete(key);
+            }
+        }
     }
 
     public override addController(
         controller: ReactiveController,
-        registryKey?: ContextType<Context<unknown, unknown>>,
+        registryKey?: Context<unknown, unknown>,
     ): void {
         if (controller instanceof ReactiveContextController) {
             if (!registryKey) {

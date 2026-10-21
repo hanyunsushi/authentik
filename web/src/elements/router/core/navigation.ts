@@ -9,6 +9,8 @@
  *   touching route tables or outlets.
  */
 
+import { consoleNavigate } from "#common/console";
+
 import { formatInterfacePrefix } from "#elements/router/core/interfaces";
 
 export type NavigationMode = "push" | "replace" | "assign";
@@ -65,6 +67,8 @@ export function resolveNavigationMode(
  */
 export function navigate(to: string | URL, { mode = "push" }: NavigateOptions = {}): void {
     const url = to instanceof URL ? to : new URL(to, window.location.origin);
+
+    if (consoleNavigate(url)) return;
     const effectiveMode = resolveNavigationMode(mode, url.origin, window.location.origin);
 
     if (effectiveMode === "assign") {

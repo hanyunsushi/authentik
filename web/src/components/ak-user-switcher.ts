@@ -7,6 +7,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
+import { consoleRuntime } from "#common/console";
 import { globalAK } from "#common/global";
 import { formatUserDisplayName } from "#common/users";
 
@@ -62,6 +63,9 @@ export class UserSwitcher extends WithSession(AKElement) {
     }
 
     protected startSwitch = async (userPk?: number): Promise<void> => {
+        const runtime = consoleRuntime();
+
+        if (runtime) return runtime.login(true);
         const { pathname, search, hash } = window.location;
         const next = `${pathname}${search}${hash}`;
 
@@ -207,7 +211,15 @@ export class UserSwitcher extends WithSession(AKElement) {
                         class="pf-c-dropdown__menu-item"
                         part="menu-item"
                         role="menuitem"
-                        href=${`${globalAK().api.base}flows/-/default/invalidation/`}
+                        href=${`${consoleRuntime()?.serviceURL ?? globalAK().api.base}flows/-/default/invalidation/`}
+                        @click=${(event: MouseEvent) => {
+                            const runtime = consoleRuntime();
+
+                            if (runtime) {
+                                event.preventDefault();
+                                void runtime.logout();
+                            }
+                        }}
                     >
                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                         ${msg("Sign out current user", {

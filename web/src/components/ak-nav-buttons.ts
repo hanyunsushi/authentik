@@ -11,11 +11,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { aki } from "#common/api/client";
-import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { toUserInterface } from "#elements/router/core/interfaces";
 import type { SlottedTemplateResult } from "#elements/types";
 
 import Styles from "#components/ak-nav-button.css";
@@ -135,7 +135,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             <a
                 class="pf-c-button pf-m-plain"
                 type="button"
-                href="${globalAK().api.base}if/user/settings"
+                href=${toUserInterface("settings")}
                 aria-label=${msg("Settings")}
             >
                 <ak-tooltip position="top" content=${msg("Settings")}>

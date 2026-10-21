@@ -15,6 +15,7 @@ updated: 2026-10-20
 
 - [前端与样式](modules/frontend.md)
 - [第一设计系统适配](modules/first-design-system.md)
+- [Console 原生 ESM 接入](modules/console-microfrontend.md)
 - [前端 API 边界](apis/frontend-api.md)
 
 # 开发

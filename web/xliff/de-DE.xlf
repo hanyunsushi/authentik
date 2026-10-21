@@ -284,10 +284,6 @@
   <source>No additional data available.</source>
   <target>Keine weiteren Daten vorhanden.</target>
 </trans-unit>
-<trans-unit id="sb59d68ed12d46377">
-  <source>Loading</source>
-  <target>Wird geladen</target>
-</trans-unit>
 <trans-unit id="sf45a0d2f00bcc6ff">
   <source>no tabs defined</source>
   <target>Keine Registerkarten definiert</target>
@@ -8061,7 +8057,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Produkt Version</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
-  <source>Version <x id="0" equiv-text="${this.version.versionCurrent || &quot;&quot;}"/></source>
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
   <target>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
@@ -8536,9 +8532,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="sfc003381f593d943">
   <source>Connecting...</source>
   <target>Verbinde…</target>
-</trans-unit>
-<trans-unit id="sa00a53efc9c70de5">
-  <source>Please wait while the content is loading</source>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
@@ -9036,10 +9029,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="sd7c52e2ce408c542">
   <source>Integrations synced in the last 12 hours.</source>
-</trans-unit>
-<trans-unit id="table-loading-bar-label">
-  <source>Loading <x id="0" equiv-text="${this.label ?? &quot;table&quot;}"/> data</source>
-  <note from="lit-localize">Label for progress bar shown when table data is loading</note>
 </trans-unit>
 <trans-unit id="sb6650552aaaf5da0">
   <source>Assigned Roles</source>
@@ -12536,6 +12525,48 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 </trans-unit>
 <trans-unit id="navigation.filter.empty">
   <source>No results</source>
+</trans-unit>
+<trans-unit id="console.navigation.user-interface.label">
+  <source>User interface</source>
+</trans-unit>
+<trans-unit id="console.navigation.admin-interface.label">
+  <source>Admin interface</source>
+</trans-unit>
+<trans-unit id="console.command-palette.label">
+  <source>Open Command Palette</source>
+</trans-unit>
+<trans-unit id="console.navigation.applications.label">
+  <source>Applications</source>
+</trans-unit>
+<trans-unit id="console.navigation.settings.label">
+  <source>Settings</source>
+</trans-unit>
+<trans-unit id="console.navigation.discover.label">
+  <source>Discover</source>
+</trans-unit>
+<trans-unit id="console.navigation.agents.label">
+  <source>Agents</source>
+</trans-unit>
+<trans-unit id="console.navigation.home.label">
+  <source>Home</source>
+</trans-unit>
+<trans-unit id="console.application.create.label">
+  <source>Create a new application...</source>
+</trans-unit>
+<trans-unit id="console.user-search.label">
+  <source>Username or email address...</source>
+</trans-unit>
+<trans-unit id="console.login.label">
+  <source>Log in</source>
+</trans-unit>
+<trans-unit id="console.welcome.description">
+  <source>Log in to manage identities, applications, and access.</source>
+</trans-unit>
+<trans-unit id="console.login.callback.error">
+  <source>Login callback expired. Please log in again.</source>
+</trans-unit>
+<trans-unit id="console.login.session.error">
+  <source>Session expired. Please log in again.</source>
 </trans-unit>
 </body>
 </file>

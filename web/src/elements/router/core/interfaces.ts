@@ -7,6 +7,8 @@
  *   non-root `web.path`.
  */
 
+import { consoleRuntime } from "#common/console";
+
 import { getRouterConfig } from "#elements/router/core/config";
 import { recordToSearchParams, type RouterParameterInit } from "#elements/router/core/parameters";
 import { ensureTrailingSlash, stripLeadingSlash, stripPrefix } from "#elements/router/core/paths";
@@ -54,6 +56,12 @@ export function formatInterfaceURL(
     params?: RouterParameterInit,
 ): string {
     const { base } = getRouterConfig();
+    const runtime = consoleRuntime();
+
+    if (runtime && interfaceName === "flow") {
+        return `${runtime.serviceURL}if/flow/${stripLeadingSlash(path)}${buildSearch(params)}`;
+    }
+
     const prefix = formatInterfacePrefix(base, interfaceName);
 
     return `${prefix}${stripLeadingSlash(path)}${buildSearch(params)}`;

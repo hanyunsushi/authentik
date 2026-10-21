@@ -254,3 +254,4 @@ CLAUDE.local.md
 # Local development indexes
 .frontend-index/
 .codegraph/
+web/dist-console/

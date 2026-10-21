@@ -7,6 +7,7 @@
     "imports": {
         "#styles/*.css": "./src/styles/*.css",
         "#styles/*": "./src/styles/*.js",
+        "#console/*": "./src/console/*.js",
         "#common/*": "./src/common/*.js",
         "#elements/dialogs": "./src/elements/dialogs/index.js",
         "#elements/*.css": "./src/elements/*.css",
@@ -70,7 +71,8 @@
         "test:unit": "vitest run",
         "test:visual": "node scripts/visual.ts",
         "tsc": "wireit",
-        "watch": "run-s build-locales bundler:watch"
+        "watch": "run-s build-locales bundler:watch",
+        "build:microfrontend": "node scripts/build-microfrontend.ts"
     },
     "wireit": {
         "build": {
@@ -234,6 +236,7 @@
         "mermaid": "^11.16.1",
         "node-domexception": "workspace:*",
         "npm-run-all": "^4.1.5",
+        "openid-client": "6.8.8",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
         "pino": "^10.3.1",
@@ -266,6 +269,9 @@
         "webcomponent-qr-code": "^2.0.0",
         "wireit": "^0.14.13",
         "yaml": "^2.9.0"
+    },
+    "devDependencies": {
+        "postcss": "8.5.30"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.28.1",

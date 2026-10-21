@@ -1,5 +1,6 @@
 import { aki } from "#common/api/client";
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
+import { consoleRuntime } from "#common/console";
 import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { applyLocaleChange } from "#common/ui/locale/persist";
@@ -21,6 +22,7 @@ import {
     UIConfigContext,
 } from "#elements/mixins/session";
 import { toAdminInterface, toUserInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
@@ -79,6 +81,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
         this.host.session = session;
 
         if (!isAPIResultReady(session)) return;
+        consoleRuntime()?.onSession(session);
 
         const localeHint: string | undefined = session.user.settings.locale;
 
@@ -106,7 +109,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
         this.host.uiConfig = nextUIConfig;
         const colorScheme = formatColorScheme(nextUIConfig.theme.base);
 
-        applyThemeChoice(colorScheme, this.host.ownerDocument);
+        if (!consoleRuntime()) applyThemeChoice(colorScheme, this.host.ownerDocument);
 
         const config = this.host[kAKConfig];
 
@@ -140,7 +143,8 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(toUserInterface("settings"));
+                    if (consoleRuntime()) navigate(toUserInterface("settings"));
+                    else window.location.assign(toUserInterface("settings"));
                 },
             },
         ];
@@ -180,7 +184,8 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(toAdminInterface());
+                    if (consoleRuntime()) navigate(toAdminInterface());
+                    else window.location.assign(toAdminInterface());
                 },
             });
         }

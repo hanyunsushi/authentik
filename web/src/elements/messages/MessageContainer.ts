@@ -116,23 +116,22 @@ export class MessageContainer extends AKElement {
 
     static styles: CSSResult[] = [PFAlertGroup, Styles];
 
-    constructor() {
-        super();
-
-        // Note: This seems to be susceptible to race conditions.
-        // Events are dispatched regardless if the message container is listening.
-
-        window.addEventListener("ak-message", (event) => {
-            this.addMessage(event.message);
-        });
-    }
+    #messageListener = (event: WindowEventMap["ak-message"]) => this.addMessage(event.message);
+    #drainFrame = 0;
 
     public override connectedCallback(): void {
         super.connectedCallback();
+        window.addEventListener("ak-message", this.#messageListener);
 
         this.popover = "manual";
 
-        requestAnimationFrame(this.drainMessages);
+        this.#drainFrame = requestAnimationFrame(this.drainMessages);
+    }
+
+    public override disconnectedCallback(): void {
+        window.removeEventListener("ak-message", this.#messageListener);
+        cancelAnimationFrame(this.#drainFrame);
+        super.disconnectedCallback();
     }
 
     protected drainMessages = (): void => {

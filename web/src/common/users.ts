@@ -1,4 +1,5 @@
 import { aki } from "#common/api/client";
+import { consoleRuntime } from "#common/console";
 import { isResponseErrorLike } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { UIConfig, UserDisplay } from "#common/ui/config";
@@ -142,6 +143,14 @@ let pendingRedirect = false;
  * @category Session
  */
 export function redirectToAuthFlow(nextPathname?: string): void {
+    const runtime = consoleRuntime();
+
+    if (runtime) {
+        void runtime.login();
+
+        return;
+    }
+
     if (pendingRedirect) {
         console.debug("authentik/users: Redirect already pending, ");
 

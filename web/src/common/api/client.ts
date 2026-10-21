@@ -9,11 +9,12 @@ import {
     LocaleMiddleware,
     LoggingMiddleware,
 } from "#common/api/middleware";
+import { consoleRuntime } from "#common/console";
 import { globalAK } from "#common/global";
 import { PagePreparationMiddleware } from "#common/page-preparation";
 import { SentryMiddleware } from "#common/sentry/middleware";
 
-import { CapabilitiesEnum, Configuration } from "@goauthentik/api";
+import { CapabilitiesEnum, Configuration, type Middleware } from "@goauthentik/api";
 
 type APIConstructor<T> = new (config: Configuration) => T;
 
@@ -26,23 +27,52 @@ let configuration: Configuration | null = null;
 
 const endpoints = new Map<APIConstructor<unknown>, unknown>();
 
+let middleware: Middleware[] = [];
+
+export function resetAPIClients(): void {
+    for (const item of middleware) {
+        if (Symbol.dispose in item) (item as Middleware & Disposable)[Symbol.dispose]();
+    }
+
+    middleware = [];
+    endpoints.clear();
+    configuration = null;
+}
+
 function apiConfiguration(): Configuration {
     if (!configuration) {
         const { locale, api, brand, config } = globalAK();
+        const runtime = consoleRuntime();
 
         configuration = new Configuration({
             basePath: `${api.base}api/v3`,
-            middleware: [
+            ...(runtime ? { accessToken: runtime.accessToken, credentials: "omit" as const } : {}),
+            middleware: (middleware = [
                 new CSRFMiddleware(),
                 new EventMiddleware(),
                 new LoggingMiddleware(brand),
                 new SentryMiddleware(),
                 new LocaleMiddleware(locale),
-                new PagePreparationMiddleware(),
                 ...(config.capabilities.includes(CapabilitiesEnum.CanDebug)
                     ? [new DevRepeatedRequestsMiddleware()]
                     : []),
-            ],
+                ...(runtime
+                    ? [
+                          {
+                              pre: async ({ init, url }) => ({
+                                  url,
+                                  init: {
+                                      ...init,
+                                      signal: init.signal
+                                          ? AbortSignal.any([init.signal, runtime.signal])
+                                          : runtime.signal,
+                                  },
+                              }),
+                          } satisfies Middleware,
+                      ]
+                    : []),
+                new PagePreparationMiddleware(),
+            ]),
         });
 
         Object.freeze(configuration);

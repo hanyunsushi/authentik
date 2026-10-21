@@ -1,0 +1,12 @@
+@import "../styles/interface.global.css";
+
+/* 展示信息模块：公开入口沿用页面层留白，桌面与手机均由宿主滚动。 */
+.console-authentik-welcome {
+    padding: clamp(24px, 5vw, 64px);
+}
+.console-authentik-welcome h1 {
+    margin-block: 0 16px;
+}
+.console-authentik-welcome p {
+    margin-block: 0 24px;
+}

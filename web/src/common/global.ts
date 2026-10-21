@@ -95,6 +95,11 @@ function readServerContext(): GlobalAuthentik {
 
 let serverContext: GlobalAuthentik | null = null;
 
+/** Supply the same server context through the Console mount boundary. */
+export function configureServerContext(context: GlobalAuthentik | null): void {
+    serverContext = context;
+}
+
 /**
  * Re-read the server context from the document, replacing the memoized value.
  *

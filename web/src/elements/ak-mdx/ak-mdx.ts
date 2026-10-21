@@ -5,6 +5,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
+import { consoleRuntime } from "#common/console";
 import { globalAK } from "#common/global";
 import { BrandedHTMLPolicy, CompiledMarkdownSanitizePolicy, sanitizeHTML } from "#common/purify";
 
@@ -99,12 +100,14 @@ export class AKMDX extends AKElement {
     async #hydrateFromURL(url: string): Promise<SlottedTemplateResult> {
         const { relBase } = globalAK().api;
 
-        const pathname =
-            relBase +
-            StaticDirectoryName +
-            "/" +
-            DistDirectoryName +
-            url.slice(url.indexOf("/assets"));
+        // 微前端资源：保留打包器给出的不可变URL，不能拼回独立站静态目录。
+        const pathname = consoleRuntime()
+            ? url
+            : relBase +
+              StaticDirectoryName +
+              "/" +
+              DistDirectoryName +
+              url.slice(url.indexOf("/assets"));
 
         const module = await fetchMarkdownModule(pathname);
 
