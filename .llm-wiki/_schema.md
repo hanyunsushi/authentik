@@ -1,7 +1,7 @@
 ---
 title: authentik Wiki Schema
 updated: 2026-10-22
-last_synced_commit: b6fd62643de89f1ab9aa968b39dec3643ccba55c
+last_synced_commit: f01482acb52437db0f3fef4041af18c1a5616ed6
 commit_policy: committed
 authority_entry: ../agent.md
 ---
