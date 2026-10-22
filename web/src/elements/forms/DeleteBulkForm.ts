@@ -123,18 +123,24 @@ export class DeleteBulkForm<T> extends ModalButton {
                 >
                 </ak-used-by-table>
             </section>
+            <!-- 高亮弧边按钮 / 标准默认弧边按钮：确认动作共用蓝色内光，风险文案及异步结果保留。 -->
             <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
+                    data-testid="confirmation-cancel"
                     class="ak-first-default-arc"
                 >
                     ${msg("Cancel")}
                 </ak-spinner-button>
 
-                <ak-spinner-button .callAction=${() => this.confirm()} class="pf-m-danger">
+                <ak-spinner-button
+                    .callAction=${() => this.confirm()}
+                    data-testid="confirmation-submit"
+                    class="pf-m-danger ak-first-highlight"
+                >
                     ${this.buttonLabel}
                 </ak-spinner-button>
             </fieldset>`;

@@ -6,6 +6,8 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 import "#elements/cards/AggregateCard";
 import "#components/ak-switch-input";
+import "#elements/EmptyState";
+import "#user/LibraryPage/ak-library-application-empty-list";
 import PFGlobals from "@patternfly/patternfly/base/patternfly-globals.css" with { type: "bundled-text" };
 import PFVariables from "@patternfly/patternfly/base/patternfly-variables.css" with { type: "bundled-text" };
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -16,6 +18,7 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import { AKElement } from "#elements/Base";
 
 import { CardMenu } from "#user/LibraryApplication/CardMenu";
+import { AKLibraryApp } from "#user/LibraryApplication/index";
 import ApplicationListStyles from "#user/LibraryPage/ApplicationList.css";
 
 import Tokens from "#styles/first/tokens.css" with { type: "bundled-text" };
@@ -23,6 +26,7 @@ import Tokens from "#styles/first/tokens.css" with { type: "bundled-text" };
 import type { Application } from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { userEvent } from "vitest/browser";
 
 import { html } from "lit";
 
@@ -33,6 +37,8 @@ class FirstControlsFixture extends AKElement {
     render() {
         return html`<button class="pf-c-button pf-m-secondary">Normal</button>
             <a class="pf-c-button pf-m-primary" href="#">Emphasis</a>
+            <button class="pf-c-button ak-first-default-arc">Cancel</button>
+            <button class="pf-c-button pf-m-danger ak-first-highlight">Confirm</button>
             <input class="pf-c-form-control" aria-label="Username" />
             <ak-switch-input name="newTab" label="Open in a new tab"></ak-switch-input>`;
     }
@@ -169,10 +175,99 @@ describe("first design system integration", () => {
         expect(focus.boxShadow).toContain("inset");
         // 浏览器鼠标可能停在前一用例位置；普通及悬浮态都必须保持中性文字。
         expect(["oklch(0.556 0 0)", "oklch(0.37 0 0)"]).toContain(getComputedStyle(normal).color);
-        expect(getComputedStyle(normal).boxShadow).not.toContain("inset");
+        expect(getComputedStyle(normal).boxShadow).toContain("inset");
         expect(getComputedStyle(emphasis).boxShadow).toContain("1px");
-        expect(getComputedStyle(emphasis).transitionTimingFunction).toContain("ease-in-out");
+        expect(getComputedStyle(emphasis).transitionTimingFunction).toContain("ease");
         expect(getComputedStyle(normal, "::after").display).toBe("none");
+    });
+
+    it("animates neutral and emphasis inner light without changing the ring, color or geometry", async () => {
+        const fixture = new FirstControlsFixture();
+        mounted.push(fixture);
+        document.body.append(fixture);
+        await fixture.updateComplete;
+
+        for (const button of fixture.shadowRoot!.querySelectorAll<HTMLElement>(".pf-c-button")) {
+            const color = getComputedStyle(button).color;
+            const background = getComputedStyle(button).backgroundColor;
+            const rect = button.getBoundingClientRect();
+            await userEvent.hover(button);
+            await new Promise((resolve) => setTimeout(resolve, 450));
+            const hover = getComputedStyle(button);
+            expect(hover.boxShadow).toContain("32px");
+            expect(hover.boxShadow).toContain("1px");
+            expect(hover.color).toBe(color);
+            expect(hover.backgroundColor).toBe(background);
+            expect(hover.transform).toBe("none");
+            expect(button.getBoundingClientRect().width).toBe(rect.width);
+            expect(button.getBoundingClientRect().height).toBe(rect.height);
+            await userEvent.click(button);
+            await userEvent.hover(fixture.shadowRoot!.querySelector("input")!);
+            await new Promise((resolve) => setTimeout(resolve, 450));
+            expect(getComputedStyle(button).boxShadow).not.toContain("32px");
+        }
+    });
+
+    it("uses the provided illustration for empty/error states while loading stays a single dot matrix", async () => {
+        const empty = document.createElement("ak-empty-state");
+
+        empty.innerHTML =
+            '<span>Unable to load</span><span slot="body">Retry this request.</span><button slot="primary">Retry</button>';
+
+        const library = document.createElement("ak-library-application-empty-list");
+        mounted.push(empty, library);
+        document.body.append(empty, library);
+        await empty.updateComplete;
+        await library.updateComplete;
+
+        for (const element of [empty, library]) {
+            const illustration =
+                element.shadowRoot!.querySelector<AKElement>("ak-empty-illustration")!;
+
+            await illustration.updateComplete;
+            const image = illustration.shadowRoot!.querySelector("img")!;
+            await image.decode();
+            expect(image.naturalWidth).toBeGreaterThan(0);
+            expect(illustration.getBoundingClientRect().width).toBe(160);
+            expect(illustration.getBoundingClientRect().height).toBe(100);
+        }
+
+        expect(empty.shadowRoot!.querySelector('slot[name="primary"]')).not.toBeNull();
+        empty.loading = true;
+        await empty.updateComplete;
+        expect(empty.shadowRoot!.querySelector("ak-empty-illustration")).toBeNull();
+        expect(empty.shadowRoot!.querySelectorAll("ak-spinner")).toHaveLength(1);
+        expect(empty.shadowRoot!.querySelector('slot[name="body"]')).toBeNull();
+    });
+
+    it("keeps application card titles undecorated across the card and title hover boundaries", async () => {
+        const fixture = new FirstLibraryMenuFixture();
+
+        fixture.render = () =>
+            html`<div style="position:relative;width:160px;height:160px">
+                ${AKLibraryApp({ application: { pk: "hover", name: "Application", launchUrl: "#" } as Application })}
+            </div>`;
+
+        mounted.push(fixture);
+        document.body.append(fixture);
+        await fixture.updateComplete;
+
+        const link = fixture.shadowRoot!.querySelector<HTMLAnchorElement>(
+            "a.card-header-aspect-wrapper",
+        )!;
+
+        const title = fixture.shadowRoot!.querySelector<HTMLElement>('[part="card-title"]')!;
+
+        for (const target of [link, title]) {
+            await userEvent.hover(target);
+            expect(getComputedStyle(link).textDecorationLine).toBe("none");
+            expect(getComputedStyle(title).textDecorationLine).toBe("none");
+            expect(getComputedStyle(title).webkitTextStrokeWidth).toBe("0px");
+        }
+
+        await userEvent.keyboard("{Tab}");
+        link.focus();
+        expect(getComputedStyle(link).outlineStyle).toBe("solid");
     });
 
     it("keeps every status tone on a neutral card boundary", async () => {

@@ -326,3 +326,23 @@
 }
 
 /* #endregion */
+
+/* 提示信息 / 展示信息模块：原生Dialog保留焦点、Escape与滚动，表面接入18px浅灰浮层。 */
+.ak-c-dialog {
+    --ak-c-dialog--BackgroundColor: var(--ak-first-card);
+    --ak-c-dialog--BoxShadow: var(--ak-first-flyout);
+    --ak-c-dialog--BorderColor: var(--ak-first-border);
+    --ak-c-dialog--BorderWidth: 1px;
+    border-radius: 18px;
+}
+@media (width <= 768px) or (height <= 600px) {
+    .ak-c-dialog {
+        border-radius: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ak-c-dialog,
+    .ak-c-dialog::backdrop {
+        transition: none;
+    }
+}

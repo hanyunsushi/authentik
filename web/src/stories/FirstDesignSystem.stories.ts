@@ -12,13 +12,16 @@ import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 import "#elements/ak-table/ak-simple-table";
 import "#elements/Spinner";
+import "#elements/EmptyState";
+import "#elements/dialogs/ak-modal";
+
+import { DefaultBrand } from "#common/ui/config";
 import "#user/LibraryPage/ak-library-impl";
 import "#elements/PageScrollbar";
 import "#flow/stages/identification/IdentificationStage";
 
-import { DefaultBrand } from "#common/ui/config";
-
 import { AKElement } from "#elements/Base";
+import { renderDialog } from "#elements/dialogs";
 import { BrandingContext } from "#elements/mixins/branding";
 import { AuthentikConfigContext } from "#elements/mixins/config";
 
@@ -446,4 +449,82 @@ export const ApplicationControls = {
 
         return html`<ak-first-design-preview view="applications"></ak-first-design-preview>`;
     },
+};
+
+// 提示信息 / 填写框 / 高亮弧边按钮：复用真实Dialog与空态，样本不提交业务数据。
+@customElement("ak-first-feedback-preview")
+export class FirstFeedbackPreview extends AKElement {
+    static styles = [
+        PFButton,
+        PFCard,
+        PFFormControl,
+        css`
+            main {
+                padding: 24px;
+                display: grid;
+                gap: 24px;
+            }
+            .controls {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+        `,
+    ];
+
+    render() {
+        return html`<main data-design-id="feedback-preview">
+            <div class="controls">
+                <button class="pf-c-button pf-m-secondary" data-testid="preview-normal">
+                    普通按钮
+                </button>
+                <button class="pf-c-button pf-m-primary" data-testid="preview-emphasis">
+                    强调按钮
+                </button>
+                <button
+                    class="pf-c-button ak-first-default-arc"
+                    data-testid="preview-dialog"
+                    @click=${(event: MouseEvent) => {
+                        void renderDialog(
+                            html`<ak-modal
+                                headline="确认此操作：长标题应完整换行，不隐藏关键内容"
+                                cancel-button-label="取消"
+                            >
+                                <p>确认操作保留原生焦点管理、Escape 和异步业务边界。</p>
+                                <button
+                                    slot="actions"
+                                    class="pf-c-button pf-m-primary ak-first-highlight"
+                                    data-testid="preview-confirm"
+                                    @click=${(e: MouseEvent) => {
+                                        (e.currentTarget as HTMLElement)
+                                            .closest("ak-modal")
+                                            ?.close();
+                                    }}
+                                >
+                                    确认
+                                </button>
+                            </ak-modal>`,
+                            {
+                                parentElement: this,
+                                invokerElement: event.currentTarget as HTMLElement,
+                            },
+                        );
+                    }}
+                >
+                    打开弹窗
+                </button>
+            </div>
+            <input class="pf-c-form-control" aria-label="搜索示例" placeholder="输入名称进行搜索" />
+            <ak-empty-state
+                ><span>暂无内容</span
+                ><span slot="body"
+                    >空状态使用原SVG；错误、加载与无数据分别保留。</span
+                ></ak-empty-state
+            >
+        </main>`;
+    }
+}
+
+export const Feedback = {
+    render: () => html`<ak-first-feedback-preview></ak-first-feedback-preview>`,
 };

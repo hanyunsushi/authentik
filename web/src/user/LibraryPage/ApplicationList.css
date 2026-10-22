@@ -60,14 +60,6 @@
         auto-fill,
         minmax(calc(var(--app-card-min-width) / var(--app-card-row-coefficient)), auto)
     );
-
-    &:hover {
-        text-decoration: none;
-
-        .pf-c-card__title {
-            text-decoration: underline;
-        }
-    }
 }
 
 /* #region Title */
@@ -435,4 +427,31 @@
 }
 .row-title {
     font-family: var(--ak-first-heading);
+}
+
+/* 可跳转展示卡片：整卡以阴影反馈，标题不叠加正文链接下划线或描边。 */
+a.card-header-aspect-wrapper:is(:link, :visited, :hover, :focus, :active),
+[part="card-header"]:is(:hover, :focus-within) [part="card-title"] {
+    color: var(--ak-first-text);
+    text-decoration: none;
+}
+[part="card-title"] {
+    -webkit-text-stroke-width: 0;
+    text-stroke-width: 0;
+}
+
+/* 可跳转展示卡片：为两行标题预留完整高度，避免字形与下划线被行框裁切。 */
+[part="card-header"] {
+    grid-template-rows: minmax(0, 1fr) 40px;
+    padding-block-end: 8px !important;
+}
+[part="card-title"] {
+    grid-row: 2;
+    font-size: 14px;
+    line-height: 20px;
+}
+[part="card-title"] .clamp-wrapper {
+    padding-block: 0;
+    line-height: 20px;
+    max-height: 40px;
 }

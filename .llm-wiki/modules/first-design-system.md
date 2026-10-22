@@ -49,7 +49,7 @@ sources:
 
 `RouterView` 与 `common/page-preparation.ts` 管理准备、入场、就绪三个阶段。准备期懒加载实际页面并将完整内容根隐藏/inert，等待生成客户端首批请求及响应体终态、Lit更新、字体/首屏媒体就绪和多次绘制安静检查。点阵以可见内容区居中，保留侧栏/顶栏；准备完成后先撤下点阵、跨过绘制帧，再将单一完整路由内容层作为一次动画目标揭示，避免点阵与内容重叠或子模块先行露出。取消过期路由；低动态跳过揭示动画但保留准备顺序，后续刷新保留局部16px点阵。SSR placeholder和独立启动页亦使用九点阵，不显示Loading文字。Flow在请求及阶段模块准备期间，以单个独立点阵替换整个认证内容区的可见呈现；品牌、标题与表单一并visibility隐藏并inert，节点、输入值及布局保留。阶段准备完成且请求终止才恢复内容，自动提交协议与错误处理仍由原Flow engine负责；其他调用方遮罩保持各自语义。
 
-桌面侧栏按用户在本项目的要求隐藏原生轨道但保留滚动能力；canonical 规范不变。顶栏桌面收起控件由侧栏底部承担，手机保留导航开关。说明文字单行省略且不撑宽动作区；动作间距8px；头像与触发圆重合、无hover光效。“用户界面”为普通强调按钮；共享普通/强调按钮以1px→2px外ring及200ms ease-in-out反馈，普通PF变体显式保持中性颜色，去掉旧伪元素边线与链接下划线，键盘焦点单独保留。填写框覆盖PF状态底线和底内距，焦点四边1px加1px蓝色内线且尺寸稳定；状态卡保留tone但不绘制彩色边条。创建拆分下拉使用双线chevron，选择器去PF下划线，统计卡不建立内部横向滚动，块级按钮文案居中。
+桌面侧栏按用户在本项目的要求隐藏原生轨道但保留滚动能力；canonical 规范不变。顶栏桌面收起控件由侧栏底部承担，手机保留导航开关。说明文字单行省略且不撑宽动作区；动作间距8px；头像与触发圆重合、无hover光效。“用户界面”为普通强调按钮；共享普通/强调按钮固定1px外ring与400ms内阴影反馈，普通/默认弧边固定text-2文字与12%灰色内阴影；强调/高亮弧边保持蓝底白字与32%白色内光，鼠标focus不锁住内光；普通PF变体显式保持中性颜色，去掉旧伪元素边线与链接下划线，键盘焦点单独保留。填写框覆盖PF状态底线和底内距，焦点四边1px加1px蓝色内线且尺寸稳定；状态卡保留tone但不绘制彩色边条。创建拆分下拉使用双线chevron，选择器去PF下划线，统计卡不建立内部横向滚动，块级按钮文案居中。
 
 # 行为边界
 
@@ -65,7 +65,7 @@ sources:
 
 # 开发与验证入口
 
-`stories/FirstDesignSystem.stories.ts` 提供 Admin、User、Authentication、Authentication Error、Application Controls。Application Controls继承实际ApplicationListPage，仅将列表数据源和文档旁栏隔离成本地fixture；可操作实际拆分菜单、行选择与刷新，不能在此验证真实增删改API。Admin 使用壳 CSS 和实际导航/表格/标签控件；User 使用实际 `ak-library-impl`；认证使用实际 `FlowExecutor` 与本地 challenge。数据都是 Storybook 样本，不代表真实账号或生产统计。
+`stories/FirstDesignSystem.stories.ts` 提供 Admin、User、Authentication、Authentication Error、Application Controls、Feedback。Application Controls继承实际ApplicationListPage，仅将列表数据源和文档旁栏隔离成本地fixture；可操作实际拆分菜单、行选择与刷新，不能在此验证真实增删改API。Admin 使用壳 CSS 和实际导航/表格/标签控件；User 使用实际 `ak-library-impl`；认证使用实际 `FlowExecutor` 与本地 challenge。数据都是 Storybook 样本，不代表真实账号或生产统计。
 
 `elements/FirstDesign.browser.test.ts` 覆盖PF变体真实层叠下的输入焦点/内距稳定、普通按钮颜色与外ring、强调过渡、各状态卡中性边界、滚动条多实例清理、关闭 Tooltip 不撑宽文档、静态导航分组、可见Motion轨道上的嵌套组展开、筛选/无结果/收起清空、当前项，以及任务加载期间尺寸稳定与防重复提交。`flow/FlowExecutor.browser.test.ts`另外覆盖请求期间内容完全隐藏、单点阵、节点和值保留及完成恢复，并保留自动提交协议回归。浏览器尺寸、构建、检查、测试结果和未验证项归[项目权威文档](../../agent.md)维护；源码与官方来源说明见 `web/src/styles/first/README.md`。
 
@@ -78,3 +78,9 @@ sources:
 ## 布尔开关
 
 共享`.pf-c-switch`显式覆盖PF几何变量，而非仅设置轨道尺寸：40×23px轨道、17px白色滑块、3px内距，开启位移17px；500ms回弹，按下缩放0.96。原生input及HorizontalFormElement继续提供name/checked、标签和表单读写；禁用阻止切换，键盘focus-visible有清晰outline，轨道无额外shadow。触摸命中44px，减少动态取消过渡与缩放；中文分类注释与`switch-input` locator落在共享组件。自动回归覆盖尺寸、端点、布尔值、命名和禁用，运行证据由[项目权威](../../agent.md)维护。
+
+## 统一空态与弹窗
+
+`EmptyIllustration`逐字节引用设计系统提供的SVG，160×100px contain；`EmptyState`及门户无应用状态共用，loading分支仍只显示DotMatrix，业务说明/重试/权限入口不变。默认status在连接后设置，满足原生自定义元素构造约束。`dialog.css`负责原生Dialog浅灰18px表面、边框、阴影及低动态，窄屏沿原全屏布局；`ak-modal.css`让长标题换行。确认主动作通过显式`ak-first-highlight`跨SpinnerButton Shadow DOM使用蓝色内光，取消保持中性弧边，业务回调和禁用保留。
+
+门户`ApplicationList.css`将整卡链接与正文超链接分开：卡片悬浮仅中性阴影，标题无下划线和文字描边，底部40px保留两行20px文字。可访问链接、键盘焦点、操作菜单和目标URL保留。

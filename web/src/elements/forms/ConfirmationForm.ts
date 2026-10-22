@@ -77,12 +77,14 @@ export class ConfirmationForm extends ModalButton {
                     <slot class="pf-c-content" name="body"></slot>
                 </form>
             </section>
+            <!-- 高亮弧边按钮 / 标准默认弧边按钮：确认动作共用蓝色内光，风险文案及异步结果保留。 -->
             <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
                 <legend class="sr-only">${msg("Form actions")}</legend>
                 <ak-spinner-button
                     .callAction=${async () => {
                         this.open = false;
                     }}
+                    data-testid="confirmation-cancel"
                     class="ak-first-default-arc"
                 >
                     ${msg("Cancel")}
@@ -94,7 +96,8 @@ export class ConfirmationForm extends ModalButton {
                               .callAction=${() => {
                                   return this.confirm();
                               }}
-                              class=${this.actionLevel}
+                              data-testid="confirmation-submit"
+                              class="${this.actionLevel} ak-first-highlight"
                               >${this.action}</ak-spinner-button
                           >`
                 }

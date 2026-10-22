@@ -130,3 +130,10 @@ fieldset.ak-c-dialog__footer {
 }
 
 /* #endregion */
+
+/* 提示信息：长标题自然换行，窄屏不省略关键确认内容；关闭按钮保留独立命中区域。 */
+.ak-c-dialog__title,
+.ak-c-dialog__title-text {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}

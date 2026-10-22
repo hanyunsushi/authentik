@@ -98,11 +98,17 @@ class ConsoleHeader extends AKElement {
         return html`<ak-nav-buttons>
             ${
                 owner.interfaceName === "admin"
-                    ? html`<a class="pf-c-button pf-m-primary" href=${toUserInterface()}
+                    ? html`<a
+                          class="pf-c-button pf-m-primary"
+                          data-testid="console-switch-to-user"
+                          href=${toUserInterface()}
                           >${msg("User interface", { id: "console.navigation.user-interface.label" })}</a
                       >`
                     : canAccessAdmin(owner.currentUser)
-                      ? html`<a class="pf-c-button pf-m-primary" href=${toAdminInterface()}
+                      ? html`<a
+                            class="pf-c-button pf-m-primary"
+                            data-testid="console-switch-to-admin"
+                            href=${toAdminInterface()}
                             >${msg("Admin interface", { id: "console.navigation.admin-interface.label" })}</a
                         >`
                       : null
@@ -227,7 +233,7 @@ export class ConsoleInterface extends WithNotifications(
         window.dispatchEvent(new RouterNavigateEvent());
     }
 
-    #navigation(): ConsoleNavigationItem[] {
+    protected navigation(): ConsoleNavigationItem[] {
         const context = consoleRuntime()?.context;
 
         if (!context || !this.currentUser) return [];
@@ -280,13 +286,10 @@ export class ConsoleInterface extends WithNotifications(
                 path: "/",
                 public: true,
             },
-            {
-                key: "user",
-                label: msg("User interface", { id: "console.navigation.user-interface.label" }),
-                group: true,
-                children: userItems,
-            },
         ];
+
+        // 侧边栏：只发布右上角所选界面的菜单，管理员进入用户界面也不混入管理入口。
+        if (this.interfaceName === "user") return [...items, ...userItems];
 
         if (canAccessAdmin(this.currentUser)) {
             const convert = ([
@@ -345,7 +348,7 @@ export class ConsoleInterface extends WithNotifications(
 
         if (!isAPIResultReady(this.session)) return;
         const runtime = consoleRuntime();
-        const navigation = this.#navigation();
+        const navigation = this.navigation();
         runtime?.context.onNavigation?.(navigation);
         cancelAnimationFrame(this.#commandsFrame);
 

@@ -90,7 +90,7 @@ a:focus-visible {
     outline-offset: 3px;
 }
 
-/* 普通按钮 / 强调按钮：同组 32px/44px；交互仅变色、描边，不产生位移。 */
+/* 普通按钮 / 强调按钮：固定1px外框，400ms内阴影；按下静止，键盘焦点独立。 */
 .pf-c-button {
     --pf-c-button--BorderRadius: 8px;
     --pf-c-button--after--BorderRadius: 8px;
@@ -103,14 +103,16 @@ a:focus-visible {
     font: 500 13px/20px var(--ak-first-body);
     border: 0;
     border-radius: var(--ak-first-action-radius, 8px);
-    color: var(--ak-first-text-3);
+    color: var(--ak-first-text-2);
     background: transparent;
-    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
+    box-shadow:
+        0 0 0 1px var(--ak-first-border-strong),
+        inset 0 0 0 rgb(0 7 7 / 12%);
     transform: none;
     transition:
-        color 200ms ease-in-out,
-        background-color 200ms ease-in-out,
-        box-shadow 200ms ease-in-out;
+        color 400ms ease,
+        background-color 400ms ease,
+        box-shadow 400ms ease;
     text-decoration: none;
     white-space: normal;
 }
@@ -119,9 +121,11 @@ a:focus-visible {
 }
 /* 普通按钮：显式覆盖旧 PF 变体，链接式按钮不继承超链接下划线。 */
 .pf-c-button:is(.pf-m-secondary, .pf-m-tertiary, .pf-m-control) {
-    color: var(--ak-first-text-3);
+    color: var(--ak-first-text-2);
     background: transparent;
-    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
+    box-shadow:
+        0 0 0 1px var(--ak-first-border-strong),
+        inset 0 0 0 rgb(0 7 7 / 12%);
 }
 .pf-c-button:is(:hover, :focus-visible, :active):not(
         :disabled,
@@ -129,26 +133,33 @@ a:focus-visible {
         [aria-disabled="true"]
     ) {
     color: var(--ak-first-text-2);
-    box-shadow: 0 0 0 2px var(--ak-first-border-strong);
+    box-shadow:
+        0 0 0 1px var(--ak-first-border-strong),
+        inset 0 0 32px rgb(0 7 7 / 12%);
     text-decoration: none;
 }
 .pf-c-button.pf-m-primary,
-.pf-c-button.pf-m-warning {
+.pf-c-button.pf-m-warning,
+.pf-c-button.ak-first-highlight {
     color: #fff;
     background: var(--ak-first-accent);
-    box-shadow: 0 0 0 1px var(--ak-first-accent);
+    box-shadow:
+        0 0 0 1px var(--ak-first-accent),
+        inset 0 0 0 rgb(255 255 255 / 32%);
 }
-.pf-c-button:is(.pf-m-primary, .pf-m-warning):is(:hover, :focus, :active):not(
-        :disabled,
-        .pf-m-disabled,
-        [aria-disabled="true"]
-    ) {
+.pf-c-button:is(.pf-m-primary, .pf-m-warning, .ak-first-highlight):is(
+        :hover,
+        :focus-visible,
+        :active
+    ):not(:disabled, .pf-m-disabled, [aria-disabled="true"]) {
     color: #fff;
-    background: var(--ak-first-accent-hover);
-    box-shadow: 0 0 0 2px var(--ak-first-accent-hover);
+    background: var(--ak-first-accent);
+    box-shadow:
+        0 0 0 1px var(--ak-first-accent),
+        inset 0 0 32px rgb(255 255 255 / 32%);
 }
 .pf-c-button:focus-visible {
-    outline: 2px solid var(--ak-first-accent);
+    outline: 2px solid var(--ak-first-border-strong);
     outline-offset: 3px;
 }
 a.pf-c-button:not(.pf-m-link):is(:hover, :focus, :active) {
@@ -167,8 +178,8 @@ a.pf-c-button:not(.pf-m-link):is(:hover, :focus, :active) {
     color: var(--ak-first-accent);
 }
 .pf-c-button.pf-m-plain:is(:hover, :focus-visible, :active):not(:disabled, .pf-m-disabled) {
-    background: var(--ak-first-hover);
-    box-shadow: none;
+    background: transparent;
+    box-shadow: inset 0 0 32px rgb(0 7 7 / 12%);
 }
 .pf-c-button.pf-m-link:is(:hover, :focus-visible, :active) {
     box-shadow: none;
@@ -188,18 +199,21 @@ a.pf-c-button:not(.pf-m-link):is(:hover, :focus, :active) {
 }
 
 /* 删除按钮：红字透明底；保留原 disabled、请求与确认语义。 */
-.pf-c-button.pf-m-danger {
+.pf-c-button.pf-m-danger:not(.ak-first-highlight) {
     color: var(--ak-first-danger);
     background: transparent;
     border-radius: 18px;
     box-shadow: none;
 }
-.pf-c-button.pf-m-danger:is(:hover, :focus-visible):not(:disabled, .pf-m-disabled) {
+.pf-c-button.pf-m-danger:not(.ak-first-highlight):is(:hover, :focus-visible):not(
+        :disabled,
+        .pf-m-disabled
+    ) {
     color: var(--ak-first-danger);
     background: color-mix(in srgb, var(--ak-first-text) 9%, transparent);
     box-shadow: none;
 }
-.pf-c-button.pf-m-danger:active:not(:disabled, .pf-m-disabled) {
+.pf-c-button.pf-m-danger:not(.ak-first-highlight):active:not(:disabled, .pf-m-disabled) {
     background: color-mix(in srgb, var(--ak-first-text) 13%, transparent);
 }
 
@@ -548,7 +562,7 @@ dialog {
     max-inline-size: calc(100vw - 32px);
     border: 1px solid var(--ak-first-border);
     border-radius: 18px;
-    background: var(--ak-first-bg);
+    background: var(--ak-first-card);
     color: var(--ak-first-text);
     box-shadow: var(--ak-first-flyout);
 }
@@ -578,9 +592,16 @@ dialog {
 .pf-c-alert__title {
     color: var(--ak-first-text);
 }
+/* 提示信息：空态保留错误/无数据语义，160×100插画与正文居中。 */
 .pf-c-empty-state {
     color: var(--ak-first-text-3);
     min-inline-size: 0;
+    min-block-size: 180px;
+    padding: 26px;
+}
+.pf-c-empty-state__body {
+    margin-block-start: 9px;
+    font-size: 12.5px;
 }
 
 /* 响应式 / 组件绘制动画：窄屏自然换行、触摸可达、低动态直接呈现终态。 */
@@ -679,12 +700,20 @@ select.pf-c-form-control:focus-visible {
 }
 .pf-c-button.ak-first-default-arc {
     background: transparent;
-    color: var(--ak-first-text-3);
-    box-shadow: inset 0 0 0 1px var(--ak-first-border-strong);
-}
-.pf-c-button.ak-first-default-arc:is(:hover, :focus-visible) {
     color: var(--ak-first-text-2);
-    box-shadow: inset 0 0 0 2px var(--ak-first-border-strong);
+    box-shadow:
+        0 0 0 1px var(--ak-first-border-strong),
+        inset 0 0 0 rgb(0 7 7 / 12%);
+}
+.pf-c-button.ak-first-default-arc:is(:hover, :focus-visible, :active):not(
+        :disabled,
+        .pf-m-disabled,
+        [aria-disabled="true"]
+    ) {
+    color: var(--ak-first-text-2);
+    box-shadow:
+        0 0 0 1px var(--ak-first-border-strong),
+        inset 0 0 32px rgb(0 7 7 / 12%);
 }
 /* 强调按钮：应用创建的两区共同组成8px蓝色按钮，边界和展开状态保留原下拉事件。 */
 .pf-c-dropdown__toggle.pf-m-split-button {
@@ -719,6 +748,8 @@ select.pf-c-form-control:focus-visible {
     border-radius: 8px 0 0 8px;
     color: inherit;
     font: 500 13px/20px var(--ak-first-body);
+    box-shadow: inset 0 0 0 rgb(255 255 255 / 32%);
+    transition: box-shadow 400ms ease;
 }
 .pf-c-dropdown__toggle.pf-m-split-button .pf-c-dropdown__toggle-button:last-child {
     width: var(--ak-first-button-height);
@@ -731,8 +762,12 @@ select.pf-c-form-control:focus-visible {
     border: 0;
 }
 .pf-c-dropdown__toggle.pf-m-split-button.pf-m-primary
-    .pf-c-dropdown__toggle-button:is(:hover, :focus-visible, :active) {
-    background: var(--ak-first-accent-hover);
+    .pf-c-dropdown__toggle-button:is(:hover, :focus-visible, :active):not(
+        :disabled,
+        [aria-disabled="true"]
+    ) {
+    background: transparent;
+    box-shadow: inset 0 0 32px rgb(255 255 255 / 32%);
 }
 /* 高亮弧边按钮 / 默认弧边按钮：新旧弹窗动作区及跨Shadow DOM表单提交保持同类几何。 */
 .ak-c-dialog__footer {
@@ -815,4 +850,14 @@ ak-router-view {
 }
 [data-route-phase="preparing"] > .ak-route-content {
     visibility: hidden;
+}
+
+/* 高亮弧边按钮：确认主动作蓝色内光与独立键盘焦点；不依赖点击后的鼠标focus。 */
+.pf-c-button:is(.pf-m-primary, .pf-m-warning, .ak-first-highlight):focus-visible {
+    outline-color: var(--ak-first-accent);
+}
+/* 提示信息：菜单项是整行操作，不继承正文链接下划线。 */
+a.pf-c-dropdown__menu-item:is(:hover, :focus-visible) {
+    color: var(--ak-first-text);
+    text-decoration: none;
 }

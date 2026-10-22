@@ -1,4 +1,5 @@
 import "#elements/Spinner";
+import "#elements/EmptyIllustration";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
@@ -57,7 +58,12 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
-    public role = "status";
+    // 提示信息：连接后设置默认语义，避免原生createElement拒绝构造时写入的属性。
+    connectedCallback(): void {
+        super.connectedCallback();
+
+        if (!this.hasAttribute("role")) this.role = "status";
+    }
 
     static styles = [
         PFEmptyState,
@@ -96,13 +102,8 @@ export class EmptyState extends AKElement implements IEmptyState {
                         ? html`<div part="spinner" class="pf-c-empty-state__icon">
                               <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                           </div>`
-                        : html`<i
-                              part="icon"
-                              class="pf-icon fa ${
-                                  this.icon || "fa-question-circle"
-                              } pf-c-empty-state__icon"
-                              aria-hidden="true"
-                          ></i>`
+                        : html`<!-- 提示信息：空态/错误共用原SVG，业务文案与重试操作独立保留。 -->
+                              <ak-empty-illustration part="icon"></ak-empty-illustration>`
                 }
                 ${
                     hasHeading && !loading

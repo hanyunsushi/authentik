@@ -1,3 +1,4 @@
+import "#elements/EmptyIllustration";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -49,7 +50,11 @@ export class LibraryPageApplicationEmptyList
 
         return html`
             <div class="pf-u-pt-lg">
-                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="${href}"
+                <a
+                    aria-disabled="false"
+                    data-testid="empty-library-create-application"
+                    class="cta pf-c-button pf-m-secondary"
+                    href="${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
@@ -64,7 +69,8 @@ export class LibraryPageApplicationEmptyList
     public override render() {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
-                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
+                <!-- 提示信息：应用空态使用统一插画，不改变管理员创建入口。 -->
+                <ak-empty-illustration></ak-empty-illustration>
                 <h2 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h2>
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}

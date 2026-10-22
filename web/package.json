@@ -81,7 +81,7 @@
                 "build-locales"
             ],
             "files": [
-                "src/**/*.{css,jpg,png,ts,tsx,js,json,ttf}",
+                "src/**/*.{css,jpg,png,svg,ts,tsx,js,json,ttf}",
                 "!src/**/*.stories.ts",
                 "!src/**/*.tests.ts",
                 "!src/locales/*.ts",
