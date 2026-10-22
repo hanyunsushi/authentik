@@ -28,7 +28,7 @@ export class EmptyIllustration extends AKElement {
 
     render() {
         return html`<img
-            src=${placeholder}
+            src=${new URL(placeholder, import.meta.url).href}
             alt=""
             aria-hidden="true"
             data-design-id="empty-illustration"
