@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-23",
+  "source_commit": "eded900636913192a839d5b06e104bf585964a46",
+  "native_image": "authentik-custom:2026.11.0-rc1-kreeper-eded90063",
+  "image_config_digest": "sha256:87b2cba92b4353508ab9aadb0b4e400b682c43721a2fc28bb21e870ecb4a1b09",
+  "oci_manifest_digest": "sha256:0ee75fa394526e9a4f3787c13517dec00e3e5697176f68781708cfe7fe9a4836",
+  "console_release": "console-20261023-authentik-design-c",
+  "console_base": "console-20261023-sidebar-motion-c",
+  "checks": {
+    "web_suite": {
+      "files": 48,
+      "tests": 376
+    },
+    "asset_address_followup": {
+      "files": 1,
+      "tests": 13
+    },
+    "types_lint_format_build": "passed",
+    "wiki_links_and_authority": "passed",
+    "local_independent_runtime_files": 3511,
+    "oci_runtime_files": 3513,
+    "migrations": 790,
+    "identity_counts": [
+      790,
+      3,
+      5,
+      5,
+      16,
+      1
+    ],
+    "other_native_containers_unchanged": 10,
+    "console_activation_containers_unchanged": 12,
+    "console_manifest_entries": 1193,
+    "public": [
+      {
+        "url": "https://console.kreeper.cc/",
+        "status": 200,
+        "bytes": 3370
+      },
+      {
+        "url": "https://console.kreeper.cc/releases/console-20261023-authentik-design-c/version.json",
+        "status": 200,
+        "bytes": 1713
+      },
+      {
+        "url": "https://console.kreeper.cc/releases/console-20261023-authentik-design-c/apps/authentik/microfrontend/authentik-microfrontend.js",
+        "status": 200,
+        "bytes": 43719,
+        "sha256_matches": true
+      },
+      {
+        "url": "https://console.kreeper.cc/releases/console-20261023-authentik-design-c/apps/authentik/microfrontend/authentik.css",
+        "status": 200,
+        "bytes": 177877,
+        "sha256_matches": true
+      },
+      {
+        "url": "https://oidc.kreeper.cc/-/health/ready/",
+        "status": 200,
+        "bytes": 0
+      },
+      {
+        "url": "https://oidc.kreeper.cc/static/dist/assets/web/src/assets/illustrations/kreeper-placeholder-transparent-MTEODVNU.svg",
+        "status": 200,
+        "bytes": 12857,
+        "sha256_matches": true
+      }
+    ]
+  },
+  "retention": {
+    "current_console": "console-20261023-authentik-design-c",
+    "current_authentik": "kreeper-eded90063",
+    "containers_healthy": 12,
+    "console_full_releases": [
+      "console-20261022-closeout-a",
+      "console-20261022-runtime-config-fix-a",
+      "console-20261023-authentik-design-c",
+      "console-20261023-sidebar-motion-c"
+    ],
+    "authentik_full_releases": [
+      "kreeper-307b7137f9e6",
+      "kreeper-eded90063",
+      "kreeper-f01482acb",
+      "kreeper-ff30c7cfd4d8"
+    ],
+    "df": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        96G   46G   50G  48% /\n"
+  },
+  "limits": [
+    "Authenticated production Console interface switching not manually verified",
+    "No full backup restoration drill",
+    "No physical touch-device verification"
+  ],
+  "local_runtime": "Original containers use final image and remain stopped; temporary validation containers/network/volumes removed"
+}

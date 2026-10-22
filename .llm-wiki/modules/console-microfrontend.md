@@ -51,3 +51,5 @@ Console导航契约的`iconSvg`字段发布目前原生侧栏正在绘制的路�
 ## 当前界面导航
 
 `ConsoleInterface#navigation`只发布`interfaceName`对应的导航树。右上角原生切换入口导航至Admin/User路径，`setPath`同步界面、路由及下一次菜单/命令面板更新；管理员选择User界面也仅显示User菜单。真实管理员权限、企业许可、能力和UI功能开关继续过滤菜单。Host保留最近已确认的菜单快照，应用就绪后整体替换；不合并Admin与User导航，也不把切换入口移到侧栏。
+
+发布验证见[脱敏回执](../guides/design-release-20261023.json)；运行与保留解释归项目权威文档。

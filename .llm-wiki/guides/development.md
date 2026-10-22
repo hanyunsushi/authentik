@@ -1,6 +1,6 @@
 ---
 title: 前端开发入口
-updated: 2026-10-20
+updated: 2026-10-23
 sources:
   - Makefile
   - web/package.json
@@ -9,6 +9,10 @@ sources:
   - deploy/oci-full/Dockerfile
   - deploy/oci-full/compose.local.yml
 ---
+
+## 本机服务的停用与恢复
+
+本机当前开关状态见[项目权威文档](../../agent.md#本机服务状态2026-10-23)。恢复已存在的本机容器可使用 `docker --context desktop-linux start authentik-local-postgresql-1 authentik-local-server-1 authentik-local-worker-1`，再核对ready接口；Storybook按上面的命令按需启动。不要将本机停止状态写作OCI服务停止。
 
 # 前端开发入口
 

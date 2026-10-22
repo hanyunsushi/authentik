@@ -42,3 +42,5 @@ Flow 在请求和阶段模块准备期间隐藏整个认证内容区并设置 in
 ## 空态、弹窗与门户卡片
 
 非加载空态/错误由 `EmptyIllustration` 使用设计系统提供的原 SVG，160×100 contain；文案、重试和权限语义保留。`EmptyState` 连接后设置默认status，避免原生createElement构造期间写属性失败。Dialog延续浏览器焦点、Escape、遮罩及表单逻辑，桌面18px浅灰表面，窄屏保留原全屏行为；长标题换行。确认主动作显式接入高亮弧边，风险由既有标题/正文和业务回调表达。门户网格卡的整卡链接不使用正文链接下划线，文字不描边，标题区保留两行完整高度；独立正文链接维持原反馈。
+
+空态SVG的生产资源地址必须由`new URL(asset, import.meta.url)`解析；原生bundle中的相对asset路径不能直接绑定到页面img src。MFE绝对发布base继续有效。2026-10-23重新读取[AWS Typography](https://cloudscape.design/foundation/visual-foundation/typography/)的14/20正文与12/16说明，项目字体按既有角色保留。
