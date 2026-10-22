@@ -8,6 +8,8 @@ export interface ConsoleNavigationItem {
     public?: boolean;
     expanded?: boolean;
     disabled?: boolean;
+    /** Serialized SVG from the native sidebar; the host owns sizing and color. */
+    iconSvg?: string;
     children?: ConsoleNavigationItem[];
 }
 

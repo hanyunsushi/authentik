@@ -12497,7 +12497,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>One identity. Every application.</source>
 </trans-unit>
 <trans-unit id="flow.design.introduction.description">
-  <source>Sign in securely to your applications with authentik.</source>
+  <source>Sign in securely to your applications with Authentik.</source>
 </trans-unit>
 <trans-unit id="navigation.admin.caption">
   <source>Administration</source>
@@ -12552,6 +12552,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="console.login.session.error">
   <source>Session expired. Please log in again.</source>
+</trans-unit>
+<trans-unit id="common.brand.logo.alt-text">
+  <source>Authentik logo</source>
 </trans-unit>
 </body>
 </file>

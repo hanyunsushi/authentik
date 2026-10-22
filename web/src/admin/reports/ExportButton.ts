@@ -81,7 +81,7 @@ export class ExportButton extends WithCapabilitiesConfig(
 
         return html`<p>
                 ${msg(
-                    str`${this.brand.brandingTitle} will collect all objects with the specified parameters:`,
+                    str`${this.brandingTitle} will collect all objects with the specified parameters:`,
                 )}
             </p>
             <br />

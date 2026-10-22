@@ -39,6 +39,10 @@ marketing当前无应用绑定限制，普通有效账户即使尚未加入注�
 
 `rollback-registration.py`使用`configuration-before.json`恢复登录页入口和营销原绑定，并停用本次两个受管理blueprint。保留已创建账户和邀请等数据，将注册Flow改为仅超级管理员可进入，关闭匿名直接链接。若入口或营销绑定已被其他操作修改，脚本拒绝覆盖。恢复前先核对现状；命令见[配置部署说明](../../deploy/oci-full/README.md#注册配置)。运行位置、备份、镜像与已执行验证由[项目权威](../../agent.md)维护。
 
+## OpenStock OIDC boundary
+
+OpenStock 使用独立 confidential OIDC application/client，沿用 openid/profile/email mappings；下游从验证后的 issuer+subject 识别用户，groups 只用于应用内部角色，不执行邮箱隐式关联或父域共享 Cookie。其启动与回调隔离协议由 [OpenStock 认证模块](/Users/hinaw/openstock/.llm-wiki/modules/auth-database.md)维护，运行配置与真实验收状态在各自权威文档中，不能从应用创建推断登录成功。
+
 ## See Also
 
 - [前端与样式](../modules/frontend.md)

@@ -1,4 +1,4 @@
-import { DefaultBrand } from "#common/ui/config";
+import { DefaultBrand, displayBrandingTitle } from "#common/ui/config";
 
 import { DocumentTitleSegment, setTitle } from "#elements/router/meta";
 import { createMixin } from "#elements/types";
@@ -99,7 +99,7 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
             public brand!: CurrentBrand;
 
             public get brandingTitle(): string {
-                return this.brand.brandingTitle ?? DefaultBrand.brandingTitle;
+                return displayBrandingTitle(this.brand.brandingTitle);
             }
 
             public get brandingLogo(): string {

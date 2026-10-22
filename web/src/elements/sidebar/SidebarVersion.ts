@@ -3,7 +3,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 
 import { globalAK } from "#common/global";
-import { DefaultBrand } from "#common/ui/config";
+import { DefaultBrand, displayBrandingTitle } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -82,7 +82,9 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             </button>`;
         }
 
-        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+        let product = displayBrandingTitle(
+            globalAK().brand.brandingTitle || DefaultBrand.brandingTitle,
+        );
 
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;

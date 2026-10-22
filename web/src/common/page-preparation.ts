@@ -119,6 +119,8 @@ export async function waitForPage(root: HTMLElement, preparation: PagePreparatio
             ),
         );
 
+        // 组件绘制动画：等待两次绘制，让首屏模块在同一准备期内完成连续挂载。
+        await nextPaint();
         await nextPaint();
 
         const busy = routeElements(root).some((element) => {
@@ -138,6 +140,7 @@ export async function waitForPage(root: HTMLElement, preparation: PagePreparatio
         stable =
             !preparation.pending && !busy && revision === preparation.revision ? stable + 1 : 0;
 
-        if (stable >= 2) return;
+        // 连续三次安静检查才算整页完成，避免异步模块在点阵撤下后才露出局部加载。
+        if (stable >= 3) return;
     }
 }

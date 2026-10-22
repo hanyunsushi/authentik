@@ -801,6 +801,7 @@ ak-router-view {
 }
 .ak-route-content[aria-hidden="true"] {
     visibility: hidden;
+    opacity: 0;
     pointer-events: none;
 }
 .ak-route-content {

@@ -172,6 +172,7 @@ describe("ak-router-view", () => {
         expect(view.dataset.routePhase).toBe("preparing");
         expect(view.querySelector('[data-testid="route-loader"]')).not.toBeNull();
         expect(view.querySelector(".ak-route-content")?.getAttribute("aria-hidden")).toBe("true");
+        expect(view.querySelector<HTMLElement>(".ak-route-content")?.style.opacity).toBe("0");
         const second = { ...context, init: {}, url: "/api/chained" };
         await middleware.pre(second);
         body.enqueue(new TextEncoder().encode("{}"));
@@ -191,7 +192,7 @@ describe("ak-router-view", () => {
         expect(view.dataset.routePhase).toBe("ready");
     });
 
-    test("reveals actual block boxes inside an inline shadow page", async () => {
+    test("reveals the complete route page as one content layer", async () => {
         if (!customElements.get("test-inline-route-page")) {
             customElements.define(
                 "test-inline-route-page",
@@ -212,28 +213,92 @@ describe("ak-router-view", () => {
         });
 
         await expect
-            .poll(
-                () =>
-                    view
-                        .querySelector("test-inline-route-page")
-                        ?.shadowRoot?.querySelector("section")
-                        ?.getAnimations().length,
-            )
+            .poll(() => view.querySelector(".ak-route-content")?.getAnimations().length)
             .toBe(1);
+
+        const content = view.querySelector<HTMLElement>(".ak-route-content")!;
+        expect(content.inert).toBe(true);
+        expect(content.getAttribute("aria-hidden")).toBe("true");
 
         const pageRoot = view.querySelector("test-inline-route-page")!;
         const sections = pageRoot.shadowRoot!.querySelectorAll("section");
         expect(getComputedStyle(pageRoot).display).toBe("inline");
         expect(pageRoot.getAnimations()).toHaveLength(0);
-        expect(sections[0].getAnimations()[0].effect?.getTiming().delay).toBe(50);
-        expect(sections[1].getAnimations()[0].effect?.getTiming().delay).toBe(88);
+        expect(sections[0].getAnimations()).toHaveLength(0);
+        expect(sections[1].getAnimations()).toHaveLength(0);
         expect(view.querySelector('[data-testid="route-loader"]')).toBeNull();
 
         await new Promise<void>((resolve) =>
             view.addEventListener("ak-route-entered", () => resolve(), { once: true }),
         );
 
+        expect(content.inert).toBe(false);
+        expect(content.getAttribute("aria-hidden")).toBe("false");
         expect(sections[0].getAnimations()).toHaveLength(0);
+    });
+
+    test("keeps the whole page blank until delayed shadow modules finish loading", async () => {
+        if (!customElements.get("test-delayed-route-modules")) {
+            customElements.define(
+                "test-delayed-route-modules",
+                class extends HTMLElement {
+                    connectedCallback() {
+                        const root = this.attachShadow({ mode: "open" });
+
+                        root.innerHTML =
+                            "<main><section><ak-spinner></ak-spinner></section><section>Next module</section></main>";
+
+                        window.setTimeout(() => {
+                            root.querySelector("ak-spinner")?.remove();
+                            const loaded = document.createElement("span");
+                            loaded.textContent = "Module ready";
+                            root.querySelector("main section")?.append(loaded);
+                        }, 100);
+                    }
+                },
+            );
+        }
+
+        const view = mountView({
+            url: "/if/user/delayed-modules",
+            routes: [
+                new Route(
+                    "/delayed-modules",
+                    () => html`<test-delayed-route-modules></test-delayed-route-modules>`,
+                ),
+            ],
+        });
+
+        await expect.poll(() => view.dataset.routePhase).toBe("preparing");
+        const content = view.querySelector<HTMLElement>(".ak-route-content")!;
+        expect(content.inert).toBe(true);
+        expect(content.getAttribute("aria-hidden")).toBe("true");
+        expect(content.style.opacity).toBe("0");
+        expect(view.querySelector('[data-testid="route-loader"]')).not.toBeNull();
+
+        const moduleSpinner = view
+            .querySelector("test-delayed-route-modules")
+            ?.shadowRoot?.querySelector("ak-spinner");
+
+        expect(moduleSpinner).not.toBeNull();
+        expect(getComputedStyle(moduleSpinner!).visibility).toBe("hidden");
+
+        await expect.poll(() => view.dataset.routePhase).toBe("entering");
+        expect(view.querySelector('[data-testid="route-loader"]')).toBeNull();
+
+        expect(view.querySelector("test-delayed-route-modules")?.shadowRoot?.textContent).toContain(
+            "Module ready",
+        );
+
+        await expect.poll(() => content.getAnimations().length).toBe(1);
+        expect(content.inert).toBe(true);
+
+        await new Promise<void>((resolve) =>
+            view.addEventListener("ak-route-entered", () => resolve(), { once: true }),
+        );
+
+        expect(view.dataset.routePhase).toBe("ready");
+        expect(content.inert).toBe(false);
     });
 
     test("does not reveal an obsolete lazy page after a faster navigation", async () => {

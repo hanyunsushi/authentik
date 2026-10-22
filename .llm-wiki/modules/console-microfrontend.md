@@ -1,6 +1,6 @@
 ---
 title: Console 原生 ESM 接入
-updated: 2026-10-21
+updated: 2026-10-22
 sources:
   - web/src/console/microfrontend.ts
   - web/src/console/Interface.ts
@@ -14,7 +14,7 @@ sources:
 
 # 边界
 
-Admin与User沿用原Lit路由、业务组件、生成API客户端和权限判断，导出Console的`mount/navigate/unmount`生命周期。Host提供唯一顶栏、侧栏和文档滚动；原账户、抽屉与命令面板入口挂载到Host顶栏槽。登录、邀请注册、MFA继续使用原生IdP流程，不嵌套Flow界面，不复制用户数据库。
+Admin与User沿用原Lit路由、业务组件、生成API客户端和权限判断，导出Console的`mount/navigate/unmount`生命周期。Host提供唯一顶栏、侧栏和文档滚动；原账户、抽屉与命令面板入口挂载到Host顶栏槽。登录、邀请注册、MFA继续使用原生IdP流程，不嵌套Flow界面，不复制用户数据库。Console中的产品可见名称为`Authentik`；URL、API前缀、OAuth client ID、app slug及内部配置标识仍保持小写。
 
 # OAuth与API
 
@@ -26,7 +26,9 @@ Admin与User沿用原Lit路由、业务组件、生成API客户端和权限判�
 
 # 路由和生命周期
 
-路径为`/authentik/if/admin/...`、`/authentik/if/user/...`。Host持有History，业务导航发布给Host；查询参数和片段保留。原生路由加载门控负责点阵、内容隐藏与入场动画。请求取消中间件先于准备计数中间件运行，保证同一请求对象能完成计数。
+路径为`/authentik/if/admin/...`、`/authentik/if/user/...`。Host持有History，业务导航发布给Host；查询参数和片段保留。原生`RouterView`准备期间以隐藏/inert的完整内容根承载目标页面，只显示一个点阵；生成客户端请求终态、组件更新、字体/首屏媒体与多次绘制安静检查完成后才撤点阵，再以单一完整路由内容层入场。模块自身的spinner仅作为准备状态参与等待，不在点阵阶段露出。减少动态效果跳过入场动画但保留准备顺序。请求取消中间件先于准备计数中间件运行，保证同一请求对象能完成计数。
+
+Console导航契约的`iconSvg`字段发布目前原生侧栏正在绘制的路径SVG。上游authentik基线的管理侧栏没有逐页SVG；本fork新增的Admin图形由`menuIconForPath/menuIconPath`按具体路由语义绘制，减少日志/任务、审批/规则、目录/角色等无关入口共用同一图案。它们不是上游原版SVG。User入口沿用对应功能图标。Console Host运行时渲染与标签页导航快照共用`normalizeNavigationSvg`白名单，保留viewBox/路径、统一`currentColor`槽位且不执行脚本、不接受外部资源。项目级`Authentik`标志另来自官方`@goauthentik/brand-assets@2.0.0` `SVG/icon.svg`，不与Kreeproxy共用盾牌。
 
 卸载取消API请求、轮询、可见性/导航/抽屉监听、命令动画帧，清理顶栏槽、消息容器、API缓存及已注册上下文。消息容器监听随连接/断开注册和移除。原生独立站仍使用其原文档主题与滚动条。
 

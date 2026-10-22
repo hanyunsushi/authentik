@@ -1,6 +1,6 @@
 ---
 title: authentik 代码 Wiki
-updated: 2026-10-20
+updated: 2026-10-22
 ---
 
 [项目权威文档](../agent.md) · [Schema](_schema.md) · [同步状态](_sync-state.md)
@@ -23,3 +23,5 @@ updated: 2026-10-20
 - [前端开发入口](guides/development.md)
 - [邀请注册与应用访问](guides/registration.md)
 - [备份与恢复边界](guides/backup-and-restore.md)
+
+- [发布、备份与保留合同](guides/operations-retention.md)

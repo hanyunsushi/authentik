@@ -36,6 +36,7 @@ import {
 } from "#elements/router/core/interfaces";
 import { RouterNavigateEvent, navigate } from "#elements/router/core/navigation";
 import { PageDetailsUpdate } from "#elements/router/meta";
+import { menuIconSvgForPath } from "#elements/sidebar/menu-model";
 
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import { readDrawerParams, renderNotificationDrawerPanel } from "#components/notifications/utils";
@@ -156,7 +157,7 @@ export class ConsoleInterface extends WithNotifications(
     #pageDetails = (event: PageDetailsUpdate) => {
         consoleRuntime()?.context.onHeader?.({
             mounted: true,
-            title: String(event.header.header || "authentik"),
+            title: String(event.header.header || "Authentik"),
             ready: true,
         });
     };
@@ -236,6 +237,7 @@ export class ConsoleInterface extends WithNotifications(
                 key: "library",
                 label: msg("Applications", { id: "console.navigation.applications.label" }),
                 path: "/if/user/library",
+                iconSvg: menuIconSvgForPath("/core/applications"),
             },
         ];
 
@@ -244,6 +246,7 @@ export class ConsoleInterface extends WithNotifications(
                 key: "settings",
                 label: msg("Settings", { id: "console.navigation.settings.label" }),
                 path: "/if/user/settings",
+                iconSvg: menuIconSvgForPath("/core/settings"),
             });
 
         if (
@@ -255,6 +258,7 @@ export class ConsoleInterface extends WithNotifications(
                 key: "requests",
                 label: msg("Discover", { id: "console.navigation.discover.label" }),
                 path: "/if/user/requests",
+                iconSvg: menuIconSvgForPath("/requests/access-requests"),
             });
 
         if (
@@ -266,6 +270,7 @@ export class ConsoleInterface extends WithNotifications(
                 key: "agents",
                 label: msg("Agents", { id: "console.navigation.agents.label" }),
                 path: "/if/user/agents",
+                iconSvg: menuIconSvgForPath("/identity/agents"),
             });
 
         const items: ConsoleNavigationItem[] = [
@@ -316,6 +321,7 @@ export class ConsoleInterface extends WithNotifications(
                                   .filter((item): item is ConsoleNavigationItem => !!item),
                           }
                         : {}),
+                    ...(path ? { iconSvg: menuIconSvgForPath(path) } : {}),
                 };
             };
 

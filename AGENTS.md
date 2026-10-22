@@ -1,6 +1,6 @@
 ## Project Overview
 
-This is the **authentik** monorepo — an open-source Identity Provider (IdP) for modern SSO. It speaks SAML, OAuth2/OIDC, LDAP, RADIUS, and SCIM, and is built to be self-hosted from a homelab to a large production cluster. The company is **Authentik Security, Inc.**; the product name is **always lowercase `authentik`**, even at the start of a sentence.
+This is the **authentik** monorepo — an open-source Identity Provider (IdP) for modern SSO. It speaks SAML, OAuth2/OIDC, LDAP, RADIUS, and SCIM, and is built to be self-hosted from a homelab to a large production cluster. The company is **Authentik Security, Inc.**; technical identifiers and prose use lowercase `authentik`, while the WebUI's default visible brand title is `Authentik`.
 
 It is a **polyglot monorepo**. Most work lands in one of the subtrees below; where a subtree has its own deeper guide, read it before working there:
 
@@ -133,7 +133,7 @@ Consequences:
 
 ## Conventions
 
-- **Product name is always lowercase `authentik`.** This holds in code comments, docs, and commit messages.
+- **Technical product identifiers use lowercase `authentik`.** The user-approved WebUI brand display exception is `Authentik`; do not change API names, URLs, slugs, package names, or protocol identifiers.
 - **Commit attribution:** do not add a Claude co-author trailer; credit human collaborators instead.
 - **`CODEOWNERS`** maps subtrees to teams. For a change that spans several teams' areas, prefer splitting into one PR per owning team (enabling/wiring changes merge last).
 - **Translations** (`locale/`) and web locales are extracted, not edited by hand — see `make i18n-extract`.
@@ -180,3 +180,9 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 - Never create an issue.
 - Never create a PR.
 - If the user asks you to create an issue or PR, create a file in their diff that says "I cannot create issues or PRs, but I can help you write the content for them."
+
+<!-- OCI-RETENTION:START -->
+## 发布、备份与清理
+
+发布、备份或清理前必须读取`.llm-wiki/guides/operations-retention.md`和agent.md的当前合同。保留当前版及最多三个可用回滚；缺失历史不追补，随发布积累。正式数据/密钥/卷受保护，先dry-run和引用/恢复清单校验再精确清理；不遍历项目根删除、不执行volume prune或down -v。
+<!-- OCI-RETENTION:END -->

@@ -22,6 +22,12 @@ export const DefaultBrand = {
     },
 } as const satisfies CurrentBrand;
 
+export function displayBrandingTitle(title?: string | null): string {
+    const value = title ?? DefaultBrand.brandingTitle;
+
+    return value === "authentik" ? "Authentik" : value;
+}
+
 export enum UserDisplay {
     username = "username",
     name = "name",

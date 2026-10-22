@@ -33,7 +33,7 @@ export async function mount(container: HTMLElement, context: ConsoleContext) {
 
     const logout = async () => {
         context.onSession?.({ authenticated: false, isAdmin: false, username: "" });
-        context.onNavigation?.([{ key: "home", label: "authentik", path: "/", public: true }]);
+        context.onNavigation?.([{ key: "home", label: "Authentik", path: "/", public: true }]);
         await oidc.logout();
     };
 
@@ -156,12 +156,12 @@ export async function mount(container: HTMLElement, context: ConsoleContext) {
 
         if (session) {
             onSession(session);
-            context.onHeader?.({ mounted: true, title: "authentik", ready: true });
+            context.onHeader?.({ mounted: true, title: "Authentik", ready: true });
             await navigate(path);
         } else {
             context.onSession?.({ authenticated: false, isAdmin: false, username: "" });
-            context.onNavigation?.([{ key: "home", label: "authentik", path: "/", public: true }]);
-            context.onHeader?.({ mounted: false, title: "authentik", ready: true });
+            context.onNavigation?.([{ key: "home", label: "Authentik", path: "/", public: true }]);
+            context.onHeader?.({ mounted: false, title: "Authentik", ready: true });
 
             context.onTopbarActions([
                 {
@@ -177,7 +177,7 @@ export async function mount(container: HTMLElement, context: ConsoleContext) {
                     class="console-authentik-welcome"
                     data-design-id="console-authentik-welcome"
                 >
-                    <h1>authentik</h1>
+                    <h1>Authentik</h1>
                     <p>
                         ${msg("Log in to manage identities, applications, and access.", { id: "console.welcome.description" })}
                     </p>

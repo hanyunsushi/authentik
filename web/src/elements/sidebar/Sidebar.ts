@@ -1,5 +1,5 @@
 import "#elements/sidebar/SidebarVersion";
-import { DefaultBrand } from "#common/ui/config";
+import { DefaultBrand, displayBrandingTitle } from "#common/ui/config";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
@@ -218,7 +218,7 @@ export class Sidebar extends WithBrandConfig(AKElement) {
                 >
                     ${ThemedImage({ src: brand.brandingFavicon ?? DefaultBrand.brandingFavicon, alt: "", theme: this.activeTheme, themedUrls: brand.brandingFaviconThemedUrls })}
                     <span class="brand-copy"
-                        ><strong>${brand.brandingTitle ?? "authentik"}</strong
+                        ><strong>${displayBrandingTitle(brand.brandingTitle)}</strong
                         ><small
                             >${msg("Administration", { id: "navigation.admin.caption" })}</small
                         ></span

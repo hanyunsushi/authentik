@@ -56,32 +56,6 @@ export function formatSpanName(prefix: string, routeName: string | null, pathnam
     return joinPath(prefix, routeName);
 }
 
-// 组件绘制动画：穿过Lit的inline/contents宿主与透明布局，裁切真实块盒。
-function revealBlocks(root: HTMLElement | ShadowRoot): HTMLElement[] {
-    return [...root.children].flatMap((node) => {
-        if (!(node instanceof HTMLElement) || node.matches("style, script")) return [];
-        const display = getComputedStyle(node).display;
-
-        if (display === "none") return [];
-
-        if (display === "inline" || display === "contents") {
-            const children = revealBlocks(node.shadowRoot ?? node);
-
-            return children.length ? children : [];
-        }
-
-        if (!node.getClientRects().length) return [];
-
-        if (node.matches("main, .pf-c-page__main-section, .page-rows, .pf-l-grid")) {
-            const children = revealBlocks(node);
-
-            if (children.length) return children;
-        }
-
-        return [node];
-    });
-}
-
 @customElement("ak-router-view")
 export class RouterView extends AKElement {
     /**
@@ -310,26 +284,24 @@ export class RouterView extends AKElement {
         await nextPaint();
 
         if (this.#preparation !== preparation || !this.isConnected) return;
-        root.removeAttribute("aria-hidden");
         this.removeAttribute("aria-busy");
 
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            const blocks = revealBlocks(root);
-
-            this.#animations = (blocks.length ? blocks : [root]).map((block, index) =>
-                block.animate(
+            // 组件绘制动画：点阵完全撤下后，整张路由页面作为一个内容层入场。
+            this.#animations = [
+                root.animate(
                     [
                         { clipPath: "inset(0 0 100% 0)", opacity: 0 },
                         { clipPath: "inset(0)", opacity: 1 },
                     ],
                     {
                         duration: 1008,
-                        delay: 50 + index * 38,
+                        delay: 50,
                         easing: "cubic-bezier(.16,1,.3,1)",
                         fill: "both",
                     },
                 ),
-            );
+            ];
 
             await Promise.all(
                 this.#animations.map((animation) => animation.finished.catch(() => {})),
@@ -386,7 +358,11 @@ export class RouterView extends AKElement {
         return html`<div
                 class="ak-route-content"
                 aria-hidden=${this.phase === "ready" ? "false" : "true"}
-                ?inert=${this.phase === "preparing"}
+                ?inert=${this.phase !== "ready"}
+                style=${styleMap({
+                    visibility: this.phase === "preparing" ? "hidden" : "visible",
+                    opacity: this.phase === "ready" ? "1" : "0",
+                })}
                 data-design-id="route-content"
             >
                 ${this.content}

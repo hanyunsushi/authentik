@@ -450,10 +450,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                                   ${msg("One identity. Every application.", { id: "flow.design.introduction.heading" })}
                               </h2>
                               <p>
-                                  ${msg("Sign in securely to your applications with authentik.", { id: "flow.design.introduction.description" })}
+                                  ${msg("Sign in securely to your applications with Authentik.", { id: "flow.design.introduction.description" })}
                               </p>
                           </div>
-                          <span class="ak-first-auth-signature">authentik</span>
+                          <span class="ak-first-auth-signature">Authentik</span>
                       </aside>`
                     : nothing
             }
@@ -479,7 +479,7 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                     <div class="pf-c-login__main-header pf-c-brand" part="branding">
                         ${ThemedImage({
                             src: this.brandingLogo,
-                            alt: msg("authentik Logo"),
+                            alt: msg("Authentik logo", { id: "common.brand.logo.alt-text" }),
                             className: "branding-logo",
                             theme: this.activeTheme,
                             themedUrls: this.brandingLogoThemedUrls,
