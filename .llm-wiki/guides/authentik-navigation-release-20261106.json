@@ -1,0 +1,136 @@
+{
+  "status": "published",
+  "date": "2026-11-06",
+  "native": {
+    "version": "2026.11.0-rc1",
+    "build_id": "kreeper-36c4f2768",
+    "source_sha256": "0fa888da8a03c899e501a26e1cbe8b5d967c598c71833fa916c1b5463c5b77d5",
+    "active_image": "sha256:8eb4ac872500a78038f4ac27316364c7adad72798687386ddbf6bdbf34dceb82",
+    "image_config_digest": "sha256:a8d75ff17d56450ef70a8a859417fb4ac2b2e3bb3138da54be1f421dd5bc73ca",
+    "oci_manifest_digest": "sha256:8eb4ac872500a78038f4ac27316364c7adad72798687386ddbf6bdbf34dceb82",
+    "files_verified": 3513,
+    "pending_migrations": 0,
+    "identity_counts": [
+      790,
+      4,
+      6,
+      6,
+      16,
+      1
+    ],
+    "other_containers_unchanged": 10
+  },
+  "console": {
+    "releaseId": "console-20261106-authentik-navigation-a",
+    "previous": "console-20261106-topbar-glass-a",
+    "sourceCommit": "03f1c46a1c80a1057e4f27f459615902016b7056",
+    "sourceSha256": "3bf01c9de06e9807f8b06e0a18c99c5ac37f836472239e01a052d14eee94040e",
+    "archiveSha256": "857ddda858b2b4c7ce08fbf3b489e34295c04ad59b042fb9a75f7d3898783221",
+    "manifestSha256": "8b73b98f19a18e519066c276c8f0ccb3b8ee604ec4d51805f920fe43a6980f05",
+    "manifestFiles": 1703,
+    "childFilesByteIdentical": 347,
+    "childProvenancePreserved": true,
+    "containersUnchanged": 12,
+    "servicesUnchanged": true,
+    "restartsAndConfigurationUnchanged": true
+  },
+  "authentikSourceCommit": "36c4f2768b8fa5fde4beaf88c031f92db18444a3",
+  "hostSourceCommit": "03f1c46a1c80a1057e4f27f459615902016b7056",
+  "validation": {
+    "authentikTestFiles": 48,
+    "authentikTests": 380,
+    "cleanHostTests": 52,
+    "localRuntimeFiles": 3511,
+    "typesLintFormatBuilds": "passed",
+    "sameImageLocalAndOCI": true,
+    "backendSourceUnchanged": true,
+    "publicBrowser": [
+      "Console version endpoint and anonymous Authentik MFE",
+      "native authentication form"
+    ],
+    "originRoutes": [
+      "/",
+      "/kreeproxy/",
+      "/kreepai/home",
+      "/kreepai/monitor",
+      "/marketing/",
+      "/authentik/",
+      "/openstock/dashboard",
+      "/api/kreeproxy/api/health",
+      "/api/kreepai/health"
+    ],
+    "originResourcesVerified": 24,
+    "publicCommandLineHTTP": "edge returned 403; public acceptance used Chrome",
+    "authenticatedProductionVisualAcceptance": false,
+    "physicalTouchOtherEnginesAndFullRestore": false
+  },
+  "accessPreservation": {
+    "identityAndPolicyDigestsUnchanged": true,
+    "blueprintConfigurationUnchanged": true,
+    "blueprintOperationalTimestampRefresh": {
+      "Default - Out-of-box-experience flow": [
+        "last_updated",
+        "last_applied"
+      ]
+    },
+    "zswApplications": 5,
+    "zswMarketingDenied": true,
+    "adminApplications": 6
+  },
+  "retention": {
+    "native": [
+      {
+        "build": "kreeper-36c4f2768",
+        "image": "sha256:8eb4ac872500a78038f4ac27316364c7adad72798687386ddbf6bdbf34dceb82",
+        "backendMatchesCurrent": true
+      },
+      {
+        "build": "kreeper-eded90063",
+        "image": "sha256:0ee75fa394526e9a4f3787c13517dec00e3e5697176f68781708cfe7fe9a4836",
+        "backendMatchesCurrent": true
+      },
+      {
+        "build": "kreeper-f01482acb",
+        "image": "sha256:5a36be53d59423567b3ee28b04fa966c8909f8efddadf1e657286d15bba3edea",
+        "backendMatchesCurrent": true
+      },
+      {
+        "build": "kreeper-ff30c7cfd4d8",
+        "image": "sha256:12ab26120353c8db65b8c253733c78cc36ae75fedee86b1a5b5c063b1f15b8b2",
+        "backendMatchesCurrent": true
+      }
+    ],
+    "console": [
+      "console-20261106-authentik-navigation-a",
+      "console-20261106-topbar-glass-a",
+      "console-20261104-home-anatomy-a",
+      "console-20261104-ai-nav-svg-a"
+    ],
+    "verifiedConsoleManifestFiles": 5391,
+    "consoleStaticReferences": 38509,
+    "compatibilityFilesCompared": 892,
+    "compatibilityAliasesRepointed": 50,
+    "nativeRemovedTags": 3,
+    "nativeRemovedPaths": 2,
+    "consoleRemovedPaths": 2,
+    "volumesRemovedInProduction": 0,
+    "healthyContainers": 12
+  },
+  "recovery": {
+    "nativeBackup": "/home/ubuntu/authentik-oci/backups/before-kreeper-36c4f2768-20261106T053007Z",
+    "consoleBackup": "/home/ubuntu/oci-recovery/console/20261106T050715Z",
+    "nativeOperationsSha256": "a70f4c4df467ecb1225e6c65fd7dee8598327cb25b268deb2ef2b72913a79406",
+    "frontendFailureRollback": "image/override only; keep business database",
+    "backupConfigurationIncluded": true,
+    "offhostDirectory": "~/.local/share/oci-recovery/20261106-authentik-navigation/",
+    "offhostImage": {
+      "compressedSha256": "0887d8f010854857a0642ca40b1dd3144716572ab38fcf47ec456e88e54ff411",
+      "rawSha256": "869a532452f9f1c482afa85a9e8c5facf88c5be576c33a28f982134871b7552c",
+      "gzipRoundtripVerified": true,
+      "compressedBytes": 1296139740
+    },
+    "offhostArchivesSHA256Verified": true,
+    "permissions": "directories 0700; files 0600",
+    "fullRestoreDrill": false
+  }
+}

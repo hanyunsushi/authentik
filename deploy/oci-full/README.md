@@ -49,7 +49,7 @@ docker compose --env-file deploy/oci-full/local.env \
 
 ## 恢复
 
-迁移后的降级必须恢复整个备份数据库、数据目录及旧镜像。仅切换旧镜像不构成有效回退。发布失败时脚本自动执行备份内的 `rollback.py`；人工恢复入口为：
+迁移后的降级必须恢复整个备份数据库、数据目录及旧镜像。仅切换旧镜像不构成有效回退。完整升级失败时脚本自动执行备份内的 `rollback.py`。同版本 `--frontend-only` 失败只恢复旧 override 和 server/worker 镜像，不自动覆盖数据库；备份包括 `configuration/` 并生成完整 SHA256 manifest。以下是需要明确数据恢复范围的全库人工恢复入口：
 
 ```sh
 sudo python3 "$AUTHENTIK_BACKUP/rollback.py" "$AUTHENTIK_BACKUP"

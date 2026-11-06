@@ -72,7 +72,7 @@ try:
     with (backup / 'database.dump').open('rb') as source, (backup / 'database-toc.txt').open('wb') as target:
         subprocess.run(['docker', 'exec', '-i', 'authentik-oci-postgresql-1', 'pg_restore', '-l'], stdin=source, stdout=target, check=True)
     with tarfile.open(backup / 'data-config.tar.gz', 'w:gz') as archive:
-        for name in ('data', 'certs', 'custom-templates', 'geoip'):
+        for name in ('data', 'certs', 'custom-templates', 'geoip', 'configuration'):
             archive.add(root / name, arcname=name)
     query = 'SELECT (SELECT count(*) FROM django_migrations),(SELECT count(*) FROM authentik_core_user),(SELECT count(*) FROM authentik_core_application),(SELECT count(*) FROM authentik_core_provider),(SELECT count(*) FROM authentik_flows_flow),(SELECT count(*) FROM authentik_brands_brand);'
     counts = subprocess.check_output(['docker', 'exec', 'authentik-oci-postgresql-1', 'sh', '-c', 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -At -c ' + "'" + query + "'"], text=True).strip()
@@ -80,6 +80,11 @@ try:
     receipt = {'complete': True, 'backup': str(backup), 'build_id': build_id, 'target_image': image_id, 'identity_counts': counts, 'database_sha256': hashlib.sha256((backup / 'database.dump').read_bytes()).hexdigest()}
     (backup / 'receipt.json').write_text(json.dumps(receipt, indent=2))
     (release / 'backup-path.txt').write_text(str(backup) + '\n')
+    for saved in backup.iterdir():
+        saved.chmod(0o600 if saved.is_file() else 0o700)
+    # 备份契约：配置目录与数据库一并封存，manifest供精确保留和异机校验。
+    backup_manifest = {'schema': 1, 'project': 'authentik', 'complete': True, 'database_validation': 'pg_restore TOC', 'consistency': 'server/worker stopped; PostgreSQL kept running', 'restore_drill': 'not performed', 'files': {p.name: {'size': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in backup.iterdir() if p.is_file()}}
+    (backup / 'manifest.json').write_text(json.dumps(backup_manifest, indent=2) + '\n')
     complete = True
     next_override = root / 'docker-compose.override.yml.next'
     next_override.write_text('services:\n  server:\n    image: ' + image + '\n    volumes:\n      - ./geoip:/geoip:ro\n  worker:\n    image: ' + image + '\n    volumes:\n      - ./geoip:/geoip:ro\n')
@@ -92,7 +97,8 @@ try:
     subprocess.run(compose + ['up', '-d', '--no-deps', '--wait', '--wait-timeout', '360', 'worker'], cwd=root, check=True)
     subprocess.run([sys.executable, str(Path(__file__).with_name('verify.py')), build_id, image_id], check=True)
 except BaseException:
-    if complete and migrations_started:
+    # 回滚边界：同版本前端失败仅恢复镜像/override，不隐式覆盖业务数据库。
+    if complete and migrations_started and '--frontend-only' not in sys.argv[3:]:
         subprocess.run([sys.executable, str(backup / 'rollback.py'), str(backup)], check=True)
     else:
         shutil.copy2(backup / 'docker-compose.override.yml', root / 'docker-compose.override.yml')

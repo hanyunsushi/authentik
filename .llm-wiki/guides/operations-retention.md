@@ -1,6 +1,6 @@
 ---
 title: Authentik发布、备份与保留合同
-updated: 2026-10-22
+updated: 2026-11-06
 ---
 
 # 入口与优先级
@@ -48,6 +48,6 @@ sudo python3 /usr/local/lib/kreeper-oci-operations/recovery.py authentik --apply
 - [项目权威](../../agent.md)
 - [Wiki索引](../_index.md)
 
-# 本轮验收
+# 发布证据
 
-本轮源码检查点`f01482acb`；本地9000与OCI共用一次构建；3512个运行文件、790项迁移、身份对象数量与OIDC issuer/JWKS核对通过。仅server/worker替换，其余10个容器不变。 Authentik新镜像和三个同版本前端回滚`ff30c7cfd4d8`、`307b7137f9e6`、`1b041cc9f4fc`；逐文件核对后端一致。历史误删数据库不可重建；这些代码回退可共用现有兼容数据基线，跨迁移恢复须另行成套验证。 具体活动digest、恢复清单、私有副本及未验范围归[项目权威](../../agent.md)。共享OCI结果见[发布与恢复验收](/Users/hinaw/console-kreeper/.llm-wiki/guides/oci-runtime-and-recovery.md)。
+同版本前端发布只回退镜像/override，不隐式覆盖业务数据库；配置目录随数据一并封存并校验manifest。当前产物、兼容回滚集和验证边界归[项目权威](../../agent.md)，脱敏检查值见[双入口导航发布回执](authentik-navigation-release-20261106.json)。

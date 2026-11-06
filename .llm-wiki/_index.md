@@ -25,3 +25,5 @@ updated: 2026-11-06
 - [备份与恢复边界](guides/backup-and-restore.md)
 
 - [发布、备份与保留合同](guides/operations-retention.md)
+
+- [Authentik导航双入口发布回执](guides/authentik-navigation-release-20261106.json)

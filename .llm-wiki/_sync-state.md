@@ -1,19 +1,13 @@
 ---
 title: authentik 文档同步状态
-updated: 2026-10-23
-head_commit: eded900636913192a839d5b06e104bf585964a46
+updated: 2026-11-06
+head_commit: 36c4f2768b8fa5fde4beaf88c031f92db18444a3
 ---
 
-# Doc Impact Map
+# 双入口导航发布同步
 
-| 改动 | 所有者 |
-| --- | --- |
-| Admin/User菜单互斥及原权限边界 | modules/console-microfrontend.md |
-| 按钮内光、原生Dialog、空态插画、门户卡片 | modules/first-design-system.md、web/src/styles/first/README.md |
-| 检查/浏览器/部署证据 | agent.md |
+Doc Impact Map：共用User导航、Admin分组与activePath归Console模块；Motion/SVG例外和共享控件归设计模块；同版本部署备份/代码回退归备份与保留指南；运行、恢复与未验边界归authority及[脱敏回执](guides/authentik-navigation-release-20261106.json)。干净归档380项/Host52项、类型/lint/格式和Web/SFE/MFE/Host构建通过。本地3511/OCI3513运行文件、790迁移、OIDC摘要和访问组配置核对；只有系统OOBE Blueprint应用时间戳刷新，逐字段dump对照无配置变化。原生和Console已提交发布并完成精确保留/异机摘要，生产登录态菜单、实体触摸、其他引擎及完整恢复未验收。既有注册/访问组dirty源码保留。
 
-# 核验
+部署脚本把configuration纳入manifest封存；同版本前端失败保留数据库，只恢复override和镜像。语法及隔离命令mock的前端/完整回退分支通过；实际发布备份/健康验证通过，未执行生产故障或全库恢复演练。CodeGraph Node22增量sync；前端文本清单沿用本次已验证源。
 
-48文件376项测试与类型通过；CodeGraph和前端文本索引重新生成。Wiki内部链接、索引覆盖及authority软链接在提交前核验。规范类别沿用现有类型；fixture/真实运行/生产证据分开。运行产物身份由authority维护。
-
-运行发布：原生与Console产物、数据保留及验证归authority。本轮静态资源地址专项13项通过；完整suite48文件376项为共享控件快照，最后模块相对地址修正另以原生完整登录环境验证。Wiki链接、authority软链及来源路径核验通过。
+文档lint：15份Markdown、92处本地引用，0断链；JSON、authority软链和diff空白检查通过。

@@ -1,6 +1,6 @@
 ---
 title: 备份与恢复边界
-updated: 2026-10-20
+updated: 2026-11-06
 ---
 
 # 官方方法
@@ -11,9 +11,9 @@ updated: 2026-10-20
 
 # 本项目部署脚本
 
-`deploy/oci-full/deploy.py`是发布脚本。通过发布校验后，它保存旧镜像标识、容器信息、Compose和`.env`，停止本项目server/worker，再运行`pg_dump -Fc`，通过`pg_restore -l`核对目录，并归档data、certs、custom-templates和geoip。回执记录数据库SHA256与身份对象数量，备份目录内保存对应的`rollback.py`。
+`deploy/oci-full/deploy.py`是发布脚本。通过发布校验后，它保存旧镜像标识、容器信息、Compose和`.env`，停止本项目server/worker，再运行`pg_dump -Fc`，通过`pg_restore -l`核对目录，并归档data、certs、custom-templates、geoip和configuration；完整SHA256 manifest供恢复材料及精确保留校验。回执记录数据库SHA256与身份对象数量，备份目录内保存对应的`rollback.py`。
 
-该流程随部署执行，不是独立的定时备份命令；不能为了生成备份而无条件再次运行发布脚本。`rollback.py`恢复发布前数据库、持久文件及服务镜像，适用于其对应发布。跨迁移降级需要成套恢复；邀请注册配置的定向恢复则使用单独的`rollback-registration.py`，避免以全库恢复替代配置调整。
+该流程随部署执行，不是独立的定时备份命令；不能为了生成备份而无条件再次运行发布脚本。同版本`--frontend-only`失败只恢复旧override和server/worker镜像，保留当前数据库；部署前必须确认后端源码/依赖与迁移一致并核验本地同一镜像。`rollback.py`用于独立、明确授权的完整恢复，会恢复发布前数据库、持久文件及服务镜像，适用于其对应发布。跨迁移降级需要成套恢复；邀请注册配置的定向恢复则使用单独的`rollback-registration.py`，避免以全库恢复替代配置调整。
 
 # 手动数据库导出
 
