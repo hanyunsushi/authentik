@@ -35,7 +35,7 @@ SSR placeholder、独立启动页、空状态等待、表格刷新、消息和�
 
 菜单使用原生Popover top layer，保留同一Shadow DOM作用域和原业务回调；按触发器/视口定位，随滚动与缩放更新，不受空状态表格的overflow裁切。路由揭示穿过inline/contents自定义宿主和透明布局，选取真实块盒错峰裁切；不对没有可绘制块盒的inline宿主播放无效clip。品牌区右下独立显示服务端真实版本（10/12辅助字、右10/下3），折叠隐藏，点击仍打开About。品牌底部使用1px中性分隔线，与64px正文顶栏底线对齐。
 
-Flow 在请求和阶段模块准备期间隐藏整个认证内容区并设置 inert，保留表单节点、输入与几何，仅呈现独立点阵；内容就绪后才揭示。状态卡保留 tone 语义，表面不绘制彩色顶边。普通/默认弧边按钮固定1px外ring与text-2文字，400ms灰色内阴影；强调/高亮弧边固定Apple蓝并使用400ms白色内光，鼠标移出收回，键盘焦点独立保留；填写框覆盖旧 PF 底线变量，聚焦时四边均为 1px 边框加 1px 蓝色内线，内距不跳动。
+Flow 在请求和阶段模块准备期间隐藏整个认证内容区并设置 inert，保留表单节点、输入与几何，仅呈现独立点阵；内容就绪后才揭示。状态卡保留 tone 语义，表面不绘制彩色顶边。普通/默认弧边按钮使用白色实体面、text-2文字和固定1px中性ring，300ms灰色悬浮反馈，无内光；强调按钮使用Apple蓝与84%蓝+16%白提亮、悬浮2px外ring，高亮弧边及认证动作保持1px，键盘焦点独立保留；填写框覆盖旧 PF 底线变量，聚焦时四边均为 1px 边框加 1px 蓝色内线，内距不跳动。
 
 切换开关保留原生checkbox及表单命名：40×23px轨道、17px白色滑块和3px内距，开启位移17px；500ms回弹，按下轻缩放，禁用阻止切换，键盘可见焦点及触摸44px命中保留，减少动态取消动画。
 
@@ -44,3 +44,9 @@ Flow 在请求和阶段模块准备期间隐藏整个认证内容区并设置 in
 非加载空态/错误由 `EmptyIllustration` 使用设计系统提供的原 SVG，160×100 contain；文案、重试和权限语义保留。`EmptyState` 连接后设置默认status，避免原生createElement构造期间写属性失败。Dialog延续浏览器焦点、Escape、遮罩及表单逻辑，桌面18px浅灰表面，窄屏保留原全屏行为；长标题换行。确认主动作显式接入高亮弧边，风险由既有标题/正文和业务回调表达。门户网格卡的整卡链接不使用正文链接下划线，文字不描边，标题区保留两行完整高度；独立正文链接维持原反馈。
 
 空态SVG的生产资源地址必须由`new URL(asset, import.meta.url)`解析；原生bundle中的相对asset路径不能直接绑定到页面img src。MFE绝对发布base继续有效。2026-10-23重新读取[AWS Typography](https://cloudscape.design/foundation/visual-foundation/typography/)的14/20正文与12/16说明，项目字体按既有角色保留。
+
+## 项目SVG例外与圆点选择控件
+
+按本项目人工决定，侧栏与顶栏保留现有SVG路径、描边和交互，不迁移SF Symbols。侧栏文字始终挂载，收起/展开由原Motion的x/opacity及错峰控制；不能用display或条件删除截断退出。
+
+共享checkbox/radio为16px圆形、Apple蓝/6px白点，checkbox半选使用8×2px白横；保留原input的多选、Space、radio分组、name/value与disabled。200ms背景/圆点、100ms按下外圆反馈，键盘静态outline；粗指针标签至少44px，减少动态取消过渡，forced-colors恢复平台外观。选择器排除`.pf-c-switch__input`及role=switch，原布尔开关合同不变。几何与圆点状态参考HeroUI `@heroui/styles`3.2.6 `radio.css`（NextUI Inc.，Apache-2.0，[官方来源](https://github.com/heroui-inc/heroui)）；适配仅为CSS，未引入其运行时。

@@ -4,6 +4,7 @@
 :host {
     /* 高亮弧边按钮 / 默认弧边按钮：认证所有stage继承18px，跨Shadow DOM保持一致。 */
     --ak-first-action-radius: 18px;
+    --ak-first-primary-hover-ring: 1px;
     display: flex;
     min-width: 100%;
     min-height: 100dvh;

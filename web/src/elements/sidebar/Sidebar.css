@@ -279,7 +279,7 @@ footer {
     width: 40px;
     height: 40px;
     padding: 12px;
-    grid-template-columns: 16px;
+    grid-template-columns: 16px 0 0;
 }
 :host([collapsed]) .sidebar-row-track,
 :host([collapsed]) .sidebar-leaf,
@@ -289,10 +289,7 @@ footer {
 :host([collapsed]) .n-menu-item-content__icon {
     margin: 0;
 }
-:host([collapsed]) .n-menu-item-content-header,
-:host([collapsed]) .sidebar-motion-arrow {
-    display: none;
-}
+/* 侧边栏 / 组件绘制动画：文字和箭头保持挂载，交由原Motion完成退出，不能用display截断。 */
 :host([collapsed]) footer {
     padding-inline: 8px;
 }

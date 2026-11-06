@@ -82,7 +82,7 @@ a:focus-visible {
     text-decoration: underline;
 }
 ::selection {
-    background: rgb(0 122 255 / 20%);
+    background: color-mix(in srgb, var(--ak-first-accent) 20%, transparent);
     color: inherit;
 }
 :focus-visible {
@@ -90,7 +90,7 @@ a:focus-visible {
     outline-offset: 3px;
 }
 
-/* 普通按钮 / 强调按钮：固定1px外框，400ms内阴影；按下静止，键盘焦点独立。 */
+/* 普通按钮 / 强调按钮：白面/灰色高亮与蓝色提亮，300ms过渡；按下静止。 */
 .pf-c-button {
     --pf-c-button--BorderRadius: 8px;
     --pf-c-button--after--BorderRadius: 8px;
@@ -104,15 +104,13 @@ a:focus-visible {
     border: 0;
     border-radius: var(--ak-first-action-radius, 8px);
     color: var(--ak-first-text-2);
-    background: transparent;
-    box-shadow:
-        0 0 0 1px var(--ak-first-border-strong),
-        inset 0 0 0 rgb(0 7 7 / 12%);
+    background: var(--ak-first-button-surface);
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
     transform: none;
     transition:
-        color 400ms ease,
-        background-color 400ms ease,
-        box-shadow 400ms ease;
+        color var(--ak-first-button-duration) ease,
+        background-color var(--ak-first-button-duration) ease,
+        box-shadow var(--ak-first-button-duration) ease;
     text-decoration: none;
     white-space: normal;
 }
@@ -122,10 +120,8 @@ a:focus-visible {
 /* 普通按钮：显式覆盖旧 PF 变体，链接式按钮不继承超链接下划线。 */
 .pf-c-button:is(.pf-m-secondary, .pf-m-tertiary, .pf-m-control) {
     color: var(--ak-first-text-2);
-    background: transparent;
-    box-shadow:
-        0 0 0 1px var(--ak-first-border-strong),
-        inset 0 0 0 rgb(0 7 7 / 12%);
+    background: var(--ak-first-button-surface);
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
 }
 .pf-c-button:is(:hover, :focus-visible, :active):not(
         :disabled,
@@ -133,9 +129,8 @@ a:focus-visible {
         [aria-disabled="true"]
     ) {
     color: var(--ak-first-text-2);
-    box-shadow:
-        0 0 0 1px var(--ak-first-border-strong),
-        inset 0 0 32px rgb(0 7 7 / 12%);
+    background: var(--ak-first-hover);
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
     text-decoration: none;
 }
 .pf-c-button.pf-m-primary,
@@ -143,9 +138,7 @@ a:focus-visible {
 .pf-c-button.ak-first-highlight {
     color: #fff;
     background: var(--ak-first-accent);
-    box-shadow:
-        0 0 0 1px var(--ak-first-accent),
-        inset 0 0 0 rgb(255 255 255 / 32%);
+    box-shadow: 0 0 0 1px var(--ak-first-accent);
 }
 .pf-c-button:is(.pf-m-primary, .pf-m-warning, .ak-first-highlight):is(
         :hover,
@@ -153,10 +146,16 @@ a:focus-visible {
         :active
     ):not(:disabled, .pf-m-disabled, [aria-disabled="true"]) {
     color: #fff;
-    background: var(--ak-first-accent);
-    box-shadow:
-        0 0 0 1px var(--ak-first-accent),
-        inset 0 0 32px rgb(255 255 255 / 32%);
+    background: var(--ak-first-accent-hover);
+    box-shadow: 0 0 0 var(--ak-first-primary-hover-ring, 2px) var(--ak-first-accent-hover);
+}
+/* 高亮弧边按钮：仅蓝色提亮，18px弧边不扩圈；普通强调按钮保留2px悬浮ring。 */
+.pf-c-button:is(.pf-m-warning, .ak-first-highlight):is(:hover, :focus-visible, :active):not(
+        :disabled,
+        .pf-m-disabled,
+        [aria-disabled="true"]
+    ) {
+    box-shadow: 0 0 0 1px var(--ak-first-accent-hover);
 }
 .pf-c-button:focus-visible {
     outline: 2px solid var(--ak-first-border-strong);
@@ -172,14 +171,15 @@ a.pf-c-button:not(.pf-m-link):is(:hover, :focus, :active) {
 .pf-c-button.pf-m-plain,
 .pf-c-button.pf-m-link {
     box-shadow: none;
+    background: transparent;
     color: var(--ak-first-text-2);
 }
 .pf-c-button.pf-m-link {
     color: var(--ak-first-accent);
 }
 .pf-c-button.pf-m-plain:is(:hover, :focus-visible, :active):not(:disabled, .pf-m-disabled) {
-    background: transparent;
-    box-shadow: inset 0 0 32px rgb(0 7 7 / 12%);
+    background: var(--ak-first-hover);
+    box-shadow: none;
 }
 .pf-c-button.pf-m-link:is(:hover, :focus-visible, :active) {
     box-shadow: none;
@@ -330,14 +330,133 @@ select.pf-c-form-control:focus,
     flex-shrink: 0;
 }
 
-/* 复选框 / 单选框 / 切换开关：保留原生 input 模型与可访问名称。 */
-input:is([type="checkbox"], [type="radio"]) {
-    accent-color: var(--ak-first-accent);
+/* 复选框 / 单选框：16px圆点保持原input多选/分组/半选模型，不影响切换开关。 */
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"]) {
+    appearance: none;
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
     inline-size: 16px;
     block-size: 16px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--ak-first-button-surface);
+    box-shadow:
+        0 2px 4px rgb(0 0 0 / 4%),
+        0 1px 2px rgb(0 0 0 / 6%),
+        0 0 1px rgb(0 0 0 / 6%);
+    vertical-align: middle;
+    cursor: pointer;
+    transition:
+        background-color 200ms ease-out,
+        transform 100ms ease-out;
 }
-input[type="checkbox"] {
-    border-radius: 4px;
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"])::before {
+    content: "";
+    inline-size: 14px;
+    block-size: 14px;
+    border-radius: inherit;
+    background: var(--ak-first-button-surface);
+    scale: 1;
+    transition:
+        scale 200ms ease-out,
+        background-color 200ms ease-out;
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"]):is(
+        :checked,
+        :indeterminate
+    ) {
+    background: var(--ak-first-accent);
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not(
+        [role="switch"]
+    ):checked::before {
+    background: #fff;
+    scale: 0.4286;
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not(
+        [role="switch"]
+    ):active:enabled {
+    transform: scale(0.95);
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not(
+        [role="switch"]
+    ):checked:active:enabled::before {
+    scale: 0.5714;
+}
+input[type="checkbox"]:not(.pf-c-switch__input):not([role="switch"]):indeterminate::before {
+    inline-size: 8px;
+    block-size: 2px;
+    border-radius: 1px;
+    background: #fff;
+    scale: 1;
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"]):disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not(
+        [role="switch"]
+    ):disabled:not(:checked, :indeterminate) {
+    border-color: var(--ak-first-border-strong);
+    background: var(--ak-first-card);
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):focus:not(:focus-visible) {
+    outline: none;
+}
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):focus-visible {
+    outline: 2px solid var(--ak-first-accent);
+    outline-offset: 2px;
+}
+/* 复选框：禁用未选面与半选短横保留独立终态。 */
+input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):disabled:not(
+        :checked,
+        :indeterminate
+    )::before {
+    background: var(--ak-first-card);
+}
+input[type="checkbox"]:not(.pf-c-switch__input):not(
+        [role="switch"]
+    ):indeterminate:active:enabled::before {
+    scale: 1;
+}
+@media (pointer: coarse) {
+    label:is(.pf-c-check, .pf-c-radio),
+    :is(.pf-c-check, .pf-c-radio) > label {
+        display: inline-flex;
+        align-items: center;
+        min-block-size: 44px;
+        gap: 12px;
+    }
+    :is(.pf-c-check, .pf-c-radio):has(input) {
+        min-block-size: 44px;
+        align-items: center;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"]),
+    input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not(
+            [role="switch"]
+        )::before {
+        transition: none;
+        transform: none;
+    }
+    input:is([type="checkbox"], [type="radio"]):checked:active:enabled::before {
+        scale: 0.4286;
+    }
+    input[type="checkbox"]:indeterminate:active:enabled::before {
+        scale: 1;
+    }
+}
+@media (forced-colors: active) {
+    input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input):not([role="switch"]) {
+        appearance: auto;
+    }
+    input:is([type="checkbox"], [type="radio"]):not(.pf-c-switch__input)::before {
+        content: none;
+    }
 }
 /* 切换开关：40×23轨道、17px白色滑块、3px内距；保留原生布尔值与禁用语义。 */
 .pf-c-switch {
@@ -454,23 +573,23 @@ input[type="checkbox"] {
 }
 .pf-c-label.pf-m-green {
     --ak-first-label-color: var(--ak-first-success-text);
-    --ak-first-label-bg: rgb(52 199 89 / 18%);
+    --ak-first-label-bg: color-mix(in srgb, var(--ak-first-success) 15%, var(--ak-first-bg));
 }
 .pf-c-label:is(.pf-m-orange, .pf-m-gold) {
     --ak-first-label-color: var(--ak-first-warning-text);
-    --ak-first-label-bg: rgb(255 149 0 / 20%);
+    --ak-first-label-bg: color-mix(in srgb, var(--ak-first-warning) 15%, var(--ak-first-bg));
 }
 .pf-c-label.pf-m-red {
     --ak-first-label-color: var(--ak-first-danger-text);
-    --ak-first-label-bg: rgb(255 59 48 / 18%);
+    --ak-first-label-bg: color-mix(in srgb, var(--ak-first-danger) 15%, var(--ak-first-bg));
 }
 .pf-c-label.pf-m-blue {
     --ak-first-label-color: var(--ak-first-accent);
-    --ak-first-label-bg: rgb(0 122 255 / 18%);
+    --ak-first-label-bg: var(--ak-first-info-bg);
 }
 .pf-c-label.pf-m-purple {
-    --ak-first-label-color: #7d2a9f;
-    --ak-first-label-bg: rgb(175 82 222 / 12%);
+    --ak-first-label-color: #af52de;
+    --ak-first-label-bg: color-mix(in srgb, #af52de 15%, var(--ak-first-bg));
 }
 .pf-c-label__icon {
     color: inherit;
@@ -485,7 +604,7 @@ input[type="checkbox"] {
     font: 400 14px/20px var(--ak-first-body);
 }
 .pf-c-table thead {
-    background: var(--ak-first-card);
+    background: var(--ak-first-depth-3);
 }
 .pf-c-table :is(th, td) {
     border-color: var(--ak-first-border);
@@ -575,7 +694,7 @@ dialog {
     border-radius: 18px;
     box-shadow: none;
     color: var(--ak-first-text);
-    background: color-mix(in srgb, var(--ak-first-alert-color) 10%, var(--ak-first-bg));
+    background: color-mix(in srgb, var(--ak-first-alert-color) 15%, var(--ak-first-bg));
 }
 .pf-c-alert.pf-m-success {
     --ak-first-alert-color: var(--ak-first-success);
@@ -699,11 +818,9 @@ select.pf-c-form-control:focus-visible {
     border-radius: 18px;
 }
 .pf-c-button.ak-first-default-arc {
-    background: transparent;
+    background: var(--ak-first-button-surface);
     color: var(--ak-first-text-2);
-    box-shadow:
-        0 0 0 1px var(--ak-first-border-strong),
-        inset 0 0 0 rgb(0 7 7 / 12%);
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
 }
 .pf-c-button.ak-first-default-arc:is(:hover, :focus-visible, :active):not(
         :disabled,
@@ -711,9 +828,8 @@ select.pf-c-form-control:focus-visible {
         [aria-disabled="true"]
     ) {
     color: var(--ak-first-text-2);
-    box-shadow:
-        0 0 0 1px var(--ak-first-border-strong),
-        inset 0 0 32px rgb(0 7 7 / 12%);
+    background: var(--ak-first-hover);
+    box-shadow: 0 0 0 1px var(--ak-first-border-strong);
 }
 /* 强调按钮：应用创建的两区共同组成8px蓝色按钮，边界和展开状态保留原下拉事件。 */
 .pf-c-dropdown__toggle.pf-m-split-button {
@@ -748,8 +864,8 @@ select.pf-c-form-control:focus-visible {
     border-radius: 8px 0 0 8px;
     color: inherit;
     font: 500 13px/20px var(--ak-first-body);
-    box-shadow: inset 0 0 0 rgb(255 255 255 / 32%);
-    transition: box-shadow 400ms ease;
+    box-shadow: none;
+    transition: background-color var(--ak-first-button-duration) ease;
 }
 .pf-c-dropdown__toggle.pf-m-split-button .pf-c-dropdown__toggle-button:last-child {
     width: var(--ak-first-button-height);
@@ -766,8 +882,8 @@ select.pf-c-form-control:focus-visible {
         :disabled,
         [aria-disabled="true"]
     ) {
-    background: transparent;
-    box-shadow: inset 0 0 32px rgb(255 255 255 / 32%);
+    background: var(--ak-first-accent-hover);
+    box-shadow: none;
 }
 /* 高亮弧边按钮 / 默认弧边按钮：新旧弹窗动作区及跨Shadow DOM表单提交保持同类几何。 */
 .ak-c-dialog__footer {
@@ -852,7 +968,7 @@ ak-router-view {
     visibility: hidden;
 }
 
-/* 高亮弧边按钮：确认主动作蓝色内光与独立键盘焦点；不依赖点击后的鼠标focus。 */
+/* 高亮弧边按钮：确认主动作蓝色提亮与独立键盘焦点，不锁住鼠标focus。 */
 .pf-c-button:is(.pf-m-primary, .pf-m-warning, .ak-first-highlight):focus-visible {
     outline-color: var(--ak-first-accent);
 }

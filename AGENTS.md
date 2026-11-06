@@ -145,6 +145,8 @@ Consequences:
 
 - 本项目全面采用 **kreeper第一设计系统**（`kreeper-first-design-system`），覆盖 Admin、User、Flow 及共享控件。新增/修改 UI 先读取其 `SKILL.md`、`references/foundations.md`、`semantics.md`、`maintenance.md` 与受影响专页。保留 Lit、PatternFly 结构与生成 API 契约，不引入 Vue/Naive UI 运行时。源码须维护中文分类注释；未知类型或拟偏离规范先提醒用户，已明确授权的决定不重复询问。桌面/手机、触摸/键盘、减少动态效果均在验证范围内。
 
+- 用户于2026-11-06明确保留本项目侧栏与顶栏现有SVG图形及表现；此处不迁移SF Symbols，其他控件继续采用当前第一设计系统。
+
 - Before working on this fork, read `agent.md` (the local Obsidian project authority) and `.llm-wiki/_index.md`.
 - After meaningful code, configuration, verification, or deployment changes, use `llm-wiki` to update the project authority and the affected Wiki pages.
 - The frontend source locator inventory is rebuilt with `python3 scripts/frontend-index.py`; `.frontend-index/` is generated and ignored. This is a text inventory, not an AST index or proof of runtime behavior.

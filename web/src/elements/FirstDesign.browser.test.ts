@@ -26,7 +26,7 @@ import Tokens from "#styles/first/tokens.css" with { type: "bundled-text" };
 import type { Application } from "@goauthentik/api";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { userEvent } from "vitest/browser";
+import { cdp, page, userEvent } from "vitest/browser";
 
 import { html } from "lit";
 
@@ -40,6 +40,16 @@ class FirstControlsFixture extends AKElement {
             <button class="pf-c-button ak-first-default-arc">Cancel</button>
             <button class="pf-c-button pf-m-danger ak-first-highlight">Confirm</button>
             <input class="pf-c-form-control" aria-label="Username" />
+            <label class="pf-c-check"
+                ><input type="checkbox" aria-label="Select row" data-testid="select-row" />Select
+                row</label
+            >
+            <label class="pf-c-radio"
+                ><input type="radio" name="choice" value="a" aria-label="Choice A" />Choice A</label
+            >
+            <label class="pf-c-radio"
+                ><input type="radio" name="choice" value="b" aria-label="Choice B" />Choice B</label
+            >
             <ak-switch-input name="newTab" label="Open in a new tab"></ak-switch-input>`;
     }
 }
@@ -64,6 +74,8 @@ class FirstLibraryMenuFixture extends AKElement {
 customElements.define("ak-first-library-menu-fixture", FirstLibraryMenuFixture);
 
 const mounted: HTMLElement[] = [];
+let restoreViewport: [number, number] | undefined;
+let restoreMedia = false;
 
 beforeEach(() => {
     const tokens = document.createElement("style");
@@ -72,9 +84,20 @@ beforeEach(() => {
     mounted.push(tokens);
 });
 
-afterEach(() => {
+afterEach(async () => {
     mounted.forEach((element) => element.remove());
     mounted.length = 0;
+
+    if (restoreMedia) {
+        await cdp().send("Emulation.setEmulatedMedia", { features: [] });
+        await cdp().send("Emulation.setTouchEmulationEnabled", { enabled: false });
+        restoreMedia = false;
+    }
+
+    if (restoreViewport) {
+        await page.viewport(...restoreViewport);
+        restoreViewport = undefined;
+    }
 });
 
 describe("first design system integration", () => {
@@ -175,29 +198,32 @@ describe("first design system integration", () => {
         expect(focus.boxShadow).toContain("inset");
         // 浏览器鼠标可能停在前一用例位置；普通及悬浮态都必须保持中性文字。
         expect(["oklch(0.556 0 0)", "oklch(0.37 0 0)"]).toContain(getComputedStyle(normal).color);
-        expect(getComputedStyle(normal).boxShadow).toContain("inset");
+        expect(getComputedStyle(normal).boxShadow).not.toContain("inset");
         expect(getComputedStyle(emphasis).boxShadow).toContain("1px");
         expect(getComputedStyle(emphasis).transitionTimingFunction).toContain("ease");
         expect(getComputedStyle(normal, "::after").display).toBe("none");
     });
 
-    it("animates neutral and emphasis inner light without changing the ring, color or geometry", async () => {
+    it("uses neutral and blue hover surfaces with fixed geometry and current ring widths", async () => {
         const fixture = new FirstControlsFixture();
         mounted.push(fixture);
         document.body.append(fixture);
         await fixture.updateComplete;
 
         for (const button of fixture.shadowRoot!.querySelectorAll<HTMLElement>(".pf-c-button")) {
+            await userEvent.hover(fixture.shadowRoot!.querySelector("input")!);
+            await new Promise((resolve) => setTimeout(resolve, 350));
             const color = getComputedStyle(button).color;
             const background = getComputedStyle(button).backgroundColor;
             const rect = button.getBoundingClientRect();
             await userEvent.hover(button);
             await new Promise((resolve) => setTimeout(resolve, 450));
             const hover = getComputedStyle(button);
-            expect(hover.boxShadow).toContain("32px");
-            expect(hover.boxShadow).toContain("1px");
+            expect(hover.boxShadow).not.toContain("inset");
+            expect(hover.boxShadow).toContain(button.textContent === "Emphasis" ? "2px" : "1px");
+            expect(hover.transitionDuration).toContain("0.3s");
             expect(hover.color).toBe(color);
-            expect(hover.backgroundColor).toBe(background);
+            expect(hover.backgroundColor).not.toBe(background);
             expect(hover.transform).toBe("none");
             expect(button.getBoundingClientRect().width).toBe(rect.width);
             expect(button.getBoundingClientRect().height).toBe(rect.height);
@@ -206,6 +232,67 @@ describe("first design system integration", () => {
             await new Promise((resolve) => setTimeout(resolve, 450));
             expect(getComputedStyle(button).boxShadow).not.toContain("32px");
         }
+    });
+
+    it("keeps checkbox mixed state, disabled behavior and native radio grouping", async () => {
+        const fixture = new FirstControlsFixture();
+        mounted.push(fixture);
+        document.body.append(fixture);
+        await fixture.updateComplete;
+        const check = fixture.shadowRoot!.querySelector<HTMLInputElement>('[type="checkbox"]')!;
+        const radios = fixture.shadowRoot!.querySelectorAll<HTMLInputElement>('[type="radio"]');
+        expect(getComputedStyle(check).borderRadius).toBe("8px");
+        expect(check.getBoundingClientRect().width).toBe(16);
+        check.indeterminate = true;
+        expect(getComputedStyle(check, "::before").width).toBe("8px");
+        expect(getComputedStyle(check, "::before").height).toBe("2px");
+        await userEvent.click(check);
+        expect(check.indeterminate).toBe(false);
+        expect(check.checked).toBe(true);
+        check.focus();
+        await userEvent.keyboard(" ");
+        expect(check.checked).toBe(false);
+        check.disabled = true;
+        check.click();
+        expect(check.checked).toBe(false);
+        expect(getComputedStyle(check).opacity).toBe("0.5");
+        radios[0].click();
+        radios[1].click();
+        expect([...radios].map((radio) => radio.checked)).toEqual([false, true]);
+    });
+
+    it("keeps narrow touch controls reachable with reduced motion", async () => {
+        restoreViewport = [window.innerWidth, window.innerHeight];
+        restoreMedia = true;
+        await page.viewport(390, 844);
+
+        await cdp().send("Emulation.setTouchEmulationEnabled", {
+            enabled: true,
+            maxTouchPoints: 1,
+        });
+
+        await cdp().send("Emulation.setEmulatedMedia", {
+            features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+        });
+
+        const fixture = new FirstControlsFixture();
+        mounted.push(fixture);
+        document.body.append(fixture);
+        await fixture.updateComplete;
+        const check = fixture.shadowRoot!.querySelector<HTMLInputElement>('[type="checkbox"]')!;
+        expect(matchMedia("(pointer: coarse)").matches).toBe(true);
+        expect(check.closest("label")!.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
+        expect(parseFloat(getComputedStyle(check).transitionDuration)).toBeLessThan(0.001);
+
+        expect(
+            fixture.shadowRoot!.querySelector("button")!.getBoundingClientRect().height,
+        ).toBeGreaterThanOrEqual(44);
+
+        check.focus();
+        await userEvent.keyboard(" ");
+        expect(check.checked).toBe(true);
+        expect(getComputedStyle(check).outlineStyle).toBe("solid");
+        expect(fixture.getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth);
     });
 
     it("uses the provided illustration for empty/error states while loading stays a single dot matrix", async () => {
@@ -309,6 +396,8 @@ describe("first design system integration", () => {
     });
 
     it("renders static groups and opens nested groups from the visible collapsed rail", async () => {
+        restoreViewport = [window.innerWidth, window.innerHeight];
+        await page.viewport(1200, 800);
         const sidebar = document.createElement("ak-sidebar");
         const section = document.createElement("ak-sidebar-item");
         const group = document.createElement("ak-sidebar-item");
@@ -331,6 +420,11 @@ describe("first design system integration", () => {
         const root = sidebar.shadowRoot!;
         expect(root.querySelector(".n-menu-item-group-title")?.textContent).toContain("Directory");
         expect(root.querySelectorAll("#menu button")).toHaveLength(1);
+        const label = root.querySelector<HTMLElement>(".n-menu-item-content-header")!;
+        expect(label.textContent).toContain("People");
+        await new Promise((resolve) => setTimeout(resolve, 450));
+        expect(getComputedStyle(label).display).not.toBe("none");
+        expect(getComputedStyle(label).opacity).toBe("0");
 
         sidebar.addEventListener("ak-sidebar-expand", () => {
             sidebar.collapsed = false;
@@ -340,6 +434,8 @@ describe("first design system integration", () => {
         await group.updateComplete;
         await sidebar.updateComplete;
         expect(sidebar.collapsed).toBe(false);
+        await new Promise((resolve) => setTimeout(resolve, 450));
+        expect(getComputedStyle(label).opacity).toBe("1");
         expect(group.expanded).toBe(true);
 
         expect(

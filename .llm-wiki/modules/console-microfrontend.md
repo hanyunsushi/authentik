@@ -1,6 +1,6 @@
 ---
 title: Console 原生 ESM 接入
-updated: 2026-10-22
+updated: 2026-11-06
 sources:
   - web/src/console/microfrontend.ts
   - web/src/console/Interface.ts
@@ -53,3 +53,9 @@ Console导航契约的`iconSvg`字段发布目前原生侧栏正在绘制的路�
 `ConsoleInterface#navigation`只发布`interfaceName`对应的导航树。右上角原生切换入口导航至Admin/User路径，`setPath`同步界面、路由及下一次菜单/命令面板更新；管理员选择User界面也仅显示User菜单。真实管理员权限、企业许可、能力和UI功能开关继续过滤菜单。Host保留最近已确认的菜单快照，应用就绪后整体替换；不合并Admin与User导航，也不把切换入口移到侧栏。
 
 发布验证见[脱敏回执](../guides/design-release-20261023.json)；运行与保留解释归项目权威文档。
+
+## 原站导航一致性
+
+`user/navigation.ts#userNavigation`由原User tabs与Console共同调用，按相同功能开关、capability和license状态提供Applications/Discover/Agents；Settings仍在原顶栏账户入口。Admin继续使用`createAdminSidebarEntries`，保留稳定group key和显式展开默认值，仅根无路径节点为静态分组，嵌套无路径节点仍为披露层级。
+
+`setPath`同时更新可响应的导航路径，详情路由经原AdminRoutes matcher及entry的route-name关联写入可选`activePath`。该字段只标记当前详情属于哪个原列表入口，不改变入口的`path`、权限或路由。Host按项目加前缀、验证并保存该字段，渲染选中面时检查项目归属；匿名/退出撤下详情归属。没有复写原SVG或更换图形体系。Host接口见[Shell合同](/Users/hinaw/console-kreeper/.llm-wiki/architecture/route-and-shell-contract.md#native-detail-selection)。

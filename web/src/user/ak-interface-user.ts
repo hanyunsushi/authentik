@@ -39,11 +39,12 @@ import {
 } from "#components/notifications/utils";
 
 import Styles from "#user/ak-interface-user.css";
+import { userNavigation } from "#user/navigation";
 import { DEFAULT_PATH, ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
 
-import { CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -136,7 +137,6 @@ class UserInterface extends WithLicenseSummary(
     }
 
     protected renderNavTabs(): SlottedTemplateResult {
-        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         const { requests, agents } = this.uiConfig.enabledFeatures;
 
         // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
@@ -144,30 +144,21 @@ class UserInterface extends WithLicenseSummary(
         const canRequest = this.can(CapabilitiesEnum.CanRequest);
         const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
 
-        return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
-            if (!licensed) return null;
+        return guard(
+            [this.licenseSummary, requests, agents, canRequest, canAgentSelfService],
+            () => {
+                const navItems = userNavigation(this.uiConfig, this.licenseSummary, (capability) =>
+                    this.can(capability),
+                );
 
-            const navItems = [];
+                if (navItems.length === 1) return null;
 
-            // Requests are an enterprise feature, can be disabled for the user interface
-            // and are only shown when the admin has configured at least one request rule
-            // We can't easily check if this user actually has something they can request,
-            // that is a semi-expensive request.
-            if (requests && canRequest) {
-                navItems.push({ label: msg("Discover"), link: toUserInterface("requests") });
-            }
-
-            if (agents && canAgentSelfService) {
-                navItems.push({ label: msg("Agents"), link: toUserInterface("agents") });
-            }
-
-            if (!navItems.length) return null;
-
-            return html`<ak-nav-tabs
-                class="pf-c-page__header-nav"
-                .items=${[{ label: msg("Applications"), link: toUserInterface("library") }, ...navItems]}
-            ></ak-nav-tabs>`;
-        });
+                return html`<ak-nav-tabs
+                    class="pf-c-page__header-nav"
+                    .items=${navItems.map((item) => ({ label: item.label, link: toUserInterface(item.path) }))}
+                ></ak-nav-tabs>`;
+            },
+        );
     }
 
     protected render() {

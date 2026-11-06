@@ -228,7 +228,7 @@ function RailLabel({
             className="n-menu-item-content-header"
             aria-hidden={collapsed}
         >
-            {!collapsed && <MenuContent item={item} />}
+            <MenuContent item={item} />
         </motion.span>
     );
 
@@ -273,6 +273,7 @@ export function SidebarMotion(props: SidebarMotionProps) {
     return (
         <MotionRail
             target={rail ?? props.host}
+            layoutRoot
             initial={false}
             animate={props.collapsed ? "closed" : "open"}
             variants={

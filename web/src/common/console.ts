@@ -7,6 +7,8 @@ export interface ConsoleNavigationItem {
     group?: boolean;
     public?: boolean;
     expanded?: boolean;
+    /** Current detail route that belongs to this native navigation entry. */
+    activePath?: string;
     disabled?: boolean;
     /** Serialized SVG from the native sidebar; the host owns sizing and color. */
     iconSvg?: string;

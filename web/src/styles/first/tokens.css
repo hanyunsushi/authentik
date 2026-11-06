@@ -8,17 +8,20 @@
     --ak-first-text: oklch(21% 0 0);
     --ak-first-text-2: oklch(37% 0 0);
     --ak-first-text-3: oklch(55.6% 0 0);
-    --ak-first-accent: #007aff;
-    --ak-first-accent-hover: #298fff;
-    --ak-first-info-bg: #e9f3ff;
+    --ak-first-accent: #0088ff;
+    --ak-first-accent-hover: color-mix(in srgb, var(--ak-first-accent) 84%, white);
+    --ak-first-info-bg: color-mix(in srgb, var(--ak-first-accent) 15%, var(--ak-first-bg));
     --ak-first-success: #34c759;
-    --ak-first-success-text: #12a652;
-    --ak-first-warning: #ff9500;
-    --ak-first-warning-text: #e37100;
-    --ak-first-danger: #ff3b30;
-    --ak-first-danger-text: #dd3730;
+    --ak-first-success-text: var(--ak-first-success);
+    --ak-first-warning: #ff8d28;
+    --ak-first-warning-text: var(--ak-first-warning);
+    --ak-first-danger: #ff383c;
+    --ak-first-danger-text: var(--ak-first-danger);
     --ak-first-inactive: #8e8e93;
     --ak-first-radius: 18px;
+    --ak-first-depth-3: #f2f2f7;
+    --ak-first-button-surface: #fff;
+    --ak-first-button-duration: 300ms;
     --ak-first-button-height: 32px;
     --ak-first-header-height: 64px;
     --ak-first-sidebar-width: 264px;
@@ -97,10 +100,8 @@ html[data-theme="dark"] {
     --ak-first-text: #f5f5f7;
     --ak-first-text-2: #d1d1d6;
     --ak-first-text-3: #a1a1a6;
-    --ak-first-info-bg: #182c43;
-    --ak-first-success-text: #62d883;
-    --ak-first-warning-text: #ffb340;
-    --ak-first-danger-text: #ff827a;
+    --ak-first-depth-3: #303034;
+    --ak-first-button-surface: var(--ak-first-card);
     --ak-first-glass: rgb(23 23 25 / 82%);
 }
 

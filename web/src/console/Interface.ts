@@ -34,6 +34,7 @@ import {
     toAdminInterface,
     toUserInterface,
 } from "#elements/router/core/interfaces";
+import { matchRoute } from "#elements/router/core/matcher";
 import { RouterNavigateEvent, navigate } from "#elements/router/core/navigation";
 import { PageDetailsUpdate } from "#elements/router/meta";
 import { menuIconSvgForPath } from "#elements/sidebar/menu-model";
@@ -41,6 +42,7 @@ import { menuIconSvgForPath } from "#elements/sidebar/menu-model";
 import { AKDrawerChangeEvent } from "#components/notifications/events";
 import { readDrawerParams, renderNotificationDrawerPanel } from "#components/notifications/utils";
 
+import { userNavigation } from "#user/navigation";
 import { ROUTES as UserRoutes, DEFAULT_PATH as UserDefault } from "#user/Routes";
 
 import {
@@ -55,7 +57,7 @@ import { CapabilitiesEnum } from "@goauthentik/api";
 import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { css, html, render, type PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { keyed } from "lit/directives/keyed.js";
 
 @customElement("ak-console-header")
@@ -139,6 +141,7 @@ export class ConsoleInterface extends WithNotifications(
     ),
 ) {
     @property({ attribute: false }) interfaceName: "admin" | "user" = "user";
+    @state() private navigationPath = "/";
     @property({ attribute: false }) drawer = readDrawerParams();
     static styles = [
         PFDrawer,
@@ -228,6 +231,7 @@ export class ConsoleInterface extends WithNotifications(
     }
 
     public setPath(path: string): void {
+        this.navigationPath = path.split(/[?#]/, 1)[0];
         this.interfaceName = path.startsWith("/if/admin/") ? "admin" : "user";
         initRouter({ base: "/authentik/", interfaceName: this.interfaceName });
         window.dispatchEvent(new RouterNavigateEvent());
@@ -238,46 +242,19 @@ export class ConsoleInterface extends WithNotifications(
 
         if (!context || !this.currentUser) return [];
 
-        const userItems: ConsoleNavigationItem[] = [
-            {
-                key: "library",
-                label: msg("Applications", { id: "console.navigation.applications.label" }),
-                path: "/if/user/library",
-                iconSvg: menuIconSvgForPath("/core/applications"),
-            },
-        ];
+        const userIcons: Record<string, string> = {
+            library: "/core/applications",
+            requests: "/requests/access-requests",
+            agents: "/identity/agents",
+        };
 
-        if (this.uiConfig.enabledFeatures.settings)
-            userItems.push({
-                key: "settings",
-                label: msg("Settings", { id: "console.navigation.settings.label" }),
-                path: "/if/user/settings",
-                iconSvg: menuIconSvgForPath("/core/settings"),
-            });
-
-        if (
-            this.hasEnterpriseLicense &&
-            this.uiConfig.enabledFeatures.requests &&
-            this.can(CapabilitiesEnum.CanRequest)
-        )
-            userItems.push({
-                key: "requests",
-                label: msg("Discover", { id: "console.navigation.discover.label" }),
-                path: "/if/user/requests",
-                iconSvg: menuIconSvgForPath("/requests/access-requests"),
-            });
-
-        if (
-            this.hasEnterpriseLicense &&
-            this.uiConfig.enabledFeatures.agents &&
-            this.can(CapabilitiesEnum.CanAgentSelfService)
-        )
-            userItems.push({
-                key: "agents",
-                label: msg("Agents", { id: "console.navigation.agents.label" }),
-                path: "/if/user/agents",
-                iconSvg: menuIconSvgForPath("/identity/agents"),
-            });
+        const userItems = userNavigation(this.uiConfig, this.licenseSummary, (capability) =>
+            this.can(capability),
+        ).map((item) => ({
+            ...item,
+            path: `/if/user/${item.path}`,
+            iconSvg: menuIconSvgForPath(userIcons[item.key]),
+        }));
 
         const items: ConsoleNavigationItem[] = [
             {
@@ -292,13 +269,16 @@ export class ConsoleInterface extends WithNotifications(
         if (this.interfaceName === "user") return [...items, ...userItems];
 
         if (canAccessAdmin(this.currentUser)) {
-            const convert = ([
-                path,
-                label,
-                attrs,
-                children,
-            ]: SidebarEntry): ConsoleNavigationItem | null => {
+            const activePath = this.navigationPath.replace(/^\/if\/admin/, "");
+            const activeRoute = matchRoute(activePath, AdminRoutes)?.route.name;
+
+            const convert = (
+                [path, label, attrs, children]: SidebarEntry,
+                depth = 0,
+            ): ConsoleNavigationItem | null => {
                 const enterprise = attrs && !Array.isArray(attrs) && attrs.enterprise;
+                const properties = attrs && !Array.isArray(attrs) ? attrs : undefined;
+                const active = Array.isArray(attrs) && !!activeRoute && attrs.includes(activeRoute);
 
                 if (
                     enterprise &&
@@ -308,10 +288,13 @@ export class ConsoleInterface extends WithNotifications(
                     return null;
 
                 return {
-                    key: path ?? label,
+                    key: properties?.key ?? path ?? label,
                     label,
-                    group: !path,
-                    expanded: true,
+                    group: !path && depth === 0,
+                    ...(properties?.["?expanded"] !== undefined
+                        ? { expanded: !!properties["?expanded"] }
+                        : {}),
+                    ...(active ? { activePath: this.navigationPath } : {}),
                     ...(path
                         ? {
                               path: `/if/admin${enterprise && !this.hasEnterpriseLicense ? "/enterprise/licenses" : path}`,
@@ -320,7 +303,7 @@ export class ConsoleInterface extends WithNotifications(
                     ...(children
                         ? {
                               children: children
-                                  .map(convert)
+                                  .map((entry) => convert(entry, depth + 1))
                                   .filter((item): item is ConsoleNavigationItem => !!item),
                           }
                         : {}),
@@ -336,7 +319,9 @@ export class ConsoleInterface extends WithNotifications(
             ];
 
             items.push(
-                ...entries.map(convert).filter((item): item is ConsoleNavigationItem => !!item),
+                ...entries
+                    .map((entry) => convert(entry))
+                    .filter((item): item is ConsoleNavigationItem => !!item),
             );
         }
 

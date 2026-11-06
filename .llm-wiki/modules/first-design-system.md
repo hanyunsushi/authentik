@@ -1,6 +1,6 @@
 ---
 title: 第一设计系统适配
-updated: 2026-10-20
+updated: 2026-11-06
 sources:
   - web/src/styles/first/tokens.css
   - web/src/styles/first/components.css
@@ -49,7 +49,7 @@ sources:
 
 `RouterView` 与 `common/page-preparation.ts` 管理准备、入场、就绪三个阶段。准备期懒加载实际页面并将完整内容根隐藏/inert，等待生成客户端首批请求及响应体终态、Lit更新、字体/首屏媒体就绪和多次绘制安静检查。点阵以可见内容区居中，保留侧栏/顶栏；准备完成后先撤下点阵、跨过绘制帧，再将单一完整路由内容层作为一次动画目标揭示，避免点阵与内容重叠或子模块先行露出。取消过期路由；低动态跳过揭示动画但保留准备顺序，后续刷新保留局部16px点阵。SSR placeholder和独立启动页亦使用九点阵，不显示Loading文字。Flow在请求及阶段模块准备期间，以单个独立点阵替换整个认证内容区的可见呈现；品牌、标题与表单一并visibility隐藏并inert，节点、输入值及布局保留。阶段准备完成且请求终止才恢复内容，自动提交协议与错误处理仍由原Flow engine负责；其他调用方遮罩保持各自语义。
 
-桌面侧栏按用户在本项目的要求隐藏原生轨道但保留滚动能力；canonical 规范不变。顶栏桌面收起控件由侧栏底部承担，手机保留导航开关。说明文字单行省略且不撑宽动作区；动作间距8px；头像与触发圆重合、无hover光效。“用户界面”为普通强调按钮；共享普通/强调按钮固定1px外ring与400ms内阴影反馈，普通/默认弧边固定text-2文字与12%灰色内阴影；强调/高亮弧边保持蓝底白字与32%白色内光，鼠标focus不锁住内光；普通PF变体显式保持中性颜色，去掉旧伪元素边线与链接下划线，键盘焦点单独保留。填写框覆盖PF状态底线和底内距，焦点四边1px加1px蓝色内线且尺寸稳定；状态卡保留tone但不绘制彩色边条。创建拆分下拉使用双线chevron，选择器去PF下划线，统计卡不建立内部横向滚动，块级按钮文案居中。
+桌面侧栏按用户在本项目的要求隐藏原生轨道但保留滚动能力；canonical 规范不变。顶栏桌面收起控件由侧栏底部承担，手机保留导航开关。说明文字单行省略且不撑宽动作区；动作间距8px；头像与触发圆重合、无hover光效。“用户界面”为普通强调按钮；共享普通/默认弧边按钮为白色实体面、text-2与固定1px中性ring，300ms灰色悬浮反馈；强调按钮Apple蓝、84%蓝+16%白提亮和2px悬浮ring，高亮弧边与认证动作保留1px，无内光；鼠标focus不锁住悬浮，键盘焦点独立。填写框覆盖PF状态底线和底内距，焦点四边1px加1px蓝色内线且尺寸稳定；状态卡保留tone但不绘制彩色边条。创建拆分下拉使用双线chevron，选择器去PF下划线，统计卡不建立内部横向滚动，块级按钮文案居中。
 
 # 行为边界
 
@@ -81,6 +81,16 @@ sources:
 
 ## 统一空态与弹窗
 
-`EmptyIllustration`逐字节引用设计系统提供的SVG，160×100px contain；`EmptyState`及门户无应用状态共用，loading分支仍只显示DotMatrix，业务说明/重试/权限入口不变。默认status在连接后设置，满足原生自定义元素构造约束。`dialog.css`负责原生Dialog浅灰18px表面、边框、阴影及低动态，窄屏沿原全屏布局；`ak-modal.css`让长标题换行。确认主动作通过显式`ak-first-highlight`跨SpinnerButton Shadow DOM使用蓝色内光，取消保持中性弧边，业务回调和禁用保留。
+`EmptyIllustration`逐字节引用设计系统提供的SVG，160×100px contain；`EmptyState`及门户无应用状态共用，loading分支仍只显示DotMatrix，业务说明/重试/权限入口不变。默认status在连接后设置，满足原生自定义元素构造约束。`dialog.css`负责原生Dialog浅灰18px表面、边框、阴影及低动态，窄屏沿原全屏布局；`ak-modal.css`让长标题换行。确认主动作通过显式`ak-first-highlight`跨SpinnerButton Shadow DOM使用蓝色提亮，取消保持中性弧边，业务回调和禁用保留。
 
 门户`ApplicationList.css`将整卡链接与正文超链接分开：卡片悬浮仅中性阴影，标题无下划线和文字描边，底部40px保留两行20px文字。可访问链接、键盘焦点、操作菜单和目标URL保留。
+
+## 项目SVG与菜单动效边界
+
+本项目侧栏与顶栏沿现有SVG路径/描边/交互，不迁移SF Symbols；人工例外归[权威](../../agent.md)。`RailLabel`保留文字节点，`Sidebar.css`的72px轨道保留零宽文字列并由Motion完成x/opacity退出，避免display:none或条件删除截断。根MotionRail以layoutRoot隔离投影坐标，SharedLayoutBg与原variants、路由/权限模型不变。当前项与嵌套披露仍由SidebarItem提供。
+
+## 圆点复选框与普通单选框
+
+共享样式将原input呈现为16px圆形、6px白色选中点；半选为8×2px白横，仍使用原生indeterminate语义。保留checkbox取消/多选、Space、radio同名互斥和禁用。粗指针label命中至少44px、键盘2px outline，减少动态禁用动画和按压缩放；forced-colors恢复原生外观。PF switch与role=switch显式排除。来源与许可见[样式说明](../../web/src/styles/first/README.md#项目svg例外与圆点选择控件)。
+
+`FirstDesign.browser.test.ts`用真实PF层叠验证白面/灰面、蓝色提亮与ring几何、checkbox半选和radio模型、1200px侧栏文字保留/隐藏、390px粗指针及减少动态效果。浏览器样本与生产认证仍分开记录。

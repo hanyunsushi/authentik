@@ -3,13 +3,19 @@ import { ConsoleInterface } from "./Interface";
 import { setConsoleRuntime, type ConsoleNavigationItem } from "#common/console";
 import { DefaultUIConfig } from "#common/ui/config";
 
-import { type UserSelf } from "@goauthentik/api";
+import {
+    LicenseSummaryStatusEnum,
+    CapabilitiesEnum,
+    type LicenseSummary,
+    type UserSelf,
+} from "@goauthentik/api";
 
 import { afterEach, describe, expect, it } from "vitest";
 
 class NavigationFixture extends ConsoleInterface {
-    override can() {
-        return false;
+    capabilities = new Set<CapabilitiesEnum>();
+    override can(capability: CapabilitiesEnum) {
+        return this.capabilities.has(capability);
     }
     getNavigation() {
         return this.navigation();
@@ -64,7 +70,7 @@ describe("Console interface navigation", () => {
                 ),
             ).toEqual([]);
 
-            if (mode === "user") expect(published).toContain("/if/user/settings");
+            if (mode === "user") expect(published).not.toContain("/if/user/settings");
         }
     });
 
@@ -94,5 +100,79 @@ describe("Console interface navigation", () => {
         expect(paths(root.getNavigation())).toEqual(["/", "/if/user/library"]);
         root.setPath("/if/admin/administration/overview");
         expect(paths(root.getNavigation())).toEqual(["/"]);
+    });
+
+    it("keeps stable group keys and marks detail ownership without replacing link destinations", () => {
+        setConsoleRuntime({
+            context: { initialPath: "/", onNavigate() {} },
+            serviceURL: "",
+            signal: new AbortController().signal,
+            accessToken: async () => "",
+            login: async () => {},
+            logout: async () => {},
+            onSession() {},
+        });
+
+        const root = new NavigationFixture();
+
+        root.session = {
+            user: { pk: 1, isSuperuser: true, systemPermissions: [] } as unknown as UserSelf,
+        };
+
+        root.setPath("/if/admin/identity/users/42");
+        const items = root.getNavigation();
+        const directory = items.find((item) => item.key === "directory")!;
+        expect(directory.group).toBe(true);
+        const user = directory.children!.find((item) => item.path === "/if/admin/identity/users")!;
+        expect(user.activePath).toBe("/if/admin/identity/users/42");
+        root.setPath("/if/admin/identity/groups/17");
+
+        expect(
+            root
+                .getNavigation()
+                .find((item) => item.key === "directory")!
+                .children!.find((item) => item.path === user.path)!.activePath,
+        ).toBeUndefined();
+    });
+
+    it("uses native capability and license rules for user navigation", () => {
+        setConsoleRuntime({
+            context: { initialPath: "/", onNavigate() {} },
+            serviceURL: "",
+            signal: new AbortController().signal,
+            accessToken: async () => "",
+            login: async () => {},
+            logout: async () => {},
+            onSession() {},
+        });
+
+        const root = new NavigationFixture();
+
+        root.session = {
+            user: { pk: 2, isSuperuser: false, systemPermissions: [] } as unknown as UserSelf,
+        };
+
+        root.uiConfig = {
+            ...DefaultUIConfig,
+            enabledFeatures: { ...DefaultUIConfig.enabledFeatures, requests: true, agents: true },
+        };
+
+        root.capabilities = new Set([
+            CapabilitiesEnum.CanRequest,
+            CapabilitiesEnum.CanAgentSelfService,
+        ]);
+
+        root.setPath("/if/user/library");
+        root.licenseSummary = { status: LicenseSummaryStatusEnum.Valid } as LicenseSummary;
+
+        expect(paths(root.getNavigation())).toEqual([
+            "/",
+            "/if/user/library",
+            "/if/user/requests",
+            "/if/user/agents",
+        ]);
+
+        root.licenseSummary = { status: LicenseSummaryStatusEnum.Unlicensed } as LicenseSummary;
+        expect(paths(root.getNavigation())).toEqual(["/", "/if/user/library"]);
     });
 });
