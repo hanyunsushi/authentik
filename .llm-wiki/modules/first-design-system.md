@@ -94,3 +94,9 @@ sources:
 共享样式将原input呈现为16px圆形、6px白色选中点；半选为8×2px白横，仍使用原生indeterminate语义。保留checkbox取消/多选、Space、radio同名互斥和禁用。粗指针label命中至少44px、键盘2px outline，减少动态禁用动画和按压缩放；forced-colors恢复原生外观。PF switch与role=switch显式排除。来源与许可见[样式说明](../../web/src/styles/first/README.md#项目svg例外与圆点选择控件)。
 
 `FirstDesign.browser.test.ts`用真实PF层叠验证白面/灰面、蓝色提亮与ring几何、checkbox半选和radio模型、1200px侧栏文字保留/隐藏、390px粗指针及减少动态效果。浏览器样本与生产认证仍分开记录。
+
+## 透明磨砂顶栏
+
+`web/src/components/ak-page-navbar.css`与`web/src/user/ak-interface-user.css`的真实顶栏改透明底，保留blur22px/saturate1.5并补WebKit同值声明；无滤镜时使用当前主题`--ak-first-bg`。共享玻璃token、侧栏品牌、Flow布局、菜单与业务回调保持。
+
+共用材质合同由`kreeper-first-design-system/references/topbar.md`维护；源码/浏览器与发布状态分别由[项目权威](../../agent.md)记录。

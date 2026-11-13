@@ -203,8 +203,10 @@ h1 {
     gap: 0 12px;
     padding-inline-end: 20px;
     border-bottom: 1px solid var(--ak-first-border);
-    background: var(--ak-first-glass);
+    /* 顶栏：透明磨砂；侧栏品牌与菜单保留原有表面。 */
+    background: transparent;
     backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
     box-shadow: none;
 }
 .brand {
@@ -365,4 +367,9 @@ slot[name="toggle"] {
     .items.primary.block-sibling {
         align-self: center;
     }
+}
+
+/* 顶栏：无背景滤镜支持时采用当前明暗主题后备面。 */
+@supports not ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
+    .main-content { background: var(--ak-first-bg); }
 }

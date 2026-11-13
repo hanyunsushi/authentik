@@ -95,8 +95,10 @@
     min-height: 64px;
     height: 64px;
     padding: 0 24px;
-    background: var(--ak-first-glass);
+    /* 顶栏：透明磨砂；侧栏品牌与菜单保留原有表面。 */
+    background: transparent;
     backdrop-filter: blur(22px) saturate(1.5);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
     border-bottom: 1px solid var(--ak-first-border);
     box-shadow: none;
 }
@@ -144,4 +146,9 @@
         min-width: 0;
         overflow-x: auto;
     }
+}
+
+/* 顶栏：无背景滤镜支持时采用当前明暗主题后备面。 */
+@supports not ((backdrop-filter: blur(22px)) or (-webkit-backdrop-filter: blur(22px))) {
+    .pf-c-page__header { background: var(--ak-first-bg); }
 }
