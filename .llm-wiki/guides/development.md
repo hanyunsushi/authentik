@@ -82,3 +82,7 @@ pnpm --dir web run extract-locales
 ```
 
 浏览器回归覆盖空状态表格裁切下的菜单top layer与Escape焦点恢复，以及inline Shadow DOM页面真实模块的入场动画/错峰/清理。浏览器 suite 采用串行文件执行；图表首次加载 Mermaid 时，并行执行下的默认等待窗口可能超时，不能把单独通过冒充全量通过。当前结果由[权威文档](../../agent.md)维护。`scripts/frontend-index.py` 忽略目录，避免测试生成的 `__screenshots__/*.test.ts/` 被误当源码文件。
+
+## SaaS优选路由
+
+正式域名采用DNS-only edge入口；每站custom origin、Host保留、证书续订、切换与回滚顺序由[Console路由指南](/Users/hinaw/console-kreeper/.llm-wiki/guides/cloudflare-optimized-routing.md#独立股票营销与身份入口)统一维护。应用自己的Origin/issuer/callback及权限不跟随回退域名改写；运行身份和验收边界见[项目权威](../../agent.md)。

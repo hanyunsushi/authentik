@@ -15,3 +15,7 @@ Doc Impact Map：共用User导航、Admin分组与activePath归Console模块；M
 ## 透明磨砂发布同步
 
 Doc Impact Map：磨砂材质/范围归对应设计模块；发布身份、恢复与未验范围归agent.md；六应用共享脱敏回执在Console Wiki。核对源提交、暂存和dirty边界，仅同步本批发布；无关源码/文档保持。CodeGraph MCP不可用。六仓118份Markdown/1668处本地链接、JSON、authority软链及diff检查通过；OpenStock官方docs:sync/docs:check通过（25页/173内部链接）。证据归Console `output/frosted-release-20261113/docs-lint.json`。
+
+## 三站优选路由同步
+
+Doc Impact Map：共享拓扑/DCV/回滚归Console路由指南，运行与私有备份归各项目authority，脱敏配置及验证归Console三站回执。四仓现有暂存/dirty范围已核对，只提交本批文档；配置-only，不触发应用重建。CodeGraph无源码结构变化；六仓118份Markdown/1685本地链接零断链，authority软链接与OpenStock官方docs检查（25页/174内部链接）通过；索引覆盖和证据归Console `output/managed-edge-20261113/`。
