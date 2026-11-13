@@ -100,3 +100,5 @@ sources:
 `web/src/components/ak-page-navbar.css`与`web/src/user/ak-interface-user.css`的真实顶栏改透明底，保留blur22px/saturate1.5并补WebKit同值声明；无滤镜时使用当前主题`--ak-first-bg`。共享玻璃token、侧栏品牌、Flow布局、菜单与业务回调保持。
 
 共用材质合同由`kreeper-first-design-system/references/topbar.md`维护；源码/浏览器与发布状态分别由[项目权威](../../agent.md)记录。
+
+发布身份、回滚和生产验收边界由[项目权威](../../agent.md)与[共享回执](/Users/hinaw/console-kreeper/.llm-wiki/guides/frosted-release-20261113.json)维护，不能把CSS夹具视作已登录业务验收。
